@@ -47,7 +47,7 @@ class RoleSeeder extends Seeder
                 'recycle_bin',
                 'features',
                 'packages',
-                'delegates',
+                // 'delegates',
                 // 'finance_approvals',
                 'order_received',
                 'Distribution_of_Orders',

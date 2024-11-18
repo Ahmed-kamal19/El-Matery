@@ -425,19 +425,6 @@
                         </a>
                     </div>
                 @endcan
-                @can('view_delegates')
-                    <div class="menu-item">
-                        <a class="menu-link {{ isTabActive('delegates') }}"
-                            href="{{ route('dashboard.delegates.index') }}" data-bs-toggle="tooltip"
-                            data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
-                            <span class="menu-icon">
-                                <!-- <i class="fa fa-user-shield"></i> -->
-                                <i class="fa fa-user-tie"></i>
-                            </span>
-                            <span class="menu-title"> {{ __('Delegates') }}</span>
-                        </a>
-                    </div>
-                @endcan
                 @can('view_settings')
                     <div class="menu-item">
                         <a class="menu-link {{ isTabActive('settings') }}"

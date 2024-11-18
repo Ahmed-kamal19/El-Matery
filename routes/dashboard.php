@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\Dashboard\CarController;
-use App\Http\Controllers\Dashboard\ChatController;
-use App\Http\Controllers\Dashboard\DelegatesController;
 use App\Http\Controllers\Dashboard\FinanceApprovalsController;
 use App\Http\Controllers\Dashboard\OrderController;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +26,7 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::post('/calculate-installment', 'DashboardController@calculateInstallment')->name('calculateInstallment');
     Route::get('/get-models/{brandId}', [CarController::class, 'getModels']);
     Route::get('/get-categories/{modelId}', [CarController::class, 'getcategories']);
-    Route::get('/delegate/fetch', [DelegatesController::class, 'fetchDelegate']);
+
     // Route::get('/orders_not_approval', [OrderController::class, 'orders_not_approval'])->name('orders.orders_not_approval');
 
     /** resources routes **/
@@ -62,7 +60,7 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::resource('settings', 'SettingController')->only(['index', 'store']);
     Route::resource('careers', 'CareerController');
     Route::get('/applicants', 'CareerController@applicants');
-    Route::resource('delegates', 'DelegatesController');
+
 
     Route::resource('finance-approvals', 'FinanceApprovalsController');
     Route::get('/finance-approvals/pdf/{id}', [FinanceApprovalsController::class, 'financeapprovalPDF']);

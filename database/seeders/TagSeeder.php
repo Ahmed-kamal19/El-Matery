@@ -18,13 +18,13 @@ class TagSeeder extends Seeder
             Tag::create([
                 "name_ar" => "جديد",
                 "name_en" => "new",
-                "bg_color" => "#f05189",
+                // "bg_color" => "#f05189",
             ]);
 
             Tag::create([
                 "name_ar" => "حصري",
                 "name_en" => "exclusive",
-                "bg_color" => "#3ef1f4",
+                // "bg_color" => "#3ef1f4",
             ]);
     }
 }

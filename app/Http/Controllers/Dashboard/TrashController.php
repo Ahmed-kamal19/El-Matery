@@ -40,9 +40,15 @@ class TrashController extends Controller
     public function restore($modelName, $id)
     {
         $this->authorize('restore_recycle_bin');
-
+        
         $model = app('App\\Models\\' . $modelName);
-        $model->onlyTrashed()->find($id)->restore();
+        $resultRestore=$model->onlyTrashed()->find($id)->restore();
+        if($modelName == "Feature" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.features.index');
+
+        }
         if($modelName == 'Car')
         {
             $car = $model->find($id);

@@ -93,8 +93,7 @@ return [
     'present' => 'يجب تقديم ( :attribute )',
     'regex' => 'صيغة ( :attribute ) .غير صحيحة',
     'required' => 'حقل ( :attribute ) مطلوب',
-    
-    'required_if' => '( :attribute ) مطلوب في حال ما إذا كان :other يساوي :values',
+    'required_if' => '( :attribute ) مطلوب في حال ما إذا كان :other يساوي :value',
     'required_unless' => '( :attribute ) مطلوب في حال ما لم يكن :other يساوي :values',
     'required_with' => '( :attribute ) مطلوب إذا كان :values',
     'required_with_all' => '( :attribute ) مطلوب إذا كان :values',
@@ -142,7 +141,13 @@ return [
         'another_phone' => [
             'regex' => 'رقم الهاتف يجب ان يبدأ ب 05 متبوعاً ب 8 ارقام '
         ],
-
+        'colors.*.id' => [
+            'required' => 'يجب اختيار اللون',
+        ],
+        'colors' => [
+            'required' => 'يجب اختيار اللون',
+        ],
+        
     ],
 
     /*
@@ -503,22 +508,32 @@ return [
         'question_ar' => 'السؤال باللغة الإنجليزية',
         'answer_ar' => 'الإجابة باللغة العربية',
         'answer_en' => 'الإجابة باللغة الإنجليزية',
+        'icon' => 'الايقونة',
+        'features.*.type' => 'النوع',
+        'features.*.id'=>'الاختيار',
+        'features.*.description_ar' => 'الوصف بالعربية',
+        'features.*.description_en' => 'الوصف بالإنجليزية',
+        'colors.*.id'=>'اللون',
+        'colors.*.color'=>'اللون',
+        'colors.*.images'=>'الصور',
+        'colors' => 'الألوان',
+        'colors.*.id' => 'اللون',
         '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
-        '' => '',
+        'service_id' => 'الخدمة',
+        'car_model' => 'موديل السيارة',
+        'car_brand' => 'نوع السيارة',
+        'administrative_fees' => 'الرسوم الادارية',
+        'first_patch' => 'نسبة المقدم',
+        'last_payment' => 'نسبة الدفعة الاخيرة',
+        'installment_years' => 'سنوات القسط',
+        'insurance' => 'نسبة التأمين السنوي',
+        'profit_margin' => 'نسبة هامش الربح',
+        'calculator' => 'حاسبة',
+        'calculators' => 'حاسبة',
+        'There is' => 'يوجد هناك',
+        'with the same' => 'بنفس',
+        'but in the trash' => 'ولكن في سلة المهملات',
+        'do you want to restore ?' => 'هل تريد الاسترجاع؟',
         '' => '',
     ],
 
@@ -560,7 +575,8 @@ return [
         'setting_type' => [
             'about-website' => 'عن الموقع',
             'general' => 'عام',
-            'website' => 'الموقع'
+            'website' => 'الموقع',
+            'calculator'=>'الحاسبة'
         ],
         'date' => [
             'today' => 'اليوم'

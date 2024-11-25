@@ -1,4 +1,20 @@
+function getTypeName(type)
+{
+   let name='__'
+    switch(type)
+    {
+        case 1:
+         name='possibility'
+         break;
+        case 2:
+          name='feature'
+          break;
+    }
+    return name
+}
+
 "use strict";
+
 
 // Class definition
 let KTDatatable = (function () {
@@ -35,35 +51,35 @@ let KTDatatable = (function () {
                 },
             },
             columns: [
-                { data: "id" },
+                { data: null,render:function(data,type,row,meta){
+                    return meta.row+1;
+                } },
                 { data: "title_ar" },
                 { data: "title_en" },
-                // { data: "description_ar" },
-                // { data: "description_en" },
-                // { data: "icon" },
-                { data: "created_at", name: "created_at" },
+                { data: "icon" },
+                { data: "type" },
+                { data: "created_at"},
                 { data: null },
             ],
             columnDefs: [
-                // {
-                //     targets: 4,
-                //     width:150,
-                //     render:function (data , type , row) {
-                //         return data.join(' , ');
-                //     }
-                // },
-
-                // {
-                //     targets: 4,
-                //     render: function (data, type, row) {
-                //         if (data !== null)
-                //             return `<img style="height:50px;width:80px;border-radius:4px" src="${getImagePathFromDirectory(
-                //                 data,
-                //                 "News"
-                //             )}" class="me-3" >`;
-                //         else return "<h1>-</h1>";
-                //     },
-                // },
+               {
+                    targets: 3,
+                    render: function (data, type, row) {
+                        if (data !== null)
+                            return `<img style="height:50px;width:80px;border-radius:4px" src="${getImagePathFromDirectory(
+                                data,
+                                "Icons"
+                            )}" class="me-3" >`;
+                        else return "<h1>-</h1>";
+                    },
+                },
+                {
+                    targets: 4,
+                    render: function (data, type, row) {
+                       const typeName=getTypeName(data)							
+                       return `<span class="badge badge-lg badge-light-${typeName==='possibility'?'success':'primary'} fw-bold my-2 fs-8">${__(getTypeName(data))}</span>`
+                    },
+                },
                         
                 {
                     targets: -1,
@@ -81,7 +97,7 @@ let KTDatatable = (function () {
 
                                 <!--begin::Menu item-->
                                 <div class="menu-item px-3">
-                                    <a href="/dashboard/feature/${
+                                    <a href="/dashboard/features/${
                                         row.id
                                     }/edit" class="menu-link px-3 d-flex justify-content-between edit-row" >
                                        <span> ${__("Edit")} </span>
@@ -90,29 +106,14 @@ let KTDatatable = (function () {
 
                                 </div>
                                 <!--end::Menu item-->
-
                                 <!--begin::Menu item-->
                                 <div class="menu-item px-3">
-                                    <a href="/dashboard/feature/${row.id}" class="menu-link px-3 d-flex justify-content-between" >
-                                       <span> ${__("Show")} </span>
-                                       <span>  <i class="fa fa-eye text-black-50"></i> </span>
-                                    </a>
-
-                                </div>
-                                <!--end::Menu item-->
-
-                                <!--begin::Menu item-->
-                                <div class="menu-item px-3">
-                                <form action="{{ route('dashboard.feature.destroy',['feature'=>${row.id}]) }}" class="form" method="post">
-                                
-                                <a href=" " class="menu-link px-3 d-flex justify-content-between delete-row" data-row-id="${
-                                    row.id
-                                }" data-type="${__("possibility")}">
-                              
+                                    <a href="#" class="menu-link px-3 d-flex justify-content-between delete-row" data-row-id="${
+                                        row.id
+                                    }" data-type="${__("possibility")}">
                                        <span> ${__("Delete")} </span>
                                        <span>  <i class="fa fa-trash text-danger"></i> </span>
                                     </a>
-                                      </form>
                                 </div>
                                 <!--end::Menu item-->
 
@@ -130,13 +131,25 @@ let KTDatatable = (function () {
             KTMenu.createInstances();
             handleFilterDatatable();
             handleDeleteRows();
+            
         });
     };
-
+    
     // general search in datatable
     let handleSearchDatatable = () => {
         $("#general-search-inp").keyup(function () {
-            datatable.search($(this).val()).draw();
+            if($(this).val()===__('possibility'))
+            {
+                datatable.search('1').draw();
+            }
+            else if($(this).val()===__('feature'))
+            {
+                datatable.search('2').draw();
+            }
+            else
+            {
+                datatable.search($(this).val()).draw();
+            }
         });
     };
 
@@ -156,7 +169,7 @@ let KTDatatable = (function () {
                                 "content"
                             ),
                         },
-                        url: "/dashboard/feature/" + rowId,
+                        url: "/dashboard/features/" + rowId,
                         success: () => {
                             setTimeout(() => {
                                 successAlert(
@@ -191,11 +204,12 @@ let KTDatatable = (function () {
 
     // Filter Datatable
     let handleFilterDatatable = () => {
+        
         $(".filter-datatable-inp").each((index, element) => {
+          
             $(element).change(function () {
                 let columnIndex = $(this).data("filter-index"); // index of the searching column
-
-                datatable.column(columnIndex).search($(this).val()).draw();
+                datatable.search($(this).val()).draw();
             });
         });
     };

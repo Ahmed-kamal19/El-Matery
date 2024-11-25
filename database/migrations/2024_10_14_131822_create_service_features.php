@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCarPossibilityTable extends Migration
+class CreateServiceFeatures extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateCarPossibilityTable extends Migration
      */
     public function up()
     {
-        Schema::create('car_possibility', function (Blueprint $table) {
+        Schema::create('service_features', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('car_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->foreignId('possibility_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('service_id')->constrained('services')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('feature_id')->constrained('features')->onDelete('cascade')->onUpdate('cascade');
             $table->text('description_ar');
             $table->text('description_en');
             $table->timestamps();
@@ -30,6 +30,6 @@ class CreateCarPossibilityTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('car_possibility');
+        Schema::dropIfExists('service_features');
     }
 }

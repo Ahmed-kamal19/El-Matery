@@ -18,9 +18,9 @@ class AdminSeeder extends Seeder
     {
         DB::table('employees')->delete();
         Employee::create([
-            'name' => 'qetaf',
-            'email' => 'qetaf@gmail.com',
-            'password' => 'qetaf12345678',
+            'name' => 'elmatery',
+            'email' => 'elmatery@gmail.com',
+            'password' => 'elmatery12345678',
             'phone' => '966511223344',
         ]);
 

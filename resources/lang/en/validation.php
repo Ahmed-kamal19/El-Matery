@@ -152,7 +152,25 @@ return [
         ],
         'hex_code' => [
             'unique' => __('this color already exists')
-        ]
+        ],
+        'colors' => [
+            'required' => 'Colors are required.',
+        ],
+        'colors.*.images' => [
+            'required' => 'Images are required for each color.',
+        ],
+        'colors.*.images.*' => [
+            'required' => 'Each image is required.',
+        ],
+        'colors.*.color' => [
+            'required' => 'Each color field is required.',
+        ],
+        'colors.*.images.*.mimes' => [
+            'mimes' => 'Each image must be a file of type: :values.',
+        ],
+        'colors.*.images.*.max' => [
+            'max' => 'Each image must not be greater than :max kilobytes.',
+        ],
     ],
 
     /*
@@ -177,6 +195,12 @@ return [
         'car_Images'=>'Car Images',
         'category_id'=>'category',
         'fuel_type'=>'fuel type',
+        'features.*.type' => 'type',
+        'features.*.id'=>'choice',
+        'features.*.description_ar' => 'Description in arabic',
+        'features.*.description_en' => 'Description in english',
+        'phone'=>'Phone number must start with 05 followed by 8 digits'
+
     ],
 
 ];

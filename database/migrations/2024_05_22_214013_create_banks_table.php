@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('name_en');
             $table->string('image');
             $table->enum('type', ['bank', 'company'])->default('bank');
-            $table->boolean('accept_from_other_banks')->default(true);
             $table->timestamps();
         });
     }

@@ -43,7 +43,7 @@ class RoleSeeder extends Seeder
                 'orders',
                 'reports',
                 'news_subscribers',
-                'slider_dashboard',
+               // 'slider_dashboard',
                 'recycle_bin',
                 'features',
                 'packages',
@@ -53,7 +53,7 @@ class RoleSeeder extends Seeder
                 'Distribution_of_Orders',
                 // 'questions',
                 'partners',
-                'possibilities'
+                //'possibilities'
             ];
         Ability::whereNotIn('category', $categories)->delete();
 
@@ -118,9 +118,11 @@ class RoleSeeder extends Seeder
 
             // Employee::find(1)->assignRole($superAdminRole);
             Employee::find(1)->assignRole($employeeRole);
+            
             Employee::find(2)->assignRole($superAdminRole);
             // Employee::find(2)->assignRole($employeeRole);
         } else {
+            
             $superAdminRole = Role::find(1);
             $employeeRole   = Role::withoutGlobalScopes()->find(2);
 

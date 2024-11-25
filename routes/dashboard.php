@@ -28,7 +28,7 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::get('/get-categories/{modelId}', [CarController::class, 'getcategories']);
 
     // Route::get('/orders_not_approval', [OrderController::class, 'orders_not_approval'])->name('orders.orders_not_approval');
-
+    Route::get('features','FeatureController@index');
     /** resources routes **/
     Route::resource('possibilities', 'PossibilitiesController');
     Route::resource('features', 'FeatureController');
@@ -94,8 +94,10 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     /** Trash routes */
 
     Route::get('trash/{modelName?}', 'TrashController@index')->name('trash');
-    Route::get('trash/{modelName}/{id}', 'TrashController@restore');
+    Route::get('trash/{modelName}/{id}', 'TrashController@restore')->name('trash.restore');
+    // Route::get('trash/{modelName}/{id}/restore', 'TrashController@restore')->name('trash.restore');
     Route::delete('trash/{modelName}/{id}', 'TrashController@forceDelete');
+   
 
     Route::get('/Images/{type}', function ($type) {
         $fileUrl = getImagePathFromDirectory($type, 'Orders');

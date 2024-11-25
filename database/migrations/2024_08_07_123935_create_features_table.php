@@ -19,6 +19,7 @@ class CreateFeaturesTable extends Migration
             $table->string('title_en');
             // $table->text('description_ar');
             // $table->text('description_en');
+            $table->integer('type');
             $table->string('icon');
              $table->timestamps();
         });

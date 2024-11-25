@@ -22,7 +22,7 @@
             <div class="d-flex align-items-center gap-2 gap-lg-3">
 
                 <!--begin::Primary button-->
-                <a href="https://codecar.com.sa/" target="_blank" class="btn btn-sm btn-primary"><i
+                <a href="http://127.0.0.1:8000/dashboard" target="_blank" class="btn btn-sm btn-primary"><i
                         class="bi bi-globe fs-6"></i> {{ __('website') }} </a>
                 <!--end::Primary button-->
 

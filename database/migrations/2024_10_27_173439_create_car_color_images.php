@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePossibilitiesTable extends Migration
+class CreateCarColorImages extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreatePossibilitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('possibilities', function (Blueprint $table) {
+        Schema::create('car_color_images', function (Blueprint $table) {
             $table->id();
-            $table->string('title_ar');
-            $table->string('title_en');
-            // $table->text('description_ar');
-            // $table->text('description_en');
-            $table->string('icon');
-
+            $table->foreignId('car_id')->constrained('cars')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('color_id')->constrained('colors')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('image');
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ class CreatePossibilitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('possibilities');
+        Schema::dropIfExists('car_color_images');
     }
 }

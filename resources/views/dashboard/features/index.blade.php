@@ -14,7 +14,7 @@
                 class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
 
                 <!-- begin :: Title -->
-                <h1 class="d-flex align-items-center text-dark fw-bolder fs-3 my-1">{{ __('Features') }}</h1>
+                <h1 class="d-flex align-items-center text-dark fw-bolder fs-3 my-1">{{ __('features and possibilities') }}</h1>
                 <!-- end   :: Title -->
 
                 <!-- begin :: Separator -->
@@ -25,7 +25,7 @@
                 <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
                     <!-- begin :: Item -->
                     <li class="breadcrumb-item text-muted">
-                        {{ __('Features list') }}
+                        {{ __('Features and posibilities list') }}
                     </li>
                     <!-- end   :: Item -->
                 </ul>
@@ -55,7 +55,11 @@
 
                     <input type="text" class="form-control form-control-solid w-250px ps-15 border-gray-300 border-1"
                         id="general-search-inp" placeholder="{{ __('Search ...') }}">
-
+                    <select class="form-select form-select-transparent filter-datatable-inp" data-filter-index="2" >
+                        <option value="" disabled selected >{{ __('select_type') }}</option>
+                        <option value="1" >{{__('posibility')}}</option>
+                        <option value="2" >{{__('feature')}}</option>
+                    </select>
 
                 </div>
                 <!-- end   :: General Search -->
@@ -71,7 +75,7 @@
                             <i class="fa fa-plus fa-lg"></i>
                         </span>
 
-                        {{ __('Add new feature') }}
+                        {{ __('Add new feature or posibility') }}
 
                     </a>
                     <!-- end   :: Add Button -->
@@ -92,6 +96,8 @@
                         <th>#</th>
                         <th>{{ __('arabic name') }}</th>
                         <th>{{ __('english name') }}</th>
+                        <th>{{ __('Icon') }}</th>
+                        <th>{{ __('type') }}</th>
                         <th>{{ __('created date') }}</th>
                         <th class="min-w-100px">{{ __('actions') }}</th>
                     </tr>

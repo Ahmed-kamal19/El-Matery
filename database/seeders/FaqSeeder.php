@@ -17,13 +17,17 @@ class FaqSeeder extends Seeder
         $faqs = [
             [
                 'id' => 1,
-                'question' => 'هل يمكنني بيع سياراتي',
-                'answer' => 'نعم',
+                'question_ar' => 'هل يمكنني بيع سياراتي',
+                'question_en' =>'would I sell my car?',
+                'answer_ar' => 'نعم',
+                'answer_en' => 'yes'
             ],
             [
                 'id' => 2,
-                'question' => 'هل يمكنني بيع سياراتي',
-                'answer' => 'نعم',
+                'question_ar' => 'هل يمكنني بيع سياراتي',
+                'question_en' =>'would I sell my car?',
+                'answer_ar' => 'نعم',
+                'answer_en' => 'yes'
             ]
         ];
 

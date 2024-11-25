@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             RoleSeeder::class,
             NationalitySeeder::class,
-            SectorSeeder::class,
+          //  SectorSeeder::class,
             BankSeeder::class,
             ColorSeeder::class,
             TagSeeder::class,
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
 
             SettingOrderStatusSeeder::class,
             CategoriesTableSeeder::class,
-            VendorsTableSeeder::class,
+          //  VendorsTableSeeder::class,
             CarsTableSeeder::class,
             UserTypeSeeder::class,
             OrganizationTypesTableSeeder::class,

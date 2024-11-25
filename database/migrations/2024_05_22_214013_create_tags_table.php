@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->string('name_ar')->unique();
             $table->string('name_en')->unique();
-            // $table->string('bg_color')->nullable();
+            //$table->string('bg_color')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -13,34 +13,28 @@ class BankController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_banks');
-
-        if ($request->ajax())
-             return response()->json(getModelData(model : new Bank() , andsFilters: [['type', '=', 'bank']],));
-
-        else
-            return view('dashboard.banks.index');
+        if ($request->ajax()){
+             return response()->json(getModelData(model: new Bank() ));
+            //  return response()->json(getModelData(model : new Bank() , andsFilters: [['type', '=', 'bank']],));
+        }
+       return view('dashboard.banks.index');
     }
 
     public function create()
     {
         $this->authorize('create_banks');
-        $sectors = Sector::get();
-
-        return view('dashboard.banks.create', compact('sectors'));
+       
+        return view('dashboard.banks.create');
     }
 
     public function store(Request $request)
     {
- 
+
         $this->authorize('create_banks');
 
         $data = $this->validateRequestData();
-        if($data['type']=='company'){
-            $data['accept_from_other_banks']=true;
-        }
         $data['image'] = uploadImage( $request->file('image') ,"Banks");
-        $bank =Bank::create($data);
-        $bank->attachSectors($data);
+        Bank::create($data);
     }
 
     public function validateRequestData()
@@ -49,25 +43,15 @@ class BankController extends Controller
             'image'      => 'required|mimes:jpeg,jpg,png,gif,svg,webp|max:2048',
             'name_ar' => ['required','string','unique:banks',new NotNumbersOnly()],
             'name_en' => ['required','string','unique:banks',new NotNumbersOnly()],
-            'type' => ['required'],
-            'accept_from_other_banks' => 'nullable|boolean|required_if:type,bank',
-            'special.*'    => 'required|numeric|min:0',
-
+            'type' => ['required']
         ];
-        foreach(Sector::get()->pluck('slug') as $sector){
-            $ValidationArray[$sector.'.*'] = 'required|numeric|min:0';
- 
-        }
-
         return request()->validate($ValidationArray);
     }
 
     public function edit(Bank $bank)
     {
         $this->authorize('update_banks');
-        $bankSectors = $bank->sectors->keyBy('slug');
- 
-        return view('dashboard.banks.edit',compact('bank', 'bankSectors'));
+        return view('dashboard.banks.edit',compact('bank'));
     }
 
     public function show($id)
@@ -80,12 +64,9 @@ class BankController extends Controller
         $this->authorize('update_banks');
 
         $data = $this->validateRequestForEditing($bank->id);
-        if($data['type']=='company'){
-            $data['accept_from_other_banks']=true;
-        }
         $data['image'] = $this->updateImage($bank->image);
         $bank->update($data);
-        $bank->attachSectors($data);
+        
     }
 
     public function validateRequestForEditing($bankId)
@@ -94,25 +75,17 @@ class BankController extends Controller
             'image'      => 'mimes:jpeg,jpg,png,gif,svg,webp|max:2048',
             'name_ar' => ['required','string','unique:banks,name_ar,'. $bankId,new NotNumbersOnly()],
             'name_en' => ['required','string','unique:banks,name_en,'. $bankId,new NotNumbersOnly()],
-            'type' => ['required'],
-            'accept_from_other_banks' => 'nullable|boolean|required_if:type,bank',
-            'special.*'    => 'required|numeric|min:0',
-
+            'type' => ['required']
         ];
-        foreach(Sector::get()->pluck('slug') as $sector){
-            $ValidationArray[$sector.'.*'] = 'required|numeric|min:0';
-        }
-
         return request()->validate($ValidationArray);
     }
 
     public function updateImage($imageName)
     {
-        if (request()->hasFile('image') )
-        {
+        if (request()->hasFile('image')) {
             deleteImage($imageName, "Banks");
-             return uploadImage( request()->file('image') ,"Banks");
-        }else{
+            return uploadImage(request()->file('image'), "Banks");
+        } else {
             return $imageName;
         }
     }
@@ -123,9 +96,7 @@ class BankController extends Controller
 
         if($request->ajax())
         {
-            $bank->sectors()->detach();
             $bank->delete();
         }
     }
 }
-

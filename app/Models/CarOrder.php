@@ -24,14 +24,14 @@ class CarOrder extends Model
     {
         return $this->belongsTo(Organizationactive::class);
     }
-    public function sector()
-    {
-        return $this->belongsTo(Sector::class);
-    }
-    public function bank_offer(){
-        return $this->belongsTo(BankOffer::class,'bank_offer_id');
+    // public function sector()
+    // {
+    //     return $this->belongsTo(Sector::class);
+    // }
+    // public function bank_offer(){
+    //     return $this->belongsTo(BankOffer::class,'bank_offer_id');
 
         
-    }
+    // }
    
 }

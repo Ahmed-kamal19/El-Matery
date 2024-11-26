@@ -40,7 +40,7 @@ let KTDatatable = (function () {
                 { data: "name_en" },
                 { data: "image" },
                 { data: "created_at" },
-                { data: null },
+                { data: "type" },
                 { data: null },
             ],
             columnDefs: [
@@ -56,7 +56,7 @@ let KTDatatable = (function () {
                 {
                     targets: 5,
                     render: function (data, type, row) {
-                        return `<a href="/dashboard/bank-offers?bank_id=${row.id}">${offerTitle}</a>`;
+                        return `<span class="badge badge-lg badge-light-${data==='bank'?'success':'primary'} fw-bold my-2 fs-8">${data}</span>`;
                     },
                 },
                 {

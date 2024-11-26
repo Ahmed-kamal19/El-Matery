@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dashboard\CarController;
+use App\Http\Controllers\Dashboard\FeatureController;
 use App\Http\Controllers\Dashboard\FinanceApprovalsController;
 use App\Http\Controllers\Dashboard\OrderController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,7 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     // Route::get('/chats/show-message/{id}', [ChatController::class, 'showMessage'])
     // ->name('chats.show-message');
     /** set theme mode ( light , dark ) **/
+
     Route::get('/change-theme-mode/{mode}', 'SettingController@changeThemeMode');
 
     /** dashboard index **/
@@ -30,7 +32,8 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     // Route::get('/orders_not_approval', [OrderController::class, 'orders_not_approval'])->name('orders.orders_not_approval');
     Route::get('features','FeatureController@index');
     /** resources routes **/
-    Route::resource('possibilities', 'PossibilitiesController');
+    /** ajax for features and it can't be after features resource route */
+    Route::get('/features/get-options',[FeatureController::class,'getOptions']); //  add car features and possibilities 
     Route::resource('features', 'FeatureController');
 
     Route::resource('orders', 'OrderController');
@@ -48,7 +51,6 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::resource('banks', 'BankController');
     Route::resource('financeing', 'FiananceController');
     // Route::resource('chats', 'ChatController');
-    Route::resource('bank-offers', 'BankOfferController');
     Route::resource('services', 'ServiceController');
     Route::resource('branches', 'BranchController');
     Route::resource('cities', 'CityController');
@@ -83,6 +85,8 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::post('car-validate/{car?}', 'CarController@validateStep');
     Route::post('change-status/{order}', 'OrderController@changeStatus');
     Route::post('assigntoemployee/{order}', [OrderController::class, 'assignToEmployee']);
+    Route::post('cars/{carId}/update-images',[CarController::class,'updateCarImages']);
+
 
 
     /** employee profile routes **/

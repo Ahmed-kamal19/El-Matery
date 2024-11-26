@@ -35,7 +35,9 @@ let KTDatatable = (function () {
                 },
             },
             columns: [
-                { data: "id" },
+                { data: function (data, type, row, meta) {
+                    return meta.row + 1;}
+                },
                 { data: "main_image" },
                 { data: "name_" + locale },
                 { data: "price" },
@@ -129,6 +131,18 @@ let KTDatatable = (function () {
                                     </a>
                                 </div>
                                 <!--end::Menu item-->
+                                <!--begin::Menu item-->
+                                <div class="menu-item px-3">
+                                    <a href="/dashboard/cars/${
+                                        row.id
+                                    }/duplicate" class="menu-link px-3 d-flex justify-content-between edit-row" >
+                                    <span> ${__("Duplicate")} </span>
+                                    <span>  <i class="fa fa-copy text-primary"></i> </span>
+                                    </a>
+
+                                </div>
+                                <!--end::Menu item-->
+
 
                             </div>
                             <!--end::Menu-->
@@ -231,14 +245,3 @@ KTUtil.onDOMContentLoaded(function () {
     KTDatatable.init();
 });
 
-// <!--begin::Menu item-->
-// <div class="menu-item px-3">
-//     <a href="/dashboard/cars/${
-//         row.id
-//     }/duplicate" class="menu-link px-3 d-flex justify-content-between edit-row" >
-//        <span> ${__("Duplicate")} </span>
-//        <span>  <i class="fa fa-copy text-primary"></i> </span>
-//     </a>
-
-// </div>
-// <!--end::Menu item-->

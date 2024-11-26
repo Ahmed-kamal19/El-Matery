@@ -149,7 +149,7 @@ let translations = {
     "Select an option": "حدد اختيارك",
     "images": "الصور",
 
-    "": "",
+    "No data": "لا يوجد بيانات",
     "": "",
     "": "",
     "": "",

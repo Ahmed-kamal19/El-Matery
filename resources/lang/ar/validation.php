@@ -530,10 +530,6 @@ return [
         'profit_margin' => 'نسبة هامش الربح',
         'calculator' => 'حاسبة',
         'calculators' => 'حاسبة',
-        'There is' => 'يوجد هناك',
-        'with the same' => 'بنفس',
-        'but in the trash' => 'ولكن في سلة المهملات',
-        'do you want to restore ?' => 'هل تريد الاسترجاع؟',
         '' => '',
     ],
 

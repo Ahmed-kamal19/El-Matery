@@ -17,7 +17,7 @@ let KTDatatable = (function () {
             order: [[6, "desc"]], // display records number and ordering type
             stateSave: false,
             select: {
-                style: "os",
+               // style: "os",
                 selector: "td:first-child",
                 className: "row-selected",
             },
@@ -55,6 +55,7 @@ let KTDatatable = (function () {
                         return "<h1>-</h1>";
                     },
                 },
+                    
                 {
                     targets: 5,
                     render: function (data, type, row) {

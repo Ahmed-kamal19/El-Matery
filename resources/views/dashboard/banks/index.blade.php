@@ -93,7 +93,7 @@
                         <th>{{ __('english name') }}</th>
                         <th>{{ __('image') }}</th>
                         <th>{{ __('created date') }}</th>
-                        <th>{{ __('offers') }}</th>
+                        <th>{{ __('type') }}</th>
                         <th class="min-w-100px">{{ __('actions') }}</th>
                     </tr>
                 </thead>

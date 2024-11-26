@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Possibility;
+// use App\Models\Possibility;
 use App\Models\Feature;
 class Car extends Model
 {
@@ -36,14 +36,11 @@ class Car extends Model
 
     public function features()
     {
-        return $this->belongsToMany(Feature::class, 'car_feature', 'car_id', 'feature_id');
+        return $this->belongsToMany(Feature::class, 'car_feature', 'car_id', 'feature_id')->withPivot('description_ar', 'description_en');
     }
 
 
-    public function possibilities()
-    {
-        return $this->belongsToMany(Possibility::class, 'car_possibility', 'car_id', 'possibility_id');
-    }
+
 
 
     public function getStatusNameAttribute()
@@ -73,15 +70,17 @@ class Car extends Model
             return $this->attributes['price_field_value'];
     }
 
-    public function color()
+    public function colors()
     {
-        return $this->belongsToMany(Color::class);
+        return $this->belongsToMany(Color::class,'car_color_images')->withPivot('image')
+        ->withTimestamps();
     }
     
-     public function color_id()
-    {
-        return $this->belongsTo(Color::class);
-    }
+    
+    //  public function color_id()
+    // {
+    //     return $this->belongsTo(Color::class);
+    // }
     
     public function city()
     {
@@ -132,7 +131,10 @@ class Car extends Model
             return round($this->selling_price);
         }
     }
-
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 
 
 }

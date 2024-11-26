@@ -77,7 +77,7 @@
                                     <div class="col-md-12 fv-row d-flex justify-content-evenly">
 
                                         <!--begin::Input group-->
-                                        <div class="fv-row">
+                                        {{-- <div class="fv-row">
 
                                             <div class="dropzone" id="dropzone_input">
 
@@ -100,12 +100,28 @@
                                                 <input class="d-none" type="text" id="deleted_images"
                                                     name="deleted_images" value="[]">
 
-                                            </div>
+                                           
+                                                </div>
+
                                             <!--end::Dropzone-->
                                             <div class="fv-plugins-message-container invalid-feedback" id="car_Images">
                                             </div>
 
-                                        </div>
+                                        </div> --}}
+                                       
+                                         <!-- begin :: Row -->
+                                    <div class="row mb-10">
+                                        <label class="text-center fw-bold mb-4">{{ __('Image') }}</label>
+                                        <div class="col-md-12 fv-row d-flex justify-content-evenly">
+                                           <x-dashboard.upload-image-inp name="car_Image" :image="$car->main_image" directory="Cars" 
+                                               placeholder="default.jpg" type="editable"></x-dashboard.upload-image-inp>
+                                               
+                                           </div>
+                                           <p class="fv-plugins-message-container invalid-feedback text-center mt-2" id="car_Image"></p>
+                                           <!-- end   :: Upload image component -->
+                                           
+                                       </div>
+                                       <!-- end   :: Row -->
                                         <!--end::Input group-->
                                     </div>
                                     <!-- end   :: Column -->
@@ -157,29 +173,6 @@
                                             </select>
                                             <p class="invalid-feedback" id="model_id"></p>
                                         </div>
-
-
-
-                                        <!-- begin :: Column -->
-                                        <div class="col-md-3 fv-row">
-
-                                            <label class="fs-5 fw-bold mb-2">{{ __('Colors') }}</label>
-
-                                            <select class="form-select" data-control="select2" name="colors[]" multiple id="colors-sp"
-                                                name="color_id" data-placeholder="{{ __('Choose the color') }}"
-                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
-
-                                                @foreach ($colors as $color)
-                                                    <option @if (in_array($color->id, $selectedcolorssIds)) selected @endif
-                                                            value="{{ $color['id'] }}">
-                                                        {{ $color->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <p class="invalid-feedback" id="colors"></p>
-
-                                        </div>
-                                        <!-- end   :: Column -->
                                         <div class="col-md-3 fv-row">
 
                                             <label class="fs-5 fw-bold mb-2">{{ __('city data') }}</label>
@@ -680,7 +673,227 @@
                                     </div>
                                     <!-- end   :: Row -->
 
+                                        
+                                            <!-- begin :: Wizard Step 2 -->
+                               
+                                         
+                                        <!-- begin :: Row -->
+                                        <div class="row mb-10">
+                                            <hr>
+                                            <!-- begin :: Column -->
+                                            <div class="col-md-12 fv-row">
 
+                                                <label class="fs-5 fw-bold mb-2">{{ __("Colors") }}</label>
+
+                                                <select class="form-select" data-control="select2" id="colors-sp" multiple data-placeholder="{{ __("Choose the color") }}" data-background-color="#000" data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+
+                                                    @foreach( $colors as $color)
+                                                        <option value="{{ $color->id }}" >{{ $color->name }}</option>
+                                                    @endforeach
+
+                                                </select>
+                                                <p class="invalid-feedback" id="colors" ></p>
+
+                                            </div>
+                                            <!-- end   :: Column -->
+
+                                        </div>
+                                        <!-- end   :: Row -->
+
+                                        <!-- begin :: car color component -->
+                                        <div id="car-colors">
+
+                                        </div>
+                                        <!-- end   :: car color component -->
+
+                                        <!-- end     :: edit images modal -->
+                                        <div class="modal" tabindex="-1" id="edit-images-modal">
+                                            <div class="modal-dialog modal-lg"  >
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modal-title" ></h5>
+                                                        <button type="button" class="btn" id="undo-delete-image" disabled > <i class="fa fa-undo"></i> {{ __("undo") }} </button>
+                                                    </div>
+                                                    <div class="modal-body" >
+                                                        <h3 class="text-center my-15 d-none" id="no-images-text">{{ __("There are no images") }}</h3>
+
+                                                        <div class="row" id="images-container">
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __("Close") }}</button>
+                                                        <button type="button" class="btn btn-primary" id="save-imgs-btn">{{ __("Save changes") }}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end     :: edit images modal -->
+
+
+                                    </div>
+                                    <!-- end   :: Wizard Step 2 -->
+                                         {{-- <!-- begin :: Row -->
+                                               <!--begin::Repeater-->
+                                               <div id="kt_docs_repeater_colors">
+                                                <div class="form-group">
+                                                    <div data-repeater-list="colors">
+                                                        <div data-repeater-item>
+                                                            <div class="form-group row align-items-center">
+                                                                <div class="col-md-10">  
+                                                                    <div class="row align-items-center">
+                                                                        <div class="col-md-6 ">
+                                                                            <label class="form-label" id="colors_0_image_inp">{{ __('Upload Image') }}</label>
+                                                                            <input type="file" multiple class="form-control mb-2 mb-md-0" id="colors_0_images_inp" name="colors[0][images][]" required />
+                                                                            <div class="text-danger m-0 invalid-feedback" id="colors_0_images"></div>
+                                                                        </div>
+                                                                        <div class="col-md-6 ">
+                                                                            <label class=" fs-5 fw-bold mb-2">{{ __('Colors') }}</label>
+                                                                            <select class="form-select select-type" name="colors[0][color]" id="colors_0_color_inp" required>    
+                                                                            <option value="" selected>{{__('choose color')}}</option>
+                                                                                @foreach ($colorsWithUniqueImages as $color)
+                                                                                <option value="{{ $color['color_id'] }}">{{ $color['color_name'] }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                            <p class="invalid-feedback" id="colors_0_color"></p>
+                                                                        </div>
+                                                                    </div>   
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="text-center">
+                                                                        <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3">
+                                                                            <i class="far fa-trash-alt"></i>{{__('Delete')}}
+                                                                        </a>
+                                                                    </div> 
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mt-5">
+                                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                                                        <i class="fa fa-plus"></i> {{__('Add')}}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            
+                                        
+                                            <!--end::Repeater-->
+                                            <!--end::Row--> --}}
+                                              <!-- begin  :: Row -->
+                                          <div class="row mt-5">
+                                            <hr>
+                                            <div class="mt-5 mb-5">{{__('features and possibilities')}}</div>
+                                        </div>
+                                        <!-- end    :: Row -->
+                                            <!--begin::Repeater-->
+                                            <div id="kt_docs_repeater_basic">
+                                                <!--begin::Form group-->
+                                                <div class="form-group">
+                                                    <div data-repeater-list="features">
+                                                        
+                                                        @forelse ($car->features as $feature)
+                                                            <div data-repeater-item>
+                                                                <div class="form-group row align-items-center">
+                                                                    <div class="col-md-10">  
+                                                                        <div class="row align-items-center">
+                                                                            <div class="col-md-6 mb-3">
+                                                                                <label class="form-label">{{ __('Type') }}</label>
+                                                                                <select class="form-select select-type" id="features_{{$loop->index}}_type_inp"name="features[{{ $loop->index }}][type]" data-placeholder="Select an option">
+                                                                                    <option value="1" {{ $feature->type == 1 ? 'selected' : '' }}>{{ __("possibility") }}</option>
+                                                                                    <option value="2" {{ $feature->type == 2 ? 'selected' : '' }}>{{ __("feature") }}</option>
+                                                                                </select>
+                                                                                <div class="text-danger m-0 invalid-feedback"id="features_{{$loop->index}}_type"></div>
+                                                                            </div>
+                                                                            <div class="col-md-6 mb-3">
+                                                                                <label class="form-label">{{ __('Select Options') }}</label>
+                                                                                <select id="features_{{$loop->index}}_id_inp" name="features[{{ $loop->index }}][id]" class="form-select select-options" data-selected-id="{{ $feature->id }}">
+                                                                                    <option value="" selected disabled>{{ __("Select an option") }}</option>
+                                                                                    <!-- Populated via JS -->
+                                                                                </select>
+                                                                                <div class="text-danger m-0 invalid-feedback" id="features_{{$loop->index}}_id"></div>
+                                                                            </div>
+                                                                        
+                                                                            <div class="col-md-6 mb-3">
+                                                                                <label class="form-label">{{ __('Description in arabic') }}</label>
+                                                                                <input type="text" id="features_{{$loop->index}}_description_ar_inp" class="form-control" name="features[{{ $loop->index }}][description_ar]" value="{{ $feature->pivot->description_ar }}" placeholder="{{ __('Description in Arabic') }}" required />
+                                                                                <div class="text-danger m-0 invalid-feedback" id="features_{{$loop->index}}_description_ar"></div>
+                                                                            </div>
+                                                                            <div class="col-md-6 mb-3">
+                                                                            <label class="form-label">{{ __('Description in english') }}</label>
+                                                                            <input type="text" id="features_{{$loop->index}}_description_en_inp" class="form-control" name="features[{{ $loop->index }}][description_en]" value="{{ $feature->pivot->description_en }}" placeholder="{{ __('Description in English') }}" />
+                                                                            <div class="text-danger m-0 invalid-feedback" id="features_{{$loop->index}}_description_en"></div>
+                                                                            </div>
+                                                                        </div>    
+                                                                    </div>    
+                                                                    <div class="col-md-2">
+                                                                        <div class="text-center">
+                                                                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3">
+                                                                                <i class="far fa-trash-alt"></i>{{__('Delete')}}
+                                                                                
+                                                                            </a>
+                                                                        </div> 
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @empty
+                                                        
+                                                            <div data-repeater-item>
+                                                                <div class="form-group row align-items-center">
+                                                                    <div class="col-md-10">
+                                                                        <div class="row align-items-center">
+                                                                            <div class="col-md-6 mb-3 ">
+                                                                                <label class="form-label">{{ __('Type') }}</label>
+                                                                                <select id="features_0_type_inp" class="form-select select-type" name="features[0][type]" data-placeholder="Select an option">
+                                                                                    <option value="1">{{ __("possibility") }}</option>
+                                                                                    <option value="2">{{ __("feature") }}</option>
+                                                                                </select>
+                                                                                <div class="text-danger m-0 invalid-feedback" id="features_0_type"></div>
+                                                                            </div>
+                                                                            <div class="col-md-6 mb-3 ">
+                                                                                <label class="form-label"id="features_0_id_inp">{{ __('Select Options') }}</label>
+                                                                                <select name="features[0][id]" class="form-select select-options"id="features_0_id">
+                                                                                    <option value="" selected disabled>{{ __("Select an option") }}</option>
+                                                                                    <!-- Populated via JS -->
+                                                                                </select>
+                                                                                <div class="text-danger m-0 invalid-feedback" id="features_0_id_inp"></div>
+                                                                                
+                                                                            </div>
+                                                                            <div class="col-md-6 mb-3 ">
+                                                                                <label class="form-label">{{ __('Description in arabic') }}</label>
+                                                                                <input type="text" id="features_0_description_ar_inp" class="form-control" name="features[0][description_ar]"  placeholder="{{ __('Description in arabic') }}" required />
+                                                                                <div class="text-danger m-0 invalid-feedback" id="features_0_description_ar"></div>
+                                                                            </div>
+                                                                            <div class="col-md-6 mb-3 ">
+
+                                                                                <label class="form-label">{{ __('Description in english') }}</label>
+                                                                                <input type="text" id="features_0_description_en_inp" class="form-control" name="features[0][description_en]" placeholder="{{ __('Description in english') }}" />
+                                                                                <div class="text-danger m-0 invalid-feedback"id="features_0_description_en" ></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <div class="text-center">
+                                                                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3">
+                                                                                <i class="far fa-trash-alt"></i>{{__('Delete')}}
+                                                                                
+                                                                            </a>
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforelse
+                                                    </div>
+                                                </div>
+                                                <!--end::Form group-->
+                                                <div class="form-group mt-5">
+                                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                                                        <i class="fa fa-plus "></i> {{__('Add')}}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <!--end::Repeater-->
 
 
                                 </div>
@@ -727,105 +940,181 @@
 @endsection
 @push('scripts')
     <script>
-        function setDropzoneImages(dropzone) {
-            $.ajax({
-                url: '/dashboard/cars/{{ $car->id }}/images',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    $.each(data, function(key, value) {
-                        var file = {
-                            name: value.image,
-                            size: value.size,
-                            type: 'image/jpeg',
-                            status: 'success',
-                            url: value.path,
-                            is_stored_before: true
-                        };
-
-                        dropzone.options.addedfile.call(dropzone, file);
-                        dropzone.options.thumbnail.call(dropzone, file, value.path);
-                        dropzone.emit("complete", file);
-
-                    });
-
-                    $('.dz-image>img').css({
-                        "width": "100%",
-                        "height": "100%"
-                    });
-
-                }
-
-            });
-
-        }
-    </script>
-    <script>
+    
         $(document).ready(function() {
-            $('#brand-sp').on('change', function() {
-                var brandId = $(this).val();
-                // Clear the existing options in the "Model" dropdown
-                $('#model-sp').empty();
-                $('#model-sp').append('<option value="" selected></option>');
+            // Initialize Repeater before Dropzone
+            initializeRepeater();
+            
+            // Initialize Dropzone after Repeater is set up
+            // initializeDropzone();
 
-                if (brandId) {
-                    // Make an AJAX request to fetch models based on the selected brand
-                    $.ajax({
-                        url: '/dashboard/get-models/' + brandId,
-                        type: 'GET',
-                        success: function(data) {
-                            // Populate the "Model" dropdown with the fetched models
-                            $.each(data, function(key, value) {
-                                var selectedAttribute = value.id ==
-                                    {{ $car['model_id'] }} ? 'selected' : '';
-
-                                $('#model-sp').append('<option value="' + value.id +
-                                    '" ' + selectedAttribute + '>' +
-                                    value.name + '</option>');
-                            });
-                        }
-                    });
-                }
-            });
-
-            $('#model-sp').on('change', function() {
-                var modelId = $(this).val();
-
-                // Clear the existing options in the "Category" dropdown
-                $('#category-sp').empty();
-                $('#category-sp').append('<option value="" selected></option>');
-
-                if (modelId) {
-                    // Make an AJAX request to fetch categories based on the selected model
-                    $.ajax({
-                        url: '/dashboard/get-categories/' + modelId,
-                        type: 'GET',
-                        success: function(data) {
-                            // Populate the "Category" dropdown with the fetched categories
-                            $.each(data, function(key, value) {
-                                var selectedAttribute = value.id ==
-                                    {{ $car['category_id'] }} ?
-                                    'selected' : '';
-
-                                $('#category-sp').append('<option value="' + value.id +
-                                    '" ' + selectedAttribute + '>' +
-                                    value.name + '</option>');
-                            });
-                        }
-                    });
-                }
-            });
+            // Other document.ready functions here
         });
+
+        // Function to initialize the Repeater component
+        function initializeRepeater() {
+            $('#kt_docs_repeater_basic').repeater({
+                initEmpty: false,
+                show: function() {
+                    $(this).slideDown();
+                    updateRepeaterIndex();
+                    bindSelectTypeChangeEvent($(this)); // Bind events to new items
+                },
+                hide: function(deleteElement) {
+                    $(this).slideUp(deleteElement, function() {
+                        $(this).remove();
+                        updateRepeaterIndex();
+                    });
+                }
+            });
+
+            // Populate existing options on page load for initial items
+            populateExistingOptions();
+
+            function updateRepeaterIndex() {
+                $('[data-repeater-item]').each(function(index) {
+                    $(this).find('input, select').each(function() {
+                        var name = $(this).attr('name');
+                        var id = $(this).attr('id');
+                        if (name) $(this).attr('name', name.replace(/\[\d+\]/, '[' + index + ']'));
+                        if (id) $(this).attr('id', id.replace(/_\d+_/, '_' + index + '_'));
+                    });
+                    updateFeedbackAndLabels($(this), index);
+                });
+            }
+
+            function populateExistingOptions() {
+                $('.select-type').each(function() {
+                    bindSelectTypeChangeEvent($(this).closest('[data-repeater-item]'));
+                });
+            }
+
+            function bindSelectTypeChangeEvent($repeaterItem) {
+                var $typeSelect = $repeaterItem.find('.select-type');
+                var $optionSelect = $repeaterItem.find('.select-options');
+                var selectedOptionId = $optionSelect.data('selected-id');
+
+                fetchOptions($typeSelect.val(), $optionSelect, selectedOptionId);
+
+                $typeSelect.off('change').on('change', function() {
+                    fetchOptions($(this).val(), $optionSelect);
+                });
+            }
+
+            function fetchOptions(type, $optionsSelect, selectedOptionId = null) {
+                $.ajax({
+                    url: '/dashboard/features/get-options',
+                    type: 'GET',
+                    data: { type: type },
+                    success: function(response) {
+                        $optionsSelect.empty();
+                        $optionsSelect.append('<option value="" disabled>{{ __("Select an option") }}</option>');
+                        $.each(response.options, function(feature_id, name) {
+                            var selected = feature_id == selectedOptionId ? 'selected' : '';
+                            $optionsSelect.append('<option value="' + feature_id + '" ' + selected + '>' + name + '</option>');
+                        });
+                    },
+                    error: function(error) {
+                        console.error('Error fetching options:', error);
+                    }
+                });
+            }
+
+            function updateFeedbackAndLabels($item, index) {
+                $item.find('.invalid-feedback').each(function() {
+                    var errorId = $(this).attr('id');
+                    if (errorId) $(this).attr('id', errorId.replace(/_\d+/, '_' + index));
+                });
+
+                $item.find('label').each(function() {
+                    var forAttr = $(this).attr('for');
+                    if (forAttr) $(this).attr('for', forAttr.replace(/_\d+_/, '_' + index + '_'));
+                });
+            }
+        }
+
+        // Function to initialize Dropzone
+        // function initializeDropzone() {
+        //     Dropzone.autoDiscover = false;
+        //     let dropzoneInput = new Dropzone("#dropzone_input", {
+        //         url: "/dashboard/cars/{{ $car->id }}/upload",
+        //         method: "POST",
+        //         paramName: "car_Images[]",
+        //         maxFilesize: 5,
+        //         maxFiles: 15,
+        //         acceptedFiles: "image/*",
+        //         addRemoveLinks: true,
+        //         autoProcessQueue: true,
+        //         dictDefaultMessage: "{{ __('Drop files here or click to upload') }}",
+        //         dictRemoveFile: "{{ __('Remove') }}",
+        //         init: function() {
+        //             let dropzone = this;
+        //             setDropzoneImages(dropzone);
+        //             dropzone.on("removedfile", function(file) {
+        //                 if (file.is_stored_before) {
+        //                     $.ajax({
+        //                         url: "/dashboard/cars/{{ $car->id }}/delete-image",
+        //                         method: "POST",
+        //                         headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
+        //                         data: { image: file.name },
+        //                         success: function(response) { console.log("File deleted:", response); },
+        //                         error: function(xhr) { console.error("Failed to delete file:", xhr.responseText); }
+        //                     });
+        //                 }
+        //             });
+        //         },
+        //         success: function(file, response) {
+        //             console.log("File uploaded successfully:", response);
+        //         },
+        //         error: function(file, errorMessage) {
+        //             console.error("Upload error:", errorMessage);
+        //         }
+        //     });
+        // }
+
+        // function setDropzoneImages(dropzone) {
+        //     $.ajax({
+        //         url: "/dashboard/cars/{{ $car->id }}/images",
+        //         type: "GET",
+        //         dataType: "json",
+        //         success: function(data) {
+        //             $.each(data, function(key, value) {
+        //                 var file = {
+        //                     name: value.image,
+        //                     size: value.size,
+        //                     type: "image/jpeg",
+        //                     status: "success",
+        //                     url: value.path,
+        //                     is_stored_before: true
+        //                 };
+        //                 dropzone.options.addedfile.call(dropzone, file);
+        //                 dropzone.options.thumbnail.call(dropzone, file, value.path);
+        //                 dropzone.emit("complete", file);
+
+        //                 $(".dz-image > img").css({ width: "100%", height: "100%" });
+        //             });
+        //         },
+        //         error: function(xhr) {
+        //             console.error("Error loading images:", xhr.responseText);
+        //         }
+        //     });
+        // }
+
+
     </script>
     <script src="{{ asset('dashboard-assets/plugins/custom/tinymce/tinymce.bundle.js') }}"></script>
     <script>
         let carId = "{{ $car->id }}";
-        let colorr = @json($color);
+        let colors = @json($colors);
+        let carColors= @json($car->colors->pluck('pivot'));
+        let carColorsIds = @json($car->colors->pluck('id'));
+        let  colorsWithUniqueImages =  @json($colorsWithUniqueImages);
         let brands = @json($brands);
-        let selectedModelId = "{{ $car['model_id'] }}";
+        let selectedModelId = @json($car['model_id']);
+        let selectedCategoryId = @json($car['category_id']);
         let isDuplicating = "{{ request()->segment(4) === 'duplicate' }}"
     </script>
-    <script src="{{ asset('js/dashboard/forms/cars/dropzone.js') }}"></script>
+    {{-- <script src="{{ asset('js/dashboard/forms/cars/dropzone.js') }}"></script> --}}
     <script src="{{ asset('js/dashboard/forms/cars/edit.js') }}"></script>
     <script src="{{ asset('js/dashboard/components/wizard.js') }}"></script>
     <script>
@@ -836,7 +1125,7 @@
 
             brandsSp.trigger('change', selectedModelId); // trigger brand selectpicker
 
-            // initializeColorsSp(); // draw colors containers with their images
+             initializeColorsSp(); // draw colors containers with their images
             initTinyMc({
                 editingInp: true
             });
@@ -852,4 +1141,6 @@
 
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.repeater@1.2.1/jquery.repeater.min.js"></script>
+
 @endpush

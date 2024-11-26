@@ -79,8 +79,10 @@ class FeatureController extends Controller
 
     public function getOptions(Request $request)
     {
+
         $type = $request->input('type');
         $data = Feature::where('type',$type)->get();
+       
 
         $options = [];
         if(!$data->isEmpty()){
@@ -89,7 +91,6 @@ class FeatureController extends Controller
                  $options[$element->id]=$element->title;
             }
         }
-
         return response()->json(['options'=>$options]);
         
     }

@@ -21,6 +21,10 @@ use App\Rules\ValidateMaxImages;
 use Illuminate\Http\UploadedFile;
 use App\Http\Controllers\Controller;
 
+use App\Models\CarColorImage;
+
+use Exception;
+
 use function PHPUnit\Framework\isEmpty;
 use Illuminate\Database\Eloquent\Model;
 use function App\Http\Controllers\store;
@@ -50,9 +54,9 @@ class CarController extends Controller
         $categories    = Category::select('id', 'name_' . getLocale())->get();
         $colors        = Color::select('id', 'image', 'name_' . getLocale(), 'hex_code')->get();
         $tags          = Tag::select('id', 'name_' . getLocale())->get();
-        $possibilities = Possibility::select('id', 'title_' . getLocale())->get();
+        // $possibilities = Possibility::select('id', 'title_' . getLocale())->get();
         $features      = Feature::select('id', 'title_' . getLocale())->get();
-        return view('dashboard.cars.create', compact('features', 'brands', 'colors', 'cities', 'tags', 'models', 'categories', 'possibilities'));
+        return view('dashboard.cars.create', compact('features', 'brands', 'colors', 'cities', 'tags', 'models', 'categories'));
 
     }
 
@@ -61,7 +65,6 @@ class CarController extends Controller
 
         $this->authorize('update_cars');
 
-        $car->load('color');
         $models        = CarModel::select('id', 'name_' . getLocale())->where('brand_id', $car->brand_id)->get();
         $brands        = Brand::select('id', 'name_' . getLocale())->get();
         $cities        = City::select('id', 'name_' . getLocale())->get();
@@ -72,302 +75,311 @@ class CarController extends Controller
         $carvideoId    = $car->video_url;
         $this->getYoutubeVideoUrl($carvideoId);
         $fullYoutubeUrl = ($carvideoId) ? $this->getYoutubeVideoUrl($carvideoId) : null;
+        $car->load('colors');
 
+        $colorsWithUniqueImages = $car->colors->groupBy('id')->map(function ($colors) {
+            return [
+                'color_id' => $colors->first()->id,
+                'color_name' => $colors->first()->name,
+                'hex_code' => $colors->first()->hex_code,
+                'images' => $colors->unique('pivot.image')->pluck('pivot.image')->toArray(),
+            ];
+        })->values()->toArray();
         $selectedtagsIds    = $car->tags->pluck('id')->toArray();
-        $selectedcolorssIds = $car->color->pluck('id')->toArray();
-
-        $possibilities = Possibility::select('id', 'title_' . getLocale())->get();
-
-        $selectedPossibilitiesIds = $car->possibilities->pluck('id')->toArray();
-        $features                 = Feature::select('id', 'title_' . getLocale())->get();
-
-        $selectedFeaturesIds = $car->features->pluck('id')->toArray();
-
-
-
-        return view('dashboard.cars.edit', compact('features', 'selectedFeaturesIds', 'possibilities', 'selectedPossibilitiesIds', 'brands', 'colors', 'car', 'models', 'cities', 'categories', 'relatedImages', 'tags', 'selectedtagsIds', 'fullYoutubeUrl', 'selectedcolorssIds'));
+        return view('dashboard.cars.edit', compact( 'colors','brands', 'car', 'models', 'cities', 'categories', 'relatedImages', 'tags', 'selectedtagsIds', 'fullYoutubeUrl', 'colorsWithUniqueImages'));
     }
+
+  
 
     public function validateStep(Request $request, Car $car = null)
     {
+        
         $discountPrice = $request['discount_price'] ?? 0;
-        $price         = $request['price'] ?? 0;
-        $status        = $request['status'] ?? 1;
-        $isVendor      = Auth::guard('vendor')->check();
-        if ($isVendor)
-        {
-            $request->validate([
-                'brand_id' => ['required'],
-                'model_id' => ['required'],
-                'description_ar' => ['required', 'string', new NotNumbersOnly()],
-                'description_en' => ['required', 'string', new NotNumbersOnly()],
-                'category_id' => ['nullable'],
-                'name_ar' => ['required', 'string', 'max:255', new NotNumbersOnly()],
-                'name_en' => ['required', 'string', 'max:255', new NotNumbersOnly()],
-                'year' => ['required'],
-                'fuel_type' => ['required'],
-                'publish' => ['required'],
-                'gear_shifter' => ['required'],
-                'video_url' => ['nullable', 'string', 'url'],
-                'price' => 'required | numeric|lte:2147483647|not_in:0|gt:' . $discountPrice,
-                'discount_price' => 'required_with:have_discount|nullable|numeric|not_in:0|lt:' . $price,
-                'supplier' => ['required', 'in:gulf,saudi'],
-                'status' => 'required',
-                'is_new' => ['required'],
-                'show_in_home_page' => ['required', 'in:0,1'],
-                'kilometers' => ['required_if:is_new,0', 'numeric', 'nullable', 'min:0'],
-                'colors' => ['required', 'array', 'min:1'],
-                // 'possibilities'      => ['required','array','min:1'],
+        $price = $request['price'] ?? 0;
+        
+        // Check if we're updating an existing car and if it has existing images
+        
+        $existingColorImages = $car ? $car->colors->pluck('pivot.image')->count() : 0;
+        // Conditionally require images only if there are no existing ones
+    
+        $existingCarImage= $car ? $car->images()->count():0;
+        
+    
+    
+        $colorImagesRequired = $existingColorImages === 0;
+        $carImageRequired=$existingCarImage===0;
+        
+    
+        // Define validation rules with conditional requirement for images
+        
+        $rules = [
+            'brand_id' => ['required'],
+            'model_id' => ['required'],
+            'description_ar' => ['required', 'string', new NotNumbersOnly()],
+            'description_en' => ['required', 'string', new NotNumbersOnly()],
+            'category_id' => ['nullable'],
+            'name_ar' => ['required', 'string', 'max:255', new NotNumbersOnly()],
+            'name_en' => ['required', 'string', 'max:255', new NotNumbersOnly()],
+            'year' => ['required'],
+            'fuel_type' => ['required'],
+            'publish' => ['required'],
+            'gear_shifter' => ['required'],
+            'video_url' => ['nullable', 'string', 'url'],
+            'price' => 'required|numeric|lte:2147483647|not_in:0|gt:' . $discountPrice,
+            'discount_price' => 'required_with:have_discount|nullable|numeric|not_in:0|lt:' . $price,
+            'supplier' => ['required', 'in:gulf,saudi'],
+            'is_new' => ['required'],
+            'show_in_home_page' => ['required', 'in:0,1'],
+            'kilometers' => ['required_if:is_new,0', 'numeric', 'nullable', 'min:0'],
+            'colors' => [$colorImagesRequired ? 'required' : 'nullable', 'array', 'min:1'],
+            'colors.*.id' => [$colorImagesRequired ? 'required' : 'nullable', 'integer', 'exists:colors,id'],
+            'colors.*.images' => [$colorImagesRequired ? 'required' : 'nullable', 'array', 'min:1'],
+            'colors.*.images.*' => ['file', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'city_id' => ['required'],
+            'fuel_tank_capacity' => 'required|string|max:255',
+            'car_body' => 'required|string',
+            'tags.*' => 'nullable',
+            'features' => ['sometimes', 'array'],
+            'features.*.type' => ['required', 'exists:features,id'],
+            'features.*.id' => ['required', 'exists:features,id'],
+            'features.*.description_ar' => ['required', 'string', new NotNumbersOnly()],
+            'features.*.description_en' => ['required', 'string', new NotNumbersOnly()],
+            'car_Image' => [$carImageRequired?'required':'nullable', 'image', 'mimes:jpeg,png,jpg,gif'],
+        
+        ];
 
-                'city_id' => ['required'],
-                'fuel_tank_capacity' => 'required|string|max:255',
-                'car_body' => 'required|string',
-                // 'car_Images'    => ['required','array','min:2','max:5'],
-            ]);
-        } else
-        {
-            $request->validate([
-                'brand_id' => ['required'],
-                'model_id' => ['required'],
-                'description_ar' => ['required', 'string', new NotNumbersOnly()],
-                'description_en' => ['required', 'string', new NotNumbersOnly()],
-                'category_id' => ['nullable'],
-                'name_ar' => ['required', 'string', 'max:255', new NotNumbersOnly()],
-                'name_en' => ['required', 'string', 'max:255', new NotNumbersOnly()],
-                'year' => ['required'],
-                'fuel_type' => ['required'],
-                'publish' => ['required'],
-                'gear_shifter' => ['required'],
-                'video_url' => ['nullable', 'string', 'url'],
-                'price' => 'required | numeric|lte:2147483647|not_in:0|gt:' . $discountPrice,
-                'discount_price' => 'required_with:have_discount|nullable|numeric|not_in:0|lt:' . $price,
-                'supplier' => ['required', 'in:gulf,saudi'],
-                'status' => 'required',
-                'is_new' => ['required'],
-                'show_in_home_page' => ['required', 'in:0,1'],
-                'kilometers' => ['required_if:is_new,0', 'numeric', 'nullable', 'min:0'],
-                'colors' => ['required', 'array', 'min:1'],
-                'city_id' => ['required'],
-                'fuel_tank_capacity' => 'required|string|max:255',
-                'car_body' => 'required|string',
-                'tags.*' => 'nullable',
-                // 'fuel_type'=>'required'
-                // 'possibilities'      => ['required','array','min:1'],
-
-                // 'car_Images'    => ['required','array','min:2','max:5'],
-            ]);
-        }
-
-
-        if ($car)
-        {
-
-            if (!$request['is_duplicate'])
-            {
-
+        // Perform validation
+        $request->validate($rules);
+    
+        
+        // Handle store or update based on whether a Car model is provided
+        if ($car) {
+        
+            if (!$request['is_duplicate']) {
                 $request['is_duplicate'] = 0;
-
-                $this->update($request, $car);
-            } else
-            {
-                !$request->hasFile('car_Images') ? $request['car_Images'] = $car['car_Images'] : null;
-                $this->store($request);
+            
+                return $this->update($request, $car); // Call update function
+            } else {
+                
+                return $this->store($request); // Call store function with modified data
+            
             }
+        } else {
+            // Call store function for a new car
+            return $this->store($request);
 
-        } else
-        {
-
-            $this->store($request);
         }
-
     }
+
 
     public function store(Request $request)
     {
+       
         $this->authorize('create_cars');
-        if (!$request['is_duplicate'])
-        {
-            $request->validate([
-                'car_Images' => ['required', 'array', 'max:15'],
-            ]);
-        } else
-        {
+      
+       
+        $features = $request->features ?? [];
+        $filteredFeatures= collect($features)->map(function($feature) {
+            return [
+                'feature_id' => $feature['id'] ?? null, 
+                'description_ar' => $feature['description_ar'] ?? null,
+                'description_en' => $feature['description_en'] ?? null,
+            ];
+            
+        })->toArray();
 
-        }
-        $isVendor = Auth::guard('vendor')->check();
-
-        $userPhone = Auth::user()->phone;
-
-
-        $isVendor = Auth::guard('vendor')->check();
-
-        $data                  = $request->except('car_Images', 'deleted_images', 'car_id', 'tags', 'colors', 'possibilities', 'features');
+        $data                  = $request->except('car_Image', 'deleted_images', 'car_id', 'tags', 'colors', 'features');
         $data['have_discount'] = $request['have_discount'] === "on";
-        // $data['price'] = $this->getPriceFieldValue( $data );
-        if ($request->file('car_Images'))
-        {
-            $images = $this->uploadCarImages($request->file('car_Images'));
-            // $data['images'] =  uploadImage( $request->file('images') , "Cars");
-        }
-
-        $data['video_url'] = $this->getYoutubeVideoId($request['video_url']);
-
-        //   $this->setCarName($data);
+        
         $car = Car::create($data);
-
-        $this->storeBrandCarsTypeCount($data['is_new'], $data['brand_id']);
-        $car->tags()->attach($request['tags'] ?? []);
-        $car->color()->attach($request['colors'] ?? []);
-        $car->possibilities()->attach($request['possibilities'] ?? []);
-        $car->features()->attach($request['features'] ?? []);
-
-
-        if ($request->file('car_Images'))
-        {
-            foreach ($images as $image)
-            {
-                $imageData = [
+        if ($request->hasFile('car_Image')) {
+            $image = uploadImage($request->file('car_Image'),"Cars");
+                CarImage::create([
                     'car_id' => $car->id,
                     'image' => $image,
-                ];
-                CarImage::create($imageData);
-            }
-            $car->main_image = $car->images[0]->image;
-            $car->save();
-
-        }
-        if ($request->is_duplicate)
-        {
-            $carold         = Car::find($request->car_id);
-            $oldImages      = $carold->images;
-            $imageNames     = [];
-            $deletedImages  = $deletedImages = json_decode(request()->deleted_images ?? "[]");
-            $countcarimages = count($oldImages);
-            if ($request->car_Images)
-            {
-                $newcarsimages = count($request->car_Images);
-
-            } else
-            {
-                $newcarsimages = 0;
-            }
-            $result = $countcarimages - count($deletedImages);
-
-            if ((count($deletedImages) == $countcarimages || ($countcarimages == 0 && $newcarsimages == 1)) || $countcarimages == 0)
-            {
-                $request->validate([
-                    'car_Images' => ['required', 'array', 'max:15', new ValidateMaxImages($carold, $deletedImages)],
-                    'car_Images.*' => 'image|mimes:jpeg,png,jpg,gif,webp,svg|max:2048', // Adjust allowed image types and size as neede
                 ]);
-
-            }
-            foreach ($oldImages as $imageEntry)
-            {
-                $imageNames[] = $imageEntry["image"];
-            }
-            $filteredImages = [];
-            foreach ($imageNames as $imageName)
-            {
-                if (!in_array($imageName, $deletedImages))
-                {
-                    $filteredImages[] = $imageName;
+                $car->main_image = $image??null;
+                $car->save();
+        }
+        
+         // Handle color-specific images
+         // Handle color-specific images
+        
+        if ($request->has('colors')) {
+            foreach ($request->input('colors') as $index => $color) {
+                $colorId = $color['id'];
+                if ($request->hasFile("colors.$index.images")) {
+                    $colorImages = $this->uploadCarImages($request->file("colors.$index.images"));
+                    foreach ($colorImages as $image) {
+                        $car->colors()->attach($colorId, ['image' => $image]);
+                    }
                 }
             }
-            $allnewfiles = [];
-            foreach ($filteredImages as $imageName)
-            {
-                $file         = getImagePathFromDirectory($imageName, 'Cars');
-                $fileContent  = file_get_contents($file);
-                $tempFilePath = tempnam(sys_get_temp_dir(), 'temp_file');
-                $rr           = file_put_contents($tempFilePath, $fileContent);
-
-                $uploadedFile              = UploadedFile::createFromBase(
-                    new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                        $tempFilePath,
-                        $imageName, // Use the original file name here
-                        mime_content_type($tempFilePath),
-                        null,
-                        true
-                    )
-                );
-                $allnewfiles['car_Images'] = $uploadedFile;
-
-                $originalName = $uploadedFile->getClientOriginalName(); // Get file Original Name
-
-                $imageData = [
-                    'car_id' => $car->id,
-                    'image' => $originalName,
-                ];
-                CarImage::create($imageData);
-            }
-            $car->main_image = $car->images[0]->image;
-            $car->save();
-            $images = $this->uploadCarImages($allnewfiles);
-
         }
-    }
-    public function update(Request $request, Car $car)
-    {
-        $this->authorize('update_cars');
-
-        $data                  = $request->except('car_Images', 'deleted_images', 'possibilities', 'features', 'car_id', 'tags', 'colors');
-        $data['have_discount'] = $request['have_discount'] === "on";
-
-        $deletedImages = json_decode(request()->deleted_images ?? "[]");
-        if ($request->car_Images)
-        {
-            $newcarsimages = count($request->car_Images);
-        }
-
-        $countcarimages = CarImage::where('car_id', $car->id)->count();
-        $request->validate([
-            'car_Images' => [new ValidateMaxImages($car, $deletedImages)],
-            'car_Images.*' => 'image|mimes:jpeg,png,jpg,gif,webp,svg|max:2048', // Adjust allowed image types and size as neede
-        ]);
-        $result = $countcarimages - count($deletedImages);
-        if ((count($deletedImages) == $countcarimages || ($countcarimages == 0 && $newcarsimages == 1)) || $countcarimages == 0)
-        {
-            $request->validate([
-                'car_Images' => ['required', 'array', 'max:15'],
-                'car_Images.*' => 'image|mimes:jpeg,png,jpg,gif,webp,svg|max:2048', // Adjust allowed image types and size as neede
-            ]);
-        }
-
+        
         $data['video_url'] = $this->getYoutubeVideoId($request['video_url']);
-
-        // $this->setCarName($data);
-
-        $carOldType    = $car['is_new'];
-        $carOldBrandId = $car['brand_id'];
-
-        $car->update($data);
-        CarImage::handleProductImages($car->id);
-        $car->tags()->sync($request['tags'] ?? []);
-        $car->color()->sync($request['colors'] ?? []);
-        $car->possibilities()->sync($request['possibilities'] ?? []);
-        $car->features()->sync($request['features'] ?? []);
-
-
-        if (isset($car->images[0]))
+        $this->storeBrandCarsTypeCount($data['is_new'], $data['brand_id']);
+        $car->tags()->attach($request['tags'] ?? []);
+        $car->features()->attach($filteredFeatures?? []);
+        if ($request->is_duplicate )
         {
-            $car->main_image = $car->images[0]->image;
-            $car->save();
-        } else
-        {
-            $car->main_image = "";
-            $car->save();
+           
+            $oldCar = Car::find($request->car_id);
+            if ($oldCar) {
+                $colorsWithUniqueImages = $oldCar->colors->groupBy('id')->map(function ($colors) {
+                    return [
+                        'color_id' => $colors->first()->id,
+                        'color_name' => $colors->first()->name,
+                        'hex_code' => $colors->first()->hex_code,
+                        'images' => $colors->unique('pivot.image')->pluck('pivot.image')->toArray(),
+                    ];
+                })->values()->toArray();
+    
+                $this->duplicateColorsWithImages($colorsWithUniqueImages, $car->id);
+                $this->handleDuplicateImage($request->car_id, $car);
+            }
+           
         }
-
-
-        if ($carOldBrandId == $data['brand_id'])
-        {
-            $this->updateBrandCarsTypeCount(action: 'update', oldCarType: $carOldType, currentBrandId: $data['brand_id'], newCarType: $data['is_new']);
-        } else
-            $this->updateBrandCarsTypeCount('update', $carOldType, $carOldBrandId, $data['brand_id'], newCarType: $data['is_new']);
-
+    
     }
+
+    /**
+     * Handle duplication of the single image.
+     */
+    private function handleDuplicateImage($oldCarId, $newCar)
+    {
+        $oldCar = Car::find($oldCarId);
+       
+        if ($oldCar && $oldCar->images->isNotEmpty()) {
+            $oldImage = $oldCar->images->first()->image;
+
+            // Generate a new name for the duplicate image
+            $extension = \File::extension($oldImage);
+            $originalName = pathinfo($oldImage, PATHINFO_FILENAME);
+            $newImageName = "webstdy_" . time() . "_{$originalName}_copy.{$extension}";
+
+            // Copy the old image to a new file in the same directory
+            $oldImagePath = storage_path("app/public/Images/Cars/{$oldImage}");
+            $newImagePath = storage_path("app/public/Images/Cars/{$newImageName}");
+            \File::copy($oldImagePath, $newImagePath);
+
+            CarImage::create([
+                'car_id' => $newCar->id,
+                'image' => $newImageName,
+            ]);
+
+            // Update main image for the new car
+            $newCar->main_image = $newImageName;
+            $newCar->save();
+            // $newCar->update(['main_image'=>$newImageName]);
+        }
+    }
+
+    private function duplicateColorsWithImages($colorsWithUniqueImages, $newCarId)
+    {
+        foreach ($colorsWithUniqueImages as $colorData) {
+            $colorId = $colorData['color_id'];
+            $colorImages = $colorData['images'];
+
+            foreach ($colorImages as $image) {
+                // Create a new image name for duplication
+                $extension = \File::extension($image);
+                $originalName = pathinfo($image, PATHINFO_FILENAME);
+                $newImageName = "{$newCarId}_" . time() . "_{$originalName}_copy.{$extension}";
+
+                // Copy the old image to a new file
+                $oldImagePath = storage_path("app/public/Images/Cars/{$image}");
+                $newImagePath = storage_path("app/public/Images/Cars/{$newImageName}");
+                \File::copy($oldImagePath, $newImagePath);
+
+                // Attach the color with the new image to the new car
+                CarColorImage::create([
+                    'car_id' => $newCarId,
+                    'color_id' => $colorId,
+                    'image' => $newImageName,
+                ]);
+            }
+        }
+    }
+
+  
+    public function update(Request $request, Car $car)
+{
+    $this->authorize('update_cars');
+
+    $data = $request->except('car_Images', 'deleted_images', 'features', 'car_id', 'tags', 'colors');
+    $data['have_discount'] = $request['have_discount'] === "on";
+    $data['is_duplicate'] = $request->input('is_duplicate', 0);
+   
+    // Process deleted images
+    $deletedImages = json_decode($request->input('deleted_images', "[]"));
+    if (!empty($deletedImages)) {
+        foreach ($deletedImages as $imageName) {
+            $carImage = CarImage::where('car_id', $car->id)->where('image', $imageName)->first();
+            if ($carImage) {
+                Storage::delete("Cars/{$imageName}");
+                $carImage->delete();
+            }
+
+            CarColorImage::where('car_id', $car->id)
+                ->where('image', $imageName)
+                ->delete();
+        }
+    }
+    // Handle color-specific images without syncing null values
+    if ($request->has('colors')) {
+        foreach ($request->input('colors') as $index => $colorData) {
+            $colorId = $colorData['id'];
+
+
+            if ($request->hasFile("colors.$index.images")) {
+                $colorImages = $this->uploadCarImages($request->file("colors.$index.images"));
+
+                foreach ($colorImages as $image) {
+                    if ($image !== null) {
+                        CarColorImage::updateOrCreate(
+                            ['car_id' => $car->id, 'color_id' => $colorId, 'image' => $image],
+                            ['updated_at' => now()]
+                        );
+                    }
+                }
+            }
+        }
+    }
+   
+    // Update main car data and relationships
+    $car->update($data);
+    $car->tags()->sync($request['tags'] ?? []);
+    $car->features()->sync($this->prepareFeatures($request->features ?? []));
+
+    // Set main image if there are images left
+    $car->main_image = $car->images()->first()?->image;
+    $car->save();
+
+    // Update brand statistics
+    $this->updateBrandCarsTypeCount(
+        action: 'update',
+        oldCarType: $car->is_new,
+        currentBrandId: $car->brand_id,
+        newCarType: $data['is_new']
+    );
+}
+
+// Helper function to prepare features array for sync
+private function prepareFeatures($features)
+{
+    return collect($features)->map(function ($feature) {
+        return [
+            'feature_id' => $feature['id'] ?? null,
+            'description_ar' => $feature['description_ar'] ?? null,
+            'description_en' => $feature['description_en'] ?? null,
+        ];
+    })->toArray();
+}
+
     public function show(Car $car)
     {
+      
         $car->load('color');
         $models             = CarModel::select('id', 'name_' . getLocale())->get();
         $brands             = Brand::select('id', 'name_' . getLocale())->get();
@@ -377,13 +389,14 @@ class CarController extends Controller
         $selectedtagsIds    = $car->tags->pluck('id')->toArray();
         $selectedcolorssIds = $car->color->pluck('id')->toArray();
 
-        $possibilities            = possibility::select('id', 'title')->get();
-        $selectedPossibilitiesIds = $car->possibilities->pluck('id')->toArray();
+        // $features            = Feature::select('id', 'title')->get();
+        $selectedFeaturesIds = $car->features->pluck('id')->toArray();
 
         $colors = Color::select('id', 'image', 'name_' . getLocale(), 'hex_code')->get();
 
         $relatedImages = $car->images;
-        return view('dashboard.cars.show', compact('possibilities', 'selectedPossibilitiesIds', 'brands', 'colors', 'car', 'models', 'cities', 'categories', 'relatedImages', 'tags', 'selectedtagsIds', 'selectedcolorssIds'));
+    
+        return view('dashboard.cars.show', compact( 'brands', 'colors', 'car', 'models', 'cities', 'categories', 'relatedImages', 'tags', 'selectedtagsIds', 'selectedcolorssIds'));
     }
     // private  function cleanColorsArray($colors , $oldCarColorImages)
     // {
@@ -433,14 +446,17 @@ class CarController extends Controller
 
     private function uploadCarImages($images)
     {
-        $imagesNames = [];
+        
+            $imagesNames = [];
 
-        foreach ($images as $index => $image)
-        {
-            $imagesNames[$index] = uploadImage($image, "Cars");
-        }
-
-        return $imagesNames;
+            foreach ($images as $index => $image)
+            {
+                
+                $imagesNames[$index] = uploadImage($image, "Cars");
+            }
+          
+            return $imagesNames;
+        
     }
 
     private function getPriceFieldValue($data): string
@@ -698,5 +714,46 @@ class CarController extends Controller
         // Return null if no match is found
 
     }
+
+  
+
+public function updateCarImages(Request $request, $carId)
+{
+    // Decode the arrays from the request
+    $deletedImages = json_decode($request->input('deleted_images', "[]"));
+    $updatedColorsImages = json_decode($request->input('updated_colors_images', "[]"), true);
+
+    
+    // Process deleted images
+    if (!empty($deletedImages)) {
+        foreach ($deletedImages as $imageName) {
+            // Delete from storage
+            
+            if (Storage::exists("Cars/{$imageName->image}")) {
+                Storage::delete("Cars/{$imageName->image}");
+            }
+
+            // Delete from database
+            CarColorImage::where('car_id', $carId)
+                         ->where('image', $imageName->image)
+                         ->delete();
+        }
+    }
+
+    // Process updated color images
+    foreach ($updatedColorsImages as $colorId => $colorData) {
+        $images = $colorData['images'] ?? [];
+        
+        // Sync images in the database for each color
+        foreach ($images as $image) {
+            CarColorImage::updateOrCreate(
+                ['car_id' => $carId, 'color_id' => $colorId, 'image' => $image],
+                ['updated_at' => now()]
+            );
+        }
+    }
+
+    return response()->json(['status' => 'success', 'message' => 'Images updated successfully']);
+}
 
 }

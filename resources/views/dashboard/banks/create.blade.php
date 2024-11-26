@@ -137,105 +137,11 @@
                             <p class="text-danger invalid-feedback" id="type"></p>
                         </div>
                         <!-- end   :: Column -->
-                        <!-- begin :: Column -->
-                        <div class="col-md-12 fv-row" id="acceptFromAnotherBank" style="display: none;">
-                            <div class="form-group row">
-                                <label class="col-3 col-form-label fs-5 fw-bold"><i
-                                        class="bi bi-dash-lg fs-8 mx-3"></i>{{ __('Accept clients from other banks') }}</label>
-                                <div class="col-8 col-form-label">
-                                    <div class="radio-inline  d-flex justify-content-start">
-                                        <div class="form-check form-check-custom form-check-solid mx-4">
-                                            <input class="form-check-input" type="radio" value="1"
-                                                name="accept_from_other_banks" id="accept_from_other_banks_yes"
-                                                wtx-context="6ABBB073-FB69-4058-8A50-6B4FFD240797">
-                                            <label class="form-check-label" for="accept_from_other_banks_yes">
-                                                {{ __('Yes') }}
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-check-custom form-check-solid mx-4">
-                                            <input class="form-check-input" type="radio" value="0"
-                                                name="accept_from_other_banks" id="accept_from_other_banks_no"
-                                                wtx-context="01DAA9FF-73CC-4456-8B56-E4272344A5D0">
-                                            <label class="form-check-label" for="accept_from_other_banks_no">
-                                                {{ __('No') }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-danger invalid-feedback" id="accept_from_other_banks"></p>
-                        </div>
-                        <!-- end   :: Column -->
+                       
 
 
                     </div>
-                    <div class="separator separator-content border-dark my-10"><span
-                            class="w-250px fw-bold">{{ __('Bank Actions With Sectors') }}</span></div>
-                    @foreach ($sectors as $sector)
-                        <span class="badge badge-info mb-9">{{ $sector->name }}</span>
-                        <!-- begin :: Row -->
-
-                        <div class="row mb-8">
-                            <!-- begin :: Column -->
-                            <div class="col-md-3 fv-row">
-                                <label class="fs-5 fw-bold mb-2">{{ __('Enter the benefit') }}%</label>
-                                <div class="form-floating">
-                                    <input style="direction: {{ isArabic() ? 'rtl' : '' }}" type="number"
-                                        min="0" value="0" class="form-control"
-                                        id="{{ $sector->slug }}_benefit" name="{{ $sector->slug }}[benefit]"
-                                        placeholder="example" />
-                                    <label for="_benefit">{{ __('Enter the benefit') }}</label>
-                                </div>
-                                <p class="invalid-feedback" id="{{ $sector->slug }}_benefit"></p>
-                            </div>
-                            <!-- end   :: Column -->
-
-                            <!-- begin :: Column -->
-                            <div class="col-md-3 fv-row">
-                                <label class="fs-5 fw-bold mb-2">{{ __('Transferred client profit') }}%</label>
-                                <div class="form-floating">
-                                    <input style="direction: {{ isArabic() ? 'rtl' : '' }}" type="number"
-                                        min="0" value="0" class="form-control"
-                                        id="{{ $sector->slug }}_transferred_benefit"
-                                        name="{{ $sector->slug }}[transferred_benefit]" placeholder="example" />
-                                    <label
-                                        for="_transferred_benefit">{{ __('Enter the transferred client profit') }}</label>
-                                </div>
-                                <p class="invalid-feedback" id="{{ $sector->slug }}_transferred_benefit"></p>
-                            </div>
-                            <!-- end   :: Column -->
-
-                            <!-- begin :: Column -->
-                            <div class="col-md-3 fv-row">
-                                <label class="fs-5 fw-bold mb-2">{{ __('Support') }}%</label>
-                                <div class="form-floating">
-                                    <input style="direction: {{ isArabic() ? 'rtl' : '' }}" type="number"
-                                        value="0" class="form-control" id="{{ $sector->slug }}_support_inp"
-                                        name="{{ $sector->slug }}[support]" placeholder="example" />
-                                    <label for="support_inp">{{ __('Enter the support') }}</label>
-                                </div>
-                                <p class="invalid-feedback" id="{{ $sector->slug }}_support"></p>
-                            </div>
-                            <!-- end :: Column -->
-
-                            <!-- begin :: Column -->
-                            <div class="col-md-3 fv-row">
-                                <label class="fs-5 fw-bold mb-2">{{ __('administrative fees') }} %</label>
-                                <div class="form-floating">
-                                    <input style="direction: {{ isArabic() ? 'rtl' : '' }}" type="number"
-                                        value="0" class="form-control"
-                                        id="{{ $sector->slug }}_administrative_fees_inp"
-                                        name="{{ $sector->slug }}[administrative_fees]" placeholder="example" />
-                                    <label for="installment_inp">{{ __('Enter the administrative fees') }}</label>
-                                </div>
-                                <p class="invalid-feedback" id="{{ $sector->slug }}_administrative_fees"></p>
-                            </div>
-                            <!-- end   :: Column -->
-                        </div>
-                        <!-- end   :: Row -->
-                    @endforeach
-
-                </div>
+                  
                 <!-- end   :: Inputs wrapper -->
 
                 <!-- begin :: Form footer -->

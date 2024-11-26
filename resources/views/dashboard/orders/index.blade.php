@@ -104,11 +104,11 @@
                         <th>{{ __('name') }}</th>
                         <th>{{ __('phone') }}</th>
                         <th>{{ __('price') }}</th>
+                        <th>{{ __('type') }}</th>
                         <th>{{ __('status') }}</th>
                         <th>{{ __('created date') }}</th>
                         <th>{{ __('opened by') }}</th>
                         <th>{{ __('opened at') }}</th>
-
                         <th class="min-w-100px">{{ __('actions') }}</th>
 
                     </tr>
@@ -158,7 +158,7 @@
 
 
 
-        $('li[data-range-key="Custom Range"]').html(translate('Custom Range')) // translate 'Custom Range'
+        $('li[data-range-key="Custom Range"]').html(__('Custom Range')) // translate 'Custom Range'
     </script>
 
 

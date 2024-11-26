@@ -76,41 +76,10 @@
                                     <!-- begin :: Column -->
                                     <div class="col-md-12 fv-row d-flex justify-content-evenly">
 
-                                        <!--begin::Input group-->
-                                        {{-- <div class="fv-row">
-
-                                            <div class="dropzone" id="dropzone_input">
-
-                                                <div class="dz-message needsclick">
-                                                    <i class="bi-file-earmark-arrow-up fs-3x text-primary"><span
-                                                            class="path1"></span><span class="path2"></span></i>
-
-                                                    <!--begin::Info-->
-                                                    <div class="ms-4">
-                                                        <h3 class="fs-5 fw-bold text-gray-900 mb-1">
-                                                            {{ __('Drop files here or click to upload') }}
-                                                        </h3>
-                                                        <span
-                                                            class="fs-7 fw-semibold text-gray-500">{{ __('Upload up to 15 files') }}</span>
-                                                    </div>
-                                                    <!--end::Info-->
-                                                </div>
-                                                <input class="d-none" type="file" id="images_input" name="car_Images[]"
-                                                    multiple>
-                                                <input class="d-none" type="text" id="deleted_images"
-                                                    name="deleted_images" value="[]">
-
-                                           
-                                                </div>
-
-                                            <!--end::Dropzone-->
-                                            <div class="fv-plugins-message-container invalid-feedback" id="car_Images">
-                                            </div>
-
-                                        </div> --}}
+                                     
                                        
                                          <!-- begin :: Row -->
-                                    <div class="row mb-10">
+                                     <div class="row mb-10">
                                         <label class="text-center fw-bold mb-4">{{ __('Image') }}</label>
                                         <div class="col-md-12 fv-row d-flex justify-content-evenly">
                                            <x-dashboard.upload-image-inp name="car_Image" :image="$car->main_image" directory="Cars" 
@@ -733,53 +702,6 @@
 
                                     </div>
                                     <!-- end   :: Wizard Step 2 -->
-                                         {{-- <!-- begin :: Row -->
-                                               <!--begin::Repeater-->
-                                               <div id="kt_docs_repeater_colors">
-                                                <div class="form-group">
-                                                    <div data-repeater-list="colors">
-                                                        <div data-repeater-item>
-                                                            <div class="form-group row align-items-center">
-                                                                <div class="col-md-10">  
-                                                                    <div class="row align-items-center">
-                                                                        <div class="col-md-6 ">
-                                                                            <label class="form-label" id="colors_0_image_inp">{{ __('Upload Image') }}</label>
-                                                                            <input type="file" multiple class="form-control mb-2 mb-md-0" id="colors_0_images_inp" name="colors[0][images][]" required />
-                                                                            <div class="text-danger m-0 invalid-feedback" id="colors_0_images"></div>
-                                                                        </div>
-                                                                        <div class="col-md-6 ">
-                                                                            <label class=" fs-5 fw-bold mb-2">{{ __('Colors') }}</label>
-                                                                            <select class="form-select select-type" name="colors[0][color]" id="colors_0_color_inp" required>    
-                                                                            <option value="" selected>{{__('choose color')}}</option>
-                                                                                @foreach ($colorsWithUniqueImages as $color)
-                                                                                <option value="{{ $color['color_id'] }}">{{ $color['color_name'] }}</option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                            <p class="invalid-feedback" id="colors_0_color"></p>
-                                                                        </div>
-                                                                    </div>   
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="text-center">
-                                                                        <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3">
-                                                                            <i class="far fa-trash-alt"></i>{{__('Delete')}}
-                                                                        </a>
-                                                                    </div> 
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group mt-5">
-                                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
-                                                        <i class="fa fa-plus"></i> {{__('Add')}}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            
-                                        
-                                            <!--end::Repeater-->
-                                            <!--end::Row--> --}}
                                               <!-- begin  :: Row -->
                                           <div class="row mt-5">
                                             <hr>
@@ -945,10 +867,6 @@
             // Initialize Repeater before Dropzone
             initializeRepeater();
             
-            // Initialize Dropzone after Repeater is set up
-            // initializeDropzone();
-
-            // Other document.ready functions here
         });
 
         // Function to initialize the Repeater component
@@ -1033,72 +951,6 @@
             }
         }
 
-        // Function to initialize Dropzone
-        // function initializeDropzone() {
-        //     Dropzone.autoDiscover = false;
-        //     let dropzoneInput = new Dropzone("#dropzone_input", {
-        //         url: "/dashboard/cars/{{ $car->id }}/upload",
-        //         method: "POST",
-        //         paramName: "car_Images[]",
-        //         maxFilesize: 5,
-        //         maxFiles: 15,
-        //         acceptedFiles: "image/*",
-        //         addRemoveLinks: true,
-        //         autoProcessQueue: true,
-        //         dictDefaultMessage: "{{ __('Drop files here or click to upload') }}",
-        //         dictRemoveFile: "{{ __('Remove') }}",
-        //         init: function() {
-        //             let dropzone = this;
-        //             setDropzoneImages(dropzone);
-        //             dropzone.on("removedfile", function(file) {
-        //                 if (file.is_stored_before) {
-        //                     $.ajax({
-        //                         url: "/dashboard/cars/{{ $car->id }}/delete-image",
-        //                         method: "POST",
-        //                         headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
-        //                         data: { image: file.name },
-        //                         success: function(response) { console.log("File deleted:", response); },
-        //                         error: function(xhr) { console.error("Failed to delete file:", xhr.responseText); }
-        //                     });
-        //                 }
-        //             });
-        //         },
-        //         success: function(file, response) {
-        //             console.log("File uploaded successfully:", response);
-        //         },
-        //         error: function(file, errorMessage) {
-        //             console.error("Upload error:", errorMessage);
-        //         }
-        //     });
-        // }
-
-        // function setDropzoneImages(dropzone) {
-        //     $.ajax({
-        //         url: "/dashboard/cars/{{ $car->id }}/images",
-        //         type: "GET",
-        //         dataType: "json",
-        //         success: function(data) {
-        //             $.each(data, function(key, value) {
-        //                 var file = {
-        //                     name: value.image,
-        //                     size: value.size,
-        //                     type: "image/jpeg",
-        //                     status: "success",
-        //                     url: value.path,
-        //                     is_stored_before: true
-        //                 };
-        //                 dropzone.options.addedfile.call(dropzone, file);
-        //                 dropzone.options.thumbnail.call(dropzone, file, value.path);
-        //                 dropzone.emit("complete", file);
-
-        //                 $(".dz-image > img").css({ width: "100%", height: "100%" });
-        //             });
-        //         },
-        //         error: function(xhr) {
-        //             console.error("Error loading images:", xhr.responseText);
-        //         }
-        //     });
-        // }
 
 
     </script>

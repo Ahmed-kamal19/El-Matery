@@ -85,7 +85,7 @@
                                         <label class="text-center fw-bold mb-4">{{ __('Image') }}</label>
                                         <div class="col-md-12 fv-row d-flex justify-content-evenly">
                                            <x-dashboard.upload-image-inp name="car_Image" :image="$car->main_image" directory="Cars" 
-                                               placeholder="default.jpg" type="editable"></x-dashboard.upload-image-inp>
+                                               placeholder="default.jpg" type="show"  ></x-dashboard.upload-image-inp>
                                                
                                            </div>
                                            <p class="fv-plugins-message-container invalid-feedback text-center mt-2" id="car_Image"></p>
@@ -110,7 +110,7 @@
                                             <label class="fs-5 fw-bold mb-2">{{ __('Brand') }}</label>
                                             <select class="form-select" data-control="select2" name="brand_id"
                                                 id="brand-sp" data-placeholder="{{ __('Choose the brand') }}"
-                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" disabled>
                                                 <option value="" selected></option>
                                                 @foreach ($brands as $brand)
                                                     <option value="{{ $brand->id }}"
@@ -132,7 +132,7 @@
                                             <label class="fs-5 fw-bold mb-2">{{ __('Model') }}</label>
                                             <select class="form-select "  data-control="select2" name="model_id"
                                                 id="model-sp" data-placeholder="{{ __('Choose the model') }}"
-                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" disabled>
                                                 <option value="" selected></option>
                                                 @if (isset($models))
                                                     @foreach ($models as $model)
@@ -149,7 +149,7 @@
                                             <label class="fs-5 fw-bold mb-2">{{ __('city data') }}</label>
                                             <select class="form-select" data-control="select2" name="city_id" id="city-sp"
                                                 data-placeholder="{{ __('Choose the city') }}"
-                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" disabled>
                                                 <option value="" selected></option>
                                                 @foreach ($cities as $city)
                                                     <option value="{{ $city->id }}"
@@ -172,7 +172,7 @@
                                              <label class="fs-5 fw-bold mb-2">{{ __('Category') }}</label>
                                             <select class="form-select" data-control="select2" name="category_id"
                                                 id="category-sp" data-placeholder="{{ __('Choose the category') }}"
-                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" disabled>
                                                 <option value="" selected></option>
                                                 @if (isset($categories))
                                                     @foreach ($categories as $category)
@@ -193,7 +193,7 @@
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" id="name_ar_inp"
                                                     name="name_ar" value="{{ $car['name_ar'] }}"
-                                                    placeholder="example" />
+                                                    placeholder="example" readonly />
                                                 <label
                                                     for="card_description_ar_inp">{{ __('Car name in arabic') }}</label>
                                             </div>
@@ -210,7 +210,7 @@
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" id="card_description_en_inp"
                                                     name="name_en" value="{{ $car['name_en'] }}"
-                                                    placeholder="example" />
+                                                    placeholder="example"  readonly/>
                                                 <label
                                                     for="card_description_en_inp">{{ __('Car name in english') }}</label>
                                             </div>
@@ -227,7 +227,7 @@
 
                                             <select class="form-select" data-control="select2" name="year"
                                                 data-placeholder="{{ __('Choose the year') }}"
-                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" disabled>
                                                 @for ($year = Date('Y') + 1; $year >= 1800; $year--)
                                                     <option value="{{ $year }}"
                                                         {{ $year === $car['year'] ? 'selected' : '' }}>
@@ -253,7 +253,7 @@
 
                                             <select class="form-select" data-control="select2" name="fuel_type"
                                                 data-placeholder="{{ __('Choose the fuel') }}"
-                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+                                                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" disabled>
                                                 <option value="gasoline"
                                                     {{ $car['fuel_type'] == 'gasoline' ? 'selected' : '' }}>
                                                     {{ __('gasoline') }}</option>
@@ -279,7 +279,7 @@
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" id="video_url_inp"
                                                     name="video_url" value="{{ $fullYoutubeUrl }}"
-                                                    placeholder="example" />
+                                                    placeholder="example" readonly />
                                                 <label for="video_url_inp">{{ __('Enter the video url') }}</label>
                                             </div>
 
@@ -294,7 +294,7 @@
                                             <label class="fs-5 fw-bold mb-2">{{ __('Price') }}</label>
                                             <div class="form-floating">
                                                 <input type="number" min="1" class="form-control" id="price_inp"
-                                                    name="price" value="{{ $car['price'] }}" placeholder="example" />
+                                                    name="price" value="{{ $car['price'] }}" placeholder="example" readonly/>
                                                 <label for="price_inp">{{ __('Enter the price') }}</label>
                                             </div>
                                             <p class="invalid-feedback" id="price"></p>
@@ -311,7 +311,7 @@
                                                 <input class="form-check-input mx-2" style="height: 18px;width:36px;"
                                                     type="checkbox" name="have_discount"
                                                     {{ $car['have_discount'] ? 'checked' : '' }}
-                                                    id="discount-price-switch" />
+                                                    id="discount-price-switch" disabled/>
                                                 <label class="form-check-label" for="flexSwitchChecked"></label>
                                             </div>
 
@@ -319,7 +319,7 @@
                                                 <input type="number" min="1" class="form-control"
                                                     id="discount_price_inp" name="discount_price"
                                                     value="{{ $car['discount_price'] }}"
-                                                    {{ $car['have_discount'] ? '' : 'disabled' }} placeholder="example" />
+                                                    {{ $car['have_discount'] ? '' : 'disabled' }} placeholder="example" disabled/>
                                                 <label
                                                     for="discount_price_inp">{{ __('Enter the discount price') }}</label>
                                             </div>
@@ -344,7 +344,7 @@
                                                 <div class="form-floating">
                                                     <input type="number" min="30" class="form-control"
                                                         id="fuel_tank_capacity_inp" name="fuel_tank_capacity"
-                                                        value="{{ $car['fuel_tank_capacity'] }}" placeholder="example" />
+                                                        value="{{ $car['fuel_tank_capacity'] }}" placeholder="example" readonly/>
                                                     <label
                                                         for="fuel_tank_capacity_inp">{{ __('Enter the fuel tank capactiy in liters') }}</label>
                                                 </div>
@@ -354,7 +354,7 @@
                                                 <label class="fs-5 fw-bold mb-2">{{ __('status') }}</label>
                                                 <select class="form-select" name="status" id="status-sp"
                                                     data-placeholder="{{ __('Choose the status') }}"
-                                                    data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+                                                    data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" disabled>
                                                     <option value=""></option>
                                                     @foreach (App\Enums\CarStatus::values() as $key => $value)
                                                         <option value="{{ $key }}"
@@ -373,7 +373,7 @@
                                                 <select class="form-select" data-control="select2" name="tags[]"
                                                     multiple id="tags-sp"
                                                     data-placeholder="{{ __('Choose the tags') }}"
-                                                    data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+                                                    data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" disabled>
                                                     @foreach ($tags as $tag)
                                                         <option @if (in_array($tag->id, $selectedtagsIds)) selected @endif
                                                             value="{{ $tag['id'] }}">
@@ -402,7 +402,7 @@
                                         <!-- begin :: Column -->
                                         <div class="col-md-6 fv-row">
                                             <label class="fs-5 fw-bold mb-2">{{ __('Description in arabic') }}</label>
-                                            <textarea class="form-control" rows="4" id="tinymce_description_ar" name="description_ar">{!! $car['description_ar'] !!}</textarea>
+                                            <textarea class="form-control" rows="4" id="tinymce_description_ar" name="description_ar" readonly>{!! $car['description_ar'] !!}</textarea>
                                             <p class="text-danger invalid-feedback" id="description_ar"></p>
 
 
@@ -415,7 +415,7 @@
                                         <div class="col-md-6 fv-row">
 
                                             <label class="fs-5 fw-bold mb-2">{{ __('Description in english') }}</label>
-                                            <textarea class="form-control" rows="4" id="tinymce_description_en" name="description_en">{!! $car['description_en'] !!}</textarea>
+                                            <textarea class="form-control" rows="4" id="tinymce_description_en" name="description_en" readonly>{!! $car['description_en'] !!}</textarea>
                                             <p class="text-danger error-element" id="description_en"></p>
 
 
@@ -441,14 +441,17 @@
                                                     'value' => 'gulf',
                                                     'id' => 'supplier_gulf',
                                                     'checked' => $car['supplier'] == 'gulf',
+                                                    'disabled'=>true
+
                                                 ],
                                                 [
                                                     'label' => 'Saudi',
                                                     'value' => 'saudi',
                                                     'id' => 'supplier_saudi',
                                                     'checked' => $car['supplier'] == 'saudi',
+                                                    'disabled'=>true
                                                 ],
-                                            ]" />
+                                            ]"  />
 
 
                                         </div>
@@ -472,30 +475,35 @@
                                                     'value' => 'hatchback',
                                                     'id' => 'car_style_1',
                                                     'checked' => $car['car_body'] == 'hatchback',
+                                                    'disabled'=>true
                                                 ],
                                                 [
                                                     'label' => 'sedan',
                                                     'value' => 'sedan',
                                                     'id' => 'car_style_2',
                                                     'checked' => $car['car_body'] == 'sedan',
+                                                    'disabled'=>true
                                                 ],
                                                 [
                                                     'label' => '4x4',
                                                     'value' => 'four-wheel-drive',
                                                     'id' => 'car_style_3',
                                                     'checked' => $car['car_body'] == 'four-wheel-drive',
+                                                    'disabled'=>true
                                                 ],
                                                 [
                                                     'label' => 'family',
                                                     'value' => 'family',
                                                     'id' => 'car_style_4',
                                                     'checked' => $car['car_body'] == 'family',
+                                                    'disabled'=>true
                                                 ],
                                                 [
                                                     'label' => 'commercial',
                                                     'value' => 'commercial',
                                                     'id' => 'car_style_5',
                                                     'checked' => $car['car_body'] == 'commercial',
+                                                    'disabled'=>true
                                                 ],
                                             ]" />
 
@@ -519,12 +527,14 @@
                                                     'value' => '1',
                                                     'id' => 'publish_yes',
                                                     'checked' => $car['publish'] == '1',
+                                                    'disabled'=>true
                                                 ],
                                                 [
                                                     'label' => 'No',
                                                     'value' => '0',
                                                     'id' => 'publish_no',
                                                     'checked' => $car['publish'] == '0',
+                                                    'disabled'=>true
                                                 ],
                                             ]" />
 
@@ -550,12 +560,14 @@
                                                         'value' => '1',
                                                         'id' => 'is_new_used_radio_1',
                                                         'checked' => $car['is_new'] == '1',
+                                                        'disabled'=>true
                                                     ],
                                                     [
                                                         'label' => 'Used',
                                                         'value' => '0',
                                                         'id' => 'is_new_used_radio_2',
                                                         'checked' => $car['is_new'] == '0',
+                                                        'disabled'=>true
                                                     ],
                                                 ]" />
 
@@ -600,12 +612,14 @@
                                                         'value' => '1',
                                                         'id' => 'show_in_home_page_yes',
                                                         'checked' => $car['show_in_home_page'] == '1',
+                                                        'disabled'=>true
                                                     ],
                                                     [
                                                         'label' => 'No',
                                                         'value' => '0',
                                                         'id' => 'show_in_home_page_no',
                                                         'checked' => $car['show_in_home_page'] == '0',
+                                                        'disabled'=>true 
                                                     ],
                                                 ]" />
 
@@ -629,12 +643,14 @@
                                                         'value' => 'manual',
                                                         'id' => 'gear_shifter_manual',
                                                         'checked' => $car['gear_shifter'] == 'manual',
+                                                        'disabled'=>true
                                                     ],
                                                     [
                                                         'label' => 'automatic',
                                                         'value' => 'automatic',
                                                         'id' => 'gear_shifter_automatic',
                                                         'checked' => $car['gear_shifter'] == 'automatic',
+                                                        'disabled'=>true
                                                     ],
                                                 ]" />
 

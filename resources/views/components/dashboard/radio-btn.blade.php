@@ -7,7 +7,7 @@
                     <input class="form-check-input" type="radio" value="{{ $radioBtn['value'] }}"
                         name="{{ $name }}" id="{{ $radioBtn['id'] }}"
                         @if ($radioBtn['checked']) checked @endif
-                        @if (isset($radioBtn['disabled'])) disabled @endif />
+                        @if (isset($radioBtn['disabled'])) disabled @endif/>
                     <label class="form-check-label" for="{{ $radioBtn['id'] }}">
                         {{ __($radioBtn['label']) }}
                     </label>

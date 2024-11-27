@@ -127,7 +127,7 @@
                 @if (!session()->has('errors'))
                     <div id="loading-page" class="loader-page">
                         <div class="d-flex flex-column align-items-center main">
-                            <img class="animated-image" src="{{ asset('fav.svg') }}" alt="">
+                            <img class="animated-image" src="{{ asset('fav.png') }}" alt="">
                         </div>
                     </div>
                 @endif

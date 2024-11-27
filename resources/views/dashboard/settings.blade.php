@@ -142,20 +142,6 @@
 
                 </div>
                 <!-- End   :: Input group -->
-                <div class="fv-row row mb-15">
-
-                    <!-- Begin :: Col -->
-                    <div class="col-md-12
-                    ">
-                        <label class="form-label">{{ __('video aboutus (Youtube)') }}</label>
-                        <input type="text" class="form-control" name="about_us_video"
-                            value="{{ $fullYoutubeUrl ?? '' }}" id="about_us_video_inp"
-                            placeholder="{{ __('Enter the about us video url') }}">
-                        <p class="invalid-feedback" id="about_us_video"></p>
-
-                    </div>
-                    <!-- End   :: Col -->
-                </div>
                 <!-- Begin :: Input group -->
                 <div class="fv-row row mb-15">
 

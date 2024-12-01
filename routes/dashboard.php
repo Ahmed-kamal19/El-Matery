@@ -31,6 +31,8 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
 
     // Route::get('/orders_not_approval', [OrderController::class, 'orders_not_approval'])->name('orders.orders_not_approval');
     Route::get('features','FeatureController@index');
+    Route::get('brands','BrandController@index');
+    Route::get('models','CarModelController@index');
     /** resources routes **/
     /** ajax for features and it can't be after features resource route */
     Route::get('/features/get-options',[FeatureController::class,'getOptions']); //  add car features and possibilities 

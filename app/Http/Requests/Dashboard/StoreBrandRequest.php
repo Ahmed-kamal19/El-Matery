@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Brand;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,7 +26,7 @@ class StoreBrandRequest extends FormRequest
     public function rules()
     {
         return [
-            'name_ar' => ['required','string','unique:brands',new NotNumbersOnly()],
+            'name_ar' => ['required','string','unique:brands',new NotNumbersOnly(),new ExistButDeleted(new Brand())],
             'name_en' => ['required','string','unique:brands',new NotNumbersOnly()],
             'meta_keyword_ar' => 'nullable|string|max:255' ,
             'meta_keyword_en' => 'nullable|string|max:255' ,

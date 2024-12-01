@@ -709,7 +709,7 @@
   "Purchase Order text in home page in arabic": "نص قسم طلب شراء في الصفحة الرئيسية بالعربية",
   "Purchase Order text in home page in english": "نص قسم طلب شراء في الصفحة الرئيسية بالانجليزية",
   "Why choose": "لماذا تختار",
-  "Qitaf": "قطاف للسيارات للسيارات",
+  "Almutairi": "ناصر مطر المطيري للسيارات",
   "who Qitaf car section photo": "صورة قسم من هم قطاف للسيارات",
   "footer text in arabic": "نص التذييلة بالعربية",
   "footer text in english": "نص التذييلة بالانجليزية",
@@ -1214,7 +1214,9 @@
   " with the same " : " بنفس " ,
   " but in the trash " : " ولكن في سلة المهملات ",
   "do you want to restore ?" : " هل تريد الاسترجاع؟ ",
-  "No data":" لايوجد بيانات "
+  "No data":" لايوجد بيانات ",
+  "brand":"علامة تجارية",
+  "carmodel":"موديل السيارة"
 
   
 

@@ -43,10 +43,22 @@ class TrashController extends Controller
         
         $model = app('App\\Models\\' . $modelName);
         $resultRestore=$model->onlyTrashed()->find($id)->restore();
+        if($modelName == "CarModel" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.models.index');
+
+        }
         if($modelName == "Feature" && $resultRestore)
         {
             
             return redirect()->route('dashboard.features.index');
+
+        }
+        if($modelName == "Brand" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.brands.index');
 
         }
         if($modelName == 'Car')

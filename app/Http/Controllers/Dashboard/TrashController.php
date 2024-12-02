@@ -49,19 +49,37 @@ class TrashController extends Controller
             return redirect()->route('dashboard.models.index');
 
         }
-        if($modelName == "Feature" && $resultRestore)
+        else if($modelName == "Category" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.categories.index');
+
+        }
+        else if($modelName == "Feature" && $resultRestore)
         {
             
             return redirect()->route('dashboard.features.index');
 
         }
-        if($modelName == "Brand" && $resultRestore)
+        else if($modelName == "Brand" && $resultRestore)
         {
             
             return redirect()->route('dashboard.brands.index');
 
         }
-        if($modelName == 'Car')
+        else if($modelName == "City" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.cities.index');
+
+        }
+        else if($modelName == "Color" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.colors.index');
+
+        }
+        else if($modelName == 'Car')
         {
             $car = $model->find($id);
             ( new CarController)->storeBrandCarsTypeCount($car['is_new'], $car['brand_id']);

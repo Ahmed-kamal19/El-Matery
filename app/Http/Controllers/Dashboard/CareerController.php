@@ -12,21 +12,52 @@ use Illuminate\Http\Request;
 
 class CareerController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     $this->authorize('view_careers');
+       
+    //     if ($request->ajax()) {
+           
+    //         $data = getModelData(model: new Career(),relations: ['city' => ['id', 'name_' . getLocale()]]);
+
+    //         return response()->json($data);
+    //     }
+
+    //     $cities = City::get();
+
+
+    //     return view('dashboard.careers.index', compact('cities'));
+    // }
     public function index(Request $request)
     {
         $this->authorize('view_careers');
 
         if ($request->ajax()) {
-            $data = getModelData(model: new Career(), relations: ['city' => ['id', 'name_' . getLocale()]]);
+            $orsFilters = [];
+
+            // Add filters based on request input
+            if ($request->has('city') && $request->city !== 'all') {
+                $orsFilters[] = ['city_id', '=', $request->city]; // Assuming 'city_id' is the column name
+            }
+            if ($request->has('status') && $request->status !== 'all') {
+                $orsFilters[] = ['status', '=', $request->status]; // Assuming 'status' is the column name
+            }
+
+            // Call the getModelData function with the filters
+            $data = getModelData(
+                model: new Career(),
+                orsFilters: $orsFilters,
+                relations: ['city' => ['id', 'name_' . getLocale()]]
+            );
 
             return response()->json($data);
         }
 
-        $cities = City::get();
-
+        $cities = City::all();
 
         return view('dashboard.careers.index', compact('cities'));
     }
+
 
     public function applicants(Request $request)
     {

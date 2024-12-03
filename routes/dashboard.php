@@ -42,7 +42,6 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
 
     Route::resource('orders', 'OrderController');
     Route::resource('questions', 'QuestionController');
-    Route::resource('partners', 'PartnerController');
     Route::resource('roles', 'RoleController');
     Route::resource('brands', 'BrandController');
     Route::resource('models', 'ModelController');

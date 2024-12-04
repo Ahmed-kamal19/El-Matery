@@ -61,7 +61,7 @@
                         readonly placeholder="{{ __('Choose the date') }}" data-filter-index="6" />
 
                     <select class="form-select form-select-solid border-gray-300 border-1 filter-datatable-inp"
-                        data-filter-index="5" data-control="select2" data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}"
+                        data-filter-index="4" data-control="select2" data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}"
                         data-placeholder="{{ __('Choose the status') }}">
                         <option value=""></option>
                         <option value="all" selected>{{ __('All') }}</option>

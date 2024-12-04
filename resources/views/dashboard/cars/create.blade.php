@@ -203,7 +203,7 @@
                                                     data-placeholder="{{ __('Choose the year') }}"
                                                     data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
                                                     <option value="" selected></option>
-                                                    @for ($year = Date('Y') + 1; $year >= 1800; $year--)
+                                                    @for ($year = Date('Y') + 1; $year >= 2000; $year--)
                                                         <option value="{{ $year }}"> {{ $year }}
                                                         </option>
                                                     @endfor
@@ -685,7 +685,7 @@
 
                                                                 <div class="col-md-2">
                                                                     <div class="text-center">
-                                                                        <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3">
+                                                                        <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3" id="features_0_delete_btn">
                                                                             <i class="far fa-trash-alt"></i>{{__('Delete')}}
                                                                             
                                                                         </a>
@@ -759,28 +759,29 @@
     @push('scripts')
     
     <script>
-
+       
         $(document).ready(function() {
             $('div[data-repeater-item]:first input , select').on('change', function () {
-
-            var element = $(this);
-            // If the input/select has a value, it's valid
-            if (element.val()) {
-                element.removeClass('is-invalid').addClass('is-valid');
-                element.siblings('.invalid-feedback').hide(); // Hide error message if any
-            } else {
-                element.removeClass('is-valid').addClass('is-invalid');
-                element.siblings('.invalid-feedback').show(); // Show error message if any
-
-            }
+               
+                var element = $(this);
+                // If the input/select has a value, it's valid
+                if (element.val()) {
+                    element.removeClass('is-invalid').addClass('is-valid');
+                    element.siblings('.invalid-feedback').hide(); // Hide error message if any
+                } else {
+                    element.removeClass('is-valid').addClass('is-invalid');
+                    element.siblings('.invalid-feedback').show(); // Show error message if any
+                    
+                }
             });
+       
             $('#kt_docs_repeater_features').repeater({
+            
             initEmpty: false,
             defaultValues: {
                 'text-input': 'foo'
             },
             show: function() {
-            
                 $(this).slideDown();
                 // console.log( this)
                 updateRepeaterIndex();
@@ -794,8 +795,8 @@
             }
         
         });
+        document.getElementById('features_0_delete_btn').style.display = 'none'; // Hide delete button for the first item
 
-    
         $(document).on('change', '.select-type', function() {
             var selectedType = $(this).val();
             var $currentOptionsSelect = $(this).closest('[data-repeater-item]').find('.select-options');
@@ -833,7 +834,7 @@
     function updateRepeaterIndex() {
         
         $('#kt_docs_repeater_features [data-repeater-item]').each(function (index) {
-            $(this).find('input, select').each(function () {
+            $(this).find('input, select ,a').each(function () {
                 var name = $(this).attr('name');
                 var id = $(this).attr('id');
             

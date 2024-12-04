@@ -216,7 +216,7 @@
                     </div>
                     <!-- end   :: Row -->
 
-                    <!-- begin :: Row -->
+                    {{-- <!-- begin :: Row -->
                     <div class="row mb-8">
 
                         <!-- begin :: Column -->
@@ -241,7 +241,7 @@
                         <!-- end   :: Column -->
 
                     </div>
-                    <!-- end   :: Row -->
+                    <!-- end   :: Row --> --}}
 
                 </div>
                 <!-- end   :: Inputs wrapper -->
@@ -272,12 +272,12 @@
     </div>
 @endsection
 @push('scripts')
-    <script>
+    {{-- <script>
         let lat = 24.7136;
         let lng = 46.6753;
     </script>
-    <script src="{{ asset('js/map_create.js') }}"></script>
-    <script
+    <script src="{{ asset('js/map_create.js') }}"></script> --}}
+    {{-- <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDu4T0sSqqn87uvqXHcUbbWpxt4NVyBW6w&callback=myMap&&language=ar&region=EGasync defer">
-    </script>
+    </script> --}}
 @endpush

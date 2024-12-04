@@ -5,13 +5,13 @@
 
 <head>
     <base href="../../../">
-    <title>{{ __('Qitaf - Dashboard') }}</title>
+    <title>{{ __('Almutairi - Dashboard') }}</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
-    <link rel="shortcut icon" href="{{ asset('favicon.png') }}" />
+    <link rel="shortcut icon" href="{{ asset('fav.png') }}" />
 
     <!--begin::Fonts-->
     @if (isArabic())

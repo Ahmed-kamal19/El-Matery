@@ -43,13 +43,43 @@ class TrashController extends Controller
         
         $model = app('App\\Models\\' . $modelName);
         $resultRestore=$model->onlyTrashed()->find($id)->restore();
-        if($modelName == "Feature" && $resultRestore)
+        if($modelName == "CarModel" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.models.index');
+
+        }
+        else if($modelName == "Category" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.categories.index');
+
+        }
+        else if($modelName == "Feature" && $resultRestore)
         {
             
             return redirect()->route('dashboard.features.index');
 
         }
-        if($modelName == 'Car')
+        else if($modelName == "Brand" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.brands.index');
+
+        }
+        else if($modelName == "City" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.cities.index');
+
+        }
+        else if($modelName == "Color" && $resultRestore)
+        {
+            
+            return redirect()->route('dashboard.colors.index');
+
+        }
+        else if($modelName == 'Car')
         {
             $car = $model->find($id);
             ( new CarController)->storeBrandCarsTypeCount($car['is_new'], $car['brand_id']);

@@ -47,13 +47,11 @@ class RoleSeeder extends Seeder
                 'recycle_bin',
                 'features',
                 'packages',
-                // 'delegates',
                 // 'finance_approvals',
                 'order_received',
                 'Distribution_of_Orders',
                 // 'questions',
-                'partners',
-                //'possibilities'
+        
             ];
         Ability::whereNotIn('category', $categories)->delete();
 

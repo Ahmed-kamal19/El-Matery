@@ -54,7 +54,7 @@
                     </span>
 
                     <input type="text" class="form-control form-control-solid w-250px ps-15 border-gray-300 border-1"
-                        id="general-search-inp" placeholder="{{ __('Search ...') }}">
+                        id="general-search-inp" data-column-index="1" placeholder="{{ __('Search ...') }}">
 
                 </div>
                 <!-- end   :: General Search -->

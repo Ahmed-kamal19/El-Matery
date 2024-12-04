@@ -30,7 +30,11 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::get('/get-categories/{modelId}', [CarController::class, 'getcategories']);
 
     // Route::get('/orders_not_approval', [OrderController::class, 'orders_not_approval'])->name('orders.orders_not_approval');
+    /** render to index pages after restore */
     Route::get('features','FeatureController@index');
+    Route::get('brands','BrandController@index');
+    Route::get('models','CarModelController@index');
+    Route::get('categories','CategoriesController@index');
     /** resources routes **/
     /** ajax for features and it can't be after features resource route */
     Route::get('/features/get-options',[FeatureController::class,'getOptions']); //  add car features and possibilities 
@@ -38,7 +42,6 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
 
     Route::resource('orders', 'OrderController');
     Route::resource('questions', 'QuestionController');
-    Route::resource('partners', 'PartnerController');
     Route::resource('roles', 'RoleController');
     Route::resource('brands', 'BrandController');
     Route::resource('models', 'ModelController');

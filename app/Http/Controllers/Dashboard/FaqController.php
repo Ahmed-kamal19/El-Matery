@@ -18,7 +18,7 @@ class FaqController extends Controller
         if ($request->ajax())
         {
 
-            $data = getModelData( model: new Faq() );
+            $data = getModelData( model: new Faq(),searchingColumns:['id','question_ar','question_en'] );
 
             return response()->json($data);
 

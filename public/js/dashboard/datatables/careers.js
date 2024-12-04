@@ -197,8 +197,8 @@ let KTDatatable = function () {
             $(element).change( function () {
 
                 let columnIndex = $(this).data('filter-index'); // index of the searching column
-
-                datatable.column(columnIndex).search( $(this).val()).draw();
+                console.log($(this).val())
+               datatable.column(columnIndex).search( $(this).val()).draw();
             });
 
         })

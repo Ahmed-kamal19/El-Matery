@@ -305,6 +305,7 @@ if ( !function_exists('getModelData') ) {
                $query->orWhere([$filter]);
         });
 
+
         if ( $andsFilters )
             $model->where($andsFilters);
 

@@ -36,8 +36,8 @@ class UpdateBranchRequest extends FormRequest
             'whatsapp'      => ['required','numeric','unique:branches,whatsapp,' . $branch->id, 'regex:/^((\+|00)966|0)?5[0-9]{8}$/'],
             'status'        => 'required | in:invisible,visible',
             'frame'         => 'required | string',
-            'lat'           => 'required',
-            'lng'           => 'required',
+            // 'lat'           => 'required',
+            // 'lng'           => 'required',
             'city_id'       => 'required',
         ];
     }

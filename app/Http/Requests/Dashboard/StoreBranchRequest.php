@@ -33,8 +33,8 @@ class StoreBranchRequest extends FormRequest
             'whatsapp'      => ['required','numeric','unique:branches', 'regex:/^((\+|00)966|0)?5[0-9]{8}$/'],
             'frame'         => 'required | string',
             'status'        => 'required | in:invisible,visible',
-            'lat'           => 'required',
-            'lng'           => 'required',
+            // 'lat'           => 'required',
+            // 'lng'           => 'required',
             'city_id'       => 'required',
         ];
     }

@@ -42,7 +42,7 @@ class BranchController extends Controller
         $this->authorize('update_branches');
 
         $cities         = City::select('id','name_' . getLocale() )->get();
-        [ $lat , $lng ] = getCoordinates($branch['google_map_url']);
+         [ $lat , $lng ] = getCoordinates($branch['google_map_url']);
 
 
         return view('dashboard.branches.edit',compact('branch','cities','lat','lng'));
@@ -71,7 +71,7 @@ class BranchController extends Controller
                 'string',
                  Rule::unique('branches', 'phone'),
             ]]);
-        $data['google_map_url'] = "https://www.google.com/maps/?q=" . $request['lat'] . "," . $request['lng'];
+        // $data['google_map_url'] = "https://www.google.com/maps/?q=" . $request['lat'] . "," . $request['lng'];
 
         Branch::create($data);
 

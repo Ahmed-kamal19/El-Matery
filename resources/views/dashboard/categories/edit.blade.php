@@ -123,8 +123,8 @@
                             <label class="fs-5 fw-bold mb-2">{{ __('Meta tag keywords in arabic') }}</label>
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="meta_keyword_ar_inp" name="meta_keyword_ar"
-                                    value="{{ $category->meta_keyword_ar }}" placeholder="example" />
-                                <label for="meta_keyword_ar_inp">{{ __('Enter the meta tag keywords in arabic') }}</label>
+                                    value="{{ $category->meta_keyword_ar }}" placeholder="{{ __('Enter the meta tag keywords in arabic') }}" />
+                            
                             </div>
                             <p class="invalid-feedback" id="meta_keyword_ar"></p>
 
@@ -138,8 +138,8 @@
                             <label class="fs-5 fw-bold mb-2">{{ __('Meta tag keywords in english') }}</label>
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="meta_keyword_en_inp" name="meta_keyword_en"
-                                    value="{{ $category->meta_keyword_en }}" placeholder="example" />
-                                <label for="meta_keyword_en_inp">{{ __('Enter the meta tag keywords in english') }}</label>
+                                    value="{{ $category->meta_keyword_en }}" placeholder="{{ __('Enter the meta tag keywords in english') }}" />
+                                
                             </div>
                             <p class="invalid-feedback" id="meta_keyword_en"></p>
 

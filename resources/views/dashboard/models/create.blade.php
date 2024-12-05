@@ -1,7 +1,4 @@
 @extends('partials.dashboard.master')
-@push('styles')
-<link rel="stylesheet" href="{{ asset('dashboard-assets/css/tagifyStyle.css')}}">
-@endpush
 @section('content')
 
     <!-- begin :: Subheader -->

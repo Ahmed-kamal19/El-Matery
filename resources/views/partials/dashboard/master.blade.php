@@ -101,7 +101,7 @@
         }
     }
 </style>
-
+<link rel="stylesheet" href="{{ asset('dashboard-assets/css/tagifyStyle.css')}}">
 <body class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed aside-enabled aside-fixed"
     style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
     <!-- Google Tag Manager (noscript) -->

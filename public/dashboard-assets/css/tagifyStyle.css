@@ -1,0 +1,21 @@
+.tagify {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 40px;
+    overflow: visible;
+}
+
+.tagify .tagify__input {
+    width: 100%;
+    height: auto !important;
+}
+
+.tagify__tags {
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+}
+
+.tagify__input {
+    height: auto !important;
+    min-height: 35px;
+}

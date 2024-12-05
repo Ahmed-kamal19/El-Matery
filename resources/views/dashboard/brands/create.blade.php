@@ -1,4 +1,7 @@
 @extends('partials.dashboard.master')
+@push('styles')
+<link rel="stylesheet" href="{{ asset('dashboard-assets/css/tagifyStyle.css')}}">
+@endpush
 @section('content')
     <!-- begin :: Subheader -->
     <div class="toolbar">
@@ -226,12 +229,32 @@
     </div>
 @endsection
 @push('scripts')
-    <script>
+    {{-- <script>
         new Tagify(document.getElementById('meta_keyword_ar_inp'), {
             originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
         });
         new Tagify(document.getElementById('meta_keyword_en_inp'), {
             originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+        });
+    </script> --}}
+    <script>
+        // Initialize Tagify for Arabic Meta Keywords
+        new Tagify(document.getElementById('meta_keyword_ar_inp'), {
+            originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
+            // Make the Tagify input flexible
+            // enforceWhitelist: true,
+            minWidth: 100, // Set minimum width for input
+            maxWidth: '100%', // Ensure it takes the full width of its parent
+            placeholder: "{{ __('Enter tags') }}", // Optional: Placeholder text for the input field
+        });
+    
+        // Initialize Tagify for English Meta Keywords
+        new Tagify(document.getElementById('meta_keyword_en_inp'), {
+            originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
+            // enforceWhitelist: true,
+            minWidth: 100, // Set minimum width for input
+            maxWidth: '100%', // Ensure it takes the full width of its parent
+            placeholder: "{{ __('Enter tags') }}", // Optional: Placeholder text for the input field
         });
     </script>
 @endpush

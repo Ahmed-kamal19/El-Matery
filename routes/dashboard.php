@@ -28,6 +28,7 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::post('/calculate-installment', 'DashboardController@calculateInstallment')->name('calculateInstallment');
     Route::get('/get-models/{brandId}', [CarController::class, 'getModels']);
     Route::get('/get-categories/{modelId}', [CarController::class, 'getcategories']);
+    Route::post('/sort/image', [CarController::class, 'updateImageOrder']);
 
     // Route::get('/orders_not_approval', [OrderController::class, 'orders_not_approval'])->name('orders.orders_not_approval');
     /** render to index pages after restore */
@@ -89,7 +90,6 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::post('change-status/{order}', 'OrderController@changeStatus');
     Route::post('assigntoemployee/{order}', [OrderController::class, 'assignToEmployee']);
     Route::post('cars/{carId}/update-images',[CarController::class,'updateCarImages']);
-
 
 
     /** employee profile routes **/

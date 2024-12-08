@@ -85,6 +85,8 @@ class CarController extends Controller
                 'images' => $colors->unique('pivot.image')->pluck('pivot.image')->toArray(),
             ];
         })->values()->toArray();
+      
+        
         $selectedtagsIds    = $car->tags->pluck('id')->toArray();
         return view('dashboard.cars.edit', compact( 'colors','brands', 'car', 'models', 'cities', 'categories', 'relatedImages', 'tags', 'selectedtagsIds', 'fullYoutubeUrl', 'colorsWithUniqueImages'));
     }
@@ -760,5 +762,31 @@ public function updateCarImages(Request $request, $carId)
 
     return response()->json(['status' => 'success', 'message' => 'Images updated successfully']);
 }
+
+public function updateImageOrder(Request $request)
+{
+    dd('update');
+    foreach ($request->images as $index => $image) {
+        // Iterate through each image in the 'images' array
+        foreach ($image['images'] as $key => $imgData) {
+            // Find the CarImage record by ID
+            $carImage = CarColorImage::where('id', $imgData['id'])->where('color_id', $imgData['color_id'])->first();
+    
+            // Update the sort column with the index
+            if ($carImage) {
+                $carImage->sort = $key; // Assign the array index as the sort value
+                $carImage->save(); // Save the updated record
+            }
+        }
+    }
+    
+    // Step 1: Delete all images for the colors provided in the request
+    // Create a list of color IDs from the request
+  
+
+
+    return response()->json(['message' => 'Images updated successfully.']);
+}
+
 
 }

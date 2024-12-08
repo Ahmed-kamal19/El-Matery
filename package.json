@@ -16,6 +16,8 @@
         "postcss": "^8.1.14"
     },
     "dependencies": {
-        "puppeteer": "^22.1.0"
+        "@shopify/draggable": "^1.1.3",
+        "puppeteer": "^22.1.0",
+        "shopify": "^3.71.3"
     }
 }

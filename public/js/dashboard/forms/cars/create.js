@@ -55,7 +55,16 @@ $(document).ready(() => {
                                                     </div>
                                                     <!-- end   :: Column -->
 
-                    
+                                                       <!-- begin :: Column -->
+                                                    <div class="col-md-4 fv-row">
+                                                        <!-- begin -->
+                                                        <label class="text-center fw-bold mb-4 d-block">${ __("stock")}</label>
+                                                        <input type="number" class="form-control" name="colors[${currentIndex}][stock]" multiple id="colors_stock_inp_${ selectedColor['id'] }">
+                                
+                                                        <p class="invalid-feedback" id="colors_${currentIndex}_stock" ></p>
+                                                        <!-- end   -->
+                                                    </div>
+                                                    <!-- end   :: Column -->
 
                                                 </div>
                                                 <!-- end   :: Row -->

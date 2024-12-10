@@ -958,8 +958,10 @@
     <script>
         let carId = "{{ $car->id }}";
         let colors = @json($colors);
-        let carColors= @json($car->colors->pluck('pivot'));
+        let carColors= @json($carImageSorted );//@json($car->colors->pluck('pivot'));
         let carColorsIds = @json($car->colors->pluck('id'));
+        let carImageSorted =@json($carImageSorted );
+
         let  colorsWithUniqueImages =  @json($colorsWithUniqueImages);
         let brands = @json($brands);
         let selectedModelId = @json($car['model_id']);

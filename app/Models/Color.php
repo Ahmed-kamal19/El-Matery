@@ -25,7 +25,7 @@ class Color extends Model
     public function cars()
     {
         return $this->belongsToMany(Car::class,'car_color_images')
-        ->withPivot('image') 
+        ->withPivot('image','stock') 
         ->withTimestamps();
     }
    

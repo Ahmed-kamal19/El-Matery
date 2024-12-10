@@ -19,11 +19,13 @@ let deletedColorsImages = [];            // This will store deleted images for u
 
 
 $(document).ready(() => {
+    
     initializeColorsSp();
-    colorsWithUniqueImages = colorsWithUniqueImages.map(color => ({
-        ...color,
-        images: [...color.images] // Create a new array for images
-    }));
+    // colorsWithUniqueImages = colorsWithUniqueImages.map(color => ({
+    //     ...color,
+    //     images: [...color.images] // Create a new array for images
+    // }));
+    
     undoDeleteBtn.click(function () {
         let restoredImage = deletedColorsImages.pop();
         if (!restoredImage) return;
@@ -32,7 +34,7 @@ $(document).ready(() => {
         previousImagesArray.push(restoredImage['image']);
     
         updatedColorsImages[restoredImage['color_id']].images = previousImagesArray;
-    
+        
         // Show the restored image
         $(`#${cleanImageName(restoredImage['image'])}-deleted-image`).removeClass('d-none');
     
@@ -61,13 +63,13 @@ $(document).ready(() => {
             let selectedColor = colors.find(
                 (color) => color['id'] == lastSelectedColorId
             );
-
+            
             // Find the color in colorsWithUniqueImages
             let colorData = colorsWithUniqueImages.find(
                 (color) => color['color_id'] == lastSelectedColorId
             );
 
-
+             
             // Get the number of images for this color
             let carImagesCount = colorData && colorData.images.length > 0 ? `( ${colorData.images.length} )` : '';
 
@@ -89,6 +91,16 @@ $(document).ready(() => {
                             <a class="text-primary mt-2 d-block" href="javascript:openImagesModal(${selectedColor['id']})">${__('preview photos') + ' ' + carImagesCount}</a>
                             <p class="invalid-feedback" id="colors_${currentIndex}_images"></p>
                         </div>
+                            <!-- begin :: Column -->
+                            <div class="col-md-4 fv-row">
+                            <!-- begin -->
+                            <label class="text-center fw-bold mb-4 d-block">${ __("stock")}</label>
+                            <input type="number" class="form-control" name="colors[${currentIndex}][stock]" value="${colorData['stock']}" id="colors_stock_inp_${ selectedColor['id'] }">
+    
+                            <p class="invalid-feedback" id="colors_${currentIndex}_stock" ></p>
+                            <!-- end   -->
+                            </div>
+                            <!-- end   :: Column -->
                     </div>
                 </div>
             `);
@@ -157,44 +169,63 @@ let changePriceField = () => {
     }
 };
 
+// let openImagesModal = (colorId) => {
+//     $("#modal-title").text(__("images"));
+   
+//     // Find the color object by color_id in colorsWithUniqueImages
+//     let selectedColor = colorsWithUniqueImages.find((color) => color.color_id === colorId);
+//     if (!selectedColor) {
+//         console.error("Color not found with ID:", colorId);
+//         return; // Exit if color not found
+//     }
+
+//     // Clear the existing images in the modal container
+//     $("#images-container").empty();
+
+//     // Display images or show "no images" text
+//     if (selectedColor.images && selectedColor.images.length > 0) {
+//         $("#no-images-text").addClass("d-none");
+//         selectedColor.images.forEach((image) => {
+//             $("#images-container").append(createImageContainer(image, colorId));
+//         });
+//     } else {
+//         $("#no-images-text").removeClass("d-none");
+//     }
+
+//     // Show the modal
+//     $("#edit-images-modal").modal("show");
+// };
 let openImagesModal = (colorId) => {
     $("#modal-title").text(__("images"));
 
-    // Find the color object by color_id in colorsWithUniqueImages
-    let selectedColor = colorsWithUniqueImages.find((color) => color.color_id === colorId);
-
-    if (!selectedColor) {
-        console.error("Color not found with ID:", colorId);
-        return; // Exit if color not found
-    }
-
-    // Clear the existing images in the modal container
+    // Sort the images by the sort order
+    let selectedImages = carImageSorted
+        .filter(item => item.color_id == colorId)
+        .sort((a, b) => a.sort - b.sort);
+       
     $("#images-container").empty();
 
-    // Display images or show "no images" text
-    if (selectedColor.images && selectedColor.images.length > 0) {
+    if (selectedImages.length > 0) {
         $("#no-images-text").addClass("d-none");
-        selectedColor.images.forEach((image) => {
-            $("#images-container").append(createImageContainer(image, colorId));
+        selectedImages.forEach(item => {
+            $("#images-container").append(createImageContainer(item.image, item.color_id,item.id));
         });
     } else {
         $("#no-images-text").removeClass("d-none");
     }
 
-    // Show the modal
     $("#edit-images-modal").modal("show");
 };
-
 // Helper function to create HTML for each image container
-let createImageContainer = (image, colorId) => {
-    let imageContainerId = cleanImageName(image) + "-deleted-image";
+let createImageContainer = (image, colorId,imageId) => {
+    let imageContainerId = cleanImageName(image) ;
     let imagePath = getImagePathFromDirectory(image, "Cars");
-
+   
     return `
         <div class="col-md-3 col-12 my-4 text-center" id="${imageContainerId}">
             <div class="image-input image-input-outline">
                 <div class="image-input-wrapper w-100px h-100px draggable draggable-handle" data-color-id="${colorId}"
-                 data-id="${carId}" 
+                 data-id="${imageId}" 
                      style="background-image: url('${imagePath}'); background-size: contain;"></div>
 
                 <label onclick="deleteColorImage(${colorId}, '${image}')"
@@ -255,22 +286,79 @@ let deleteColorImage = (colorId, imageToDelete) => {
     }
 };
 
+//new delete copy
+
+
+// let deleteColorImage = (colorId, imageToDelete) => {
+//     // Find the image to delete in carImageSorted
+//     let index = carImageSorted.findIndex(item => item.color_id == colorId && item.image === imageToDelete);
+//     console.log(index)
+//     if (index !== -1) {
+//         // Remove the image from carImageSorted
+//         carImageSorted.splice(index, 1);
+
+//         // Add the deleted image to deletedColorsImages for undo functionality
+//         deletedColorsImages.push({ color_id: colorId, image: imageToDelete });
+
+//         // Hide the deleted image in the DOM
+//         let imageContainerId = cleanImageName(imageToDelete) + "-deleted-image";
+//         console.log(imageContainerId)
+//         $(`#${imageContainerId}`).addClass("d-none");
+
+//         // Enable the undo button if there’s at least one deleted image
+//         undoDeleteBtn.prop("disabled", false);
+
+//         // Check if there are any remaining images for this color
+//         let remainingImages = carImageSorted.filter(item => item.color_id == colorId);
+//         if (!remainingImages.length) {
+//             $("#no-images-text").removeClass("d-none");
+//         } else {
+//             $("#no-images-text").addClass("d-none");
+//         }
+//     } else {
+//         console.error("Image not found for deletion:", colorId, imageToDelete);
+//     }
+// };
+// $("#save-imgs-btn").click(function () {
+//     // Update `colorsWithUniqueImages` with `updatedColorsImages`
+//     Object.entries(updatedColorsImages).forEach(([colorId, colorData]) => {
+//         let colorIndex = colorsWithUniqueImages.findIndex(
+//             (color) => color["color_id"] == colorId
+//         );
+
+//         if (colorIndex !== -1) {
+//             colorsWithUniqueImages[colorIndex].images = colorData.images;
+//         }
+//     });
+
+//     // Prepare form data with updated images and deleted images
+//     let formData = new FormData();
+//     formData.append("updated_colors_images", JSON.stringify(updatedColorsImages));
+//     console.log(deletedColorsImages)
+//     formData.append("deleted_images", JSON.stringify(deletedColorsImages));
+
+//     // AJAX request to send data to the backend
+//     $.ajax({
+//         url: `/dashboard/cars/${carId}/update-images`, // Update this URL to your actual route
+//         method: 'POST',
+//         headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
+//         data: formData,
+//         contentType: false,
+//         processData: false,
+//         success: function(response) {
+//             // console.log("Images updated successfully:", response);
+//             $("#edit-images-modal").modal("hide");
+//             deletedColorsImages = []; // Reset deleted images array after successful update
+//         },
+//         error: function(error) {
+//             console.error("Error updating images:", error);
+//         }
+//     });
+// });
 $("#save-imgs-btn").click(function () {
-    // Update `colorsWithUniqueImages` with `updatedColorsImages`
-    Object.entries(updatedColorsImages).forEach(([colorId, colorData]) => {
-        let colorIndex = colorsWithUniqueImages.findIndex(
-            (color) => color["color_id"] == colorId
-        );
-
-        if (colorIndex !== -1) {
-            colorsWithUniqueImages[colorIndex].images = colorData.images;
-        }
-    });
-
     // Prepare form data with updated images and deleted images
     let formData = new FormData();
-    formData.append("updated_colors_images", JSON.stringify(updatedColorsImages));
-    console.log(deletedColorsImages)
+    formData.append("updated_images", JSON.stringify(carImageSorted));
     formData.append("deleted_images", JSON.stringify(deletedColorsImages));
 
     // AJAX request to send data to the backend
@@ -282,7 +370,7 @@ $("#save-imgs-btn").click(function () {
         contentType: false,
         processData: false,
         success: function(response) {
-            // console.log("Images updated successfully:", response);
+            console.log("Images updated successfully:", response);
             $("#edit-images-modal").modal("hide");
             deletedColorsImages = []; // Reset deleted images array after successful update
         },
@@ -291,7 +379,6 @@ $("#save-imgs-btn").click(function () {
         }
     });
 });
-
  
 
 
@@ -363,14 +450,25 @@ let cleanImageName = (image) => {
     return image.replaceAll("/", "").replaceAll(".", "").replaceAll(" ", "");
 };
 
+// let initializeColorsSp = () => {
+//     let tempArr = [];
+
+//     carColorsIds.forEach((id, index) => {
+//         tempArr.push(id);
+
+//         colorsSp.val(tempArr).trigger('change', true);
+//     });
+// };
 let initializeColorsSp = () => {
     let tempArr = [];
 
-    carColorsIds.forEach((id, index) => {
-        tempArr.push(id);
-
-        colorsSp.val(tempArr).trigger('change', true);
+    carImageSorted.forEach((item) => {
+        if (!tempArr.includes(item.color_id)) {
+            tempArr.push(item.color_id);
+        }
     });
+
+    colorsSp.val(tempArr).trigger('change', true);
 };
 
 
@@ -396,10 +494,10 @@ document.addEventListener("DOMContentLoaded", function () {
         container.querySelectorAll('.draggable').forEach((dragItem) => {
             const imageId = dragItem.getAttribute('data-id');
             const colorId = dragItem.getAttribute('data-color-id');
-
+            
             if (imageId && colorId) {
-                const imageData = carColors.find(img => img.car_id == imageId && img.color_id == colorId);
-
+                const imageData = carColors.find(img => img.id == imageId && img.color_id == colorId);
+                
                 if (imageData) {
                     // Initialize group for the color if not exists
                     if (!groupedImages[colorId]) {
@@ -438,8 +536,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Test Array with Sorted Colors:", test);
 
         // Now you can use the test array for submission
-        $("#next-btn").on("click", function (e) {
-            e.preventDefault();  // Prevent page reload
+        // $("#next-btn").on("click", function (e) {
+        //     e.preventDefault();  // Prevent page reload
 
             // Use the test array for the AJAX submission
             $.ajax({
@@ -451,12 +549,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 contentType: "application/json",
                 data: JSON.stringify({ images: test }),  // Send the test array for submission
                 success: function (data) {
+                    
                     console.log("Image order successfully updated:", data);
                 },
                 error: function (xhr, status, error) {
                     console.error("Error submitting image order:", xhr.responseText);
                 },
             });
-        });
+        // });
     });
 });

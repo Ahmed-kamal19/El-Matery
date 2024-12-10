@@ -65,6 +65,10 @@ class CarController extends Controller
 
         $this->authorize('update_cars');
 
+        $carImageSorted= CarColorImage::where('car_id',$car->id)
+        ->orderBy('sort')
+        ->get();
+         
         $models        = CarModel::select('id', 'name_' . getLocale())->where('brand_id', $car->brand_id)->get();
         $brands        = Brand::select('id', 'name_' . getLocale())->get();
         $cities        = City::select('id', 'name_' . getLocale())->get();
@@ -78,17 +82,20 @@ class CarController extends Controller
         $car->load('colors');
 
         $colorsWithUniqueImages = $car->colors->groupBy('id')->map(function ($colors) {
+     
             return [
                 'color_id' => $colors->first()->id,
                 'color_name' => $colors->first()->name,
                 'hex_code' => $colors->first()->hex_code,
+                'stock' => $colors->first()->pivot->stock,
                 'images' => $colors->unique('pivot.image')->pluck('pivot.image')->toArray(),
+
             ];
-        })->values()->toArray();
-      
+        })->values();
+
         
         $selectedtagsIds    = $car->tags->pluck('id')->toArray();
-        return view('dashboard.cars.edit', compact( 'colors','brands', 'car', 'models', 'cities', 'categories', 'relatedImages', 'tags', 'selectedtagsIds', 'fullYoutubeUrl', 'colorsWithUniqueImages'));
+        return view('dashboard.cars.edit', compact( 'colors','brands', 'car', 'models', 'cities', 'categories', 'relatedImages', 'tags', 'selectedtagsIds', 'fullYoutubeUrl', 'colorsWithUniqueImages','carImageSorted'));
     }
 
   
@@ -137,6 +144,7 @@ class CarController extends Controller
             'colors.*.id' => [$colorImagesRequired ? 'required' : 'nullable', 'integer', 'exists:colors,id'],
             'colors.*.images' => [$colorImagesRequired ? 'required' : 'nullable', 'array', 'min:1'],
             'colors.*.images.*' => ['file', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'colors.*.stock'=>['required','numeric','min:1'],
             'city_id' => ['required'],
             'fuel_tank_capacity' => 'required|string|max:255',
             'car_body' => 'required|string',
@@ -212,8 +220,10 @@ class CarController extends Controller
                 $colorId = $color['id'];
                 if ($request->hasFile("colors.$index.images")) {
                     $colorImages = $this->uploadCarImages($request->file("colors.$index.images"));
+                    // $car->colors()->attach($colorId,['stock'=>])
                     foreach ($colorImages as $image) {
-                        $car->colors()->attach($colorId, ['image' => $image]);
+                        $car->colors()->attach($colorId, ['image' => $image,'stock'=>$color['stock']]);
+
                     }
                 }
             }
@@ -234,6 +244,7 @@ class CarController extends Controller
                         'color_name' => $colors->first()->name,
                         'hex_code' => $colors->first()->hex_code,
                         'images' => $colors->unique('pivot.image')->pluck('pivot.image')->toArray(),
+                        
                     ];
                 })->values()->toArray();
     
@@ -328,20 +339,22 @@ class CarController extends Controller
                 ->delete();
         }
     }
+
     // Handle color-specific images without syncing null values
     if ($request->has('colors')) {
         foreach ($request->input('colors') as $index => $colorData) {
             $colorId = $colorData['id'];
 
-
+            CarColorImage::where('car_id',$car->id)->update(['stock'=>$colorData['stock']]);
             if ($request->hasFile("colors.$index.images")) {
                 $colorImages = $this->uploadCarImages($request->file("colors.$index.images"));
-
+              
                 foreach ($colorImages as $image) {
                     if ($image !== null) {
                         CarColorImage::updateOrCreate(
-                            ['car_id' => $car->id, 'color_id' => $colorId, 'image' => $image],
-                            ['updated_at' => now()]
+                            ['car_id' => $car->id, 'color_id' => $colorId, 'image' => $image,'stock'=>$colorData['stock']],
+                            ['updated_at' => now()],
+                            
                         );
                     }
                 }
@@ -763,30 +776,57 @@ public function updateCarImages(Request $request, $carId)
     return response()->json(['status' => 'success', 'message' => 'Images updated successfully']);
 }
 
+// public function updateCarImages(Request $request, $carId)
+// {
+//     // $updatedImages = json_decode($request->input('updated_images', '[]'), true);
+//     $deletedImages = json_decode($request->input('deleted_images', '[]'), true);
+//   //  dd($deletedImages);
+//     // Process deleted images
+//     foreach ($deletedImages as $image) {
+//         CarColorImage::where('car_id', $carId)
+//             ->where('color_id', $image['color_id'])
+//             ->where('image', $image['image'])
+//             ->delete();
+
+//         // Optionally delete the image from storage
+//         $imagePath = "Cars/{$image['image']}";
+//         if (Storage::exists($imagePath)) {
+//             Storage::delete($imagePath);
+//         }
+//     }
+   
+//     return response()->json(['status' => 'success', 'message' => 'Images updated successfully.']);
+// }
+
 public function updateImageOrder(Request $request)
-{
-    dd('update');
+{   
+    $cars=[];
     foreach ($request->images as $index => $image) {
-        // Iterate through each image in the 'images' array
+        
+        //Iterate through each image in the 'images' array
         foreach ($image['images'] as $key => $imgData) {
-            // Find the CarImage record by ID
+            
             $carImage = CarColorImage::where('id', $imgData['id'])->where('color_id', $imgData['color_id'])->first();
-    
-            // Update the sort column with the index
+            //Update the sort column with the index
             if ($carImage) {
+                
                 $carImage->sort = $key; // Assign the array index as the sort value
                 $carImage->save(); // Save the updated record
+             
             }
+            $cars[]=$carImage;
+            
         }
+        // dd( $carImage);
     }
+    
     
     // Step 1: Delete all images for the colors provided in the request
     // Create a list of color IDs from the request
   
-
+    return response()->json($cars);
 
     return response()->json(['message' => 'Images updated successfully.']);
 }
-
 
 }

@@ -684,7 +684,7 @@
                                                         <button type="button" class="btn" id="undo-delete-image" disabled > <i class="fa fa-undo"></i> {{ __("undo") }} </button>
                                                     </div>
                                                     <div class="modal-body" >
-                                                        <h3 class="text-center my-15 d-none" id="no-images-text">{{ __("There are no images") }}</h3>
+                                                        {{-- <h3 class="text-center my-15 d-none" id="no-images-text">{{ __("There are no images") }}</h3> --}}
 
                                                         <div class="row" id="images-container">
 

@@ -801,8 +801,8 @@ public function updateCarImages(Request $request, $carId)
 public function updateImageOrder(Request $request)
 {   
     $cars=[];
+    // dd($request->images);
     foreach ($request->images as $index => $image) {
-        
         //Iterate through each image in the 'images' array
         foreach ($image['images'] as $key => $imgData) {
             

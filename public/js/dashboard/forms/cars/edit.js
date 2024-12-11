@@ -37,10 +37,11 @@ $(document).ready(() => {
         
         // Show the restored image
         $(`#${cleanImageName(restoredImage['image'])}-deleted-image`).removeClass('d-none');
-    
+
         if (deletedColorsImages.length === 0) {
             undoDeleteBtn.prop('disabled', true);
-        } else {
+        } 
+        else {
             undoDeleteBtn.prop('disabled', false);
             $("#no-images-text").addClass('d-none');
         }
@@ -169,32 +170,7 @@ let changePriceField = () => {
     }
 };
 
-// let openImagesModal = (colorId) => {
-//     $("#modal-title").text(__("images"));
-   
-//     // Find the color object by color_id in colorsWithUniqueImages
-//     let selectedColor = colorsWithUniqueImages.find((color) => color.color_id === colorId);
-//     if (!selectedColor) {
-//         console.error("Color not found with ID:", colorId);
-//         return; // Exit if color not found
-//     }
 
-//     // Clear the existing images in the modal container
-//     $("#images-container").empty();
-
-//     // Display images or show "no images" text
-//     if (selectedColor.images && selectedColor.images.length > 0) {
-//         $("#no-images-text").addClass("d-none");
-//         selectedColor.images.forEach((image) => {
-//             $("#images-container").append(createImageContainer(image, colorId));
-//         });
-//     } else {
-//         $("#no-images-text").removeClass("d-none");
-//     }
-
-//     // Show the modal
-//     $("#edit-images-modal").modal("show");
-// };
 let openImagesModal = (colorId) => {
     $("#modal-title").text(__("images"));
 
@@ -218,7 +194,7 @@ let openImagesModal = (colorId) => {
 };
 // Helper function to create HTML for each image container
 let createImageContainer = (image, colorId,imageId) => {
-    let imageContainerId = cleanImageName(image) ;
+    let imageContainerId = cleanImageName(image) + "-deleted-image" ;
     let imagePath = getImagePathFromDirectory(image, "Cars");
    
     return `
@@ -240,7 +216,8 @@ let createImageContainer = (image, colorId,imageId) => {
 
 
 let deleteColorImage = (colorId, imageToDelete) => {
-    // Find the color object in colorsWithUniqueImages by color_id
+    console.log(colorsWithUniqueImages)
+    // Find the color object in colorsWithUniqueImages by color_id  
     let selectedColorIndex = colorsWithUniqueImages.findIndex(
         (color) => parseInt(color.color_id) === parseInt(colorId)
     );
@@ -249,18 +226,23 @@ let deleteColorImage = (colorId, imageToDelete) => {
         console.error("Color not found with ID:", colorId);
         return; // Exit if color not found
     }
-
     // Deep clone the color object to avoid affecting other colors
-    let selectedColor = { ...colorsWithUniqueImages[selectedColorIndex], images: [...colorsWithUniqueImages[selectedColorIndex].images] };
+    // let selectedColor = JSON.parse(JSON.stringify({ ...colorsWithUniqueImages[selectedColorIndex], images: [...colorsWithUniqueImages[selectedColorIndex].images] }));
+    let selectedColor = { ...colorsWithUniqueImages[selectedColorIndex] };
+    
 
+    selectedColor.images = [...colorsWithUniqueImages[selectedColorIndex].images];
     // Add the deleted image to deletedColorsImages for undo functionality
     deletedColorsImages.push({
         color_id: colorId,
         image: imageToDelete,
     });
-
+    
+    
     // Remove the image from the selected color's images array
+    // console.log(selectedColor.images)
     selectedColor.images = selectedColor.images.filter((image) => image !== imageToDelete);
+    // console.log(selectedColor.images)
 
     // Update `colorsWithUniqueImages` with the modified color object
     colorsWithUniqueImages[selectedColorIndex].images = selectedColor.images;
@@ -273,88 +255,31 @@ let deleteColorImage = (colorId, imageToDelete) => {
 
     // Hide the deleted image in the DOM
     let imageContainerId = cleanImageName(imageToDelete) + "-deleted-image";
+    
     $(`#${imageContainerId}`).addClass("d-none");
 
     // Enable the undo button if there’s at least one deleted image
     undoDeleteBtn.prop("disabled", false);
 
     // Check if there are any remaining images, toggle "No images" text accordingly
+   
     if (selectedColor.images.length === 0) {
         $("#no-images-text").removeClass("d-none");
     } else {
         $("#no-images-text").addClass("d-none");
     }
+    
+
+    // let imagesInContainer = $("#images-container .draggable").length;
+
+    // if (imagesInContainer === 0) {
+    //     $("#no-images-text").removeClass("d-none");
+    // } else {
+    //     $("#no-images-text").addClass("d-none");
+    // }
 };
 
-//new delete copy
 
-
-// let deleteColorImage = (colorId, imageToDelete) => {
-//     // Find the image to delete in carImageSorted
-//     let index = carImageSorted.findIndex(item => item.color_id == colorId && item.image === imageToDelete);
-//     console.log(index)
-//     if (index !== -1) {
-//         // Remove the image from carImageSorted
-//         carImageSorted.splice(index, 1);
-
-//         // Add the deleted image to deletedColorsImages for undo functionality
-//         deletedColorsImages.push({ color_id: colorId, image: imageToDelete });
-
-//         // Hide the deleted image in the DOM
-//         let imageContainerId = cleanImageName(imageToDelete) + "-deleted-image";
-//         console.log(imageContainerId)
-//         $(`#${imageContainerId}`).addClass("d-none");
-
-//         // Enable the undo button if there’s at least one deleted image
-//         undoDeleteBtn.prop("disabled", false);
-
-//         // Check if there are any remaining images for this color
-//         let remainingImages = carImageSorted.filter(item => item.color_id == colorId);
-//         if (!remainingImages.length) {
-//             $("#no-images-text").removeClass("d-none");
-//         } else {
-//             $("#no-images-text").addClass("d-none");
-//         }
-//     } else {
-//         console.error("Image not found for deletion:", colorId, imageToDelete);
-//     }
-// };
-// $("#save-imgs-btn").click(function () {
-//     // Update `colorsWithUniqueImages` with `updatedColorsImages`
-//     Object.entries(updatedColorsImages).forEach(([colorId, colorData]) => {
-//         let colorIndex = colorsWithUniqueImages.findIndex(
-//             (color) => color["color_id"] == colorId
-//         );
-
-//         if (colorIndex !== -1) {
-//             colorsWithUniqueImages[colorIndex].images = colorData.images;
-//         }
-//     });
-
-//     // Prepare form data with updated images and deleted images
-//     let formData = new FormData();
-//     formData.append("updated_colors_images", JSON.stringify(updatedColorsImages));
-//     console.log(deletedColorsImages)
-//     formData.append("deleted_images", JSON.stringify(deletedColorsImages));
-
-//     // AJAX request to send data to the backend
-//     $.ajax({
-//         url: `/dashboard/cars/${carId}/update-images`, // Update this URL to your actual route
-//         method: 'POST',
-//         headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
-//         data: formData,
-//         contentType: false,
-//         processData: false,
-//         success: function(response) {
-//             // console.log("Images updated successfully:", response);
-//             $("#edit-images-modal").modal("hide");
-//             deletedColorsImages = []; // Reset deleted images array after successful update
-//         },
-//         error: function(error) {
-//             console.error("Error updating images:", error);
-//         }
-//     });
-// });
 $("#save-imgs-btn").click(function () {
     // Prepare form data with updated images and deleted images
     let formData = new FormData();
@@ -494,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function () {
         container.querySelectorAll('.draggable').forEach((dragItem) => {
             const imageId = dragItem.getAttribute('data-id');
             const colorId = dragItem.getAttribute('data-color-id');
-            
+      
             if (imageId && colorId) {
                 const imageData = carColors.find(img => img.id == imageId && img.color_id == colorId);
                 
@@ -511,7 +436,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
-
         // Now ensure that every color group has its images sorted correctly
         reorderedImages = Object.keys(groupedImages).map(colorId => ({
             color_id: colorId,
@@ -520,12 +444,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Log the current sorted images
         const filteredImages = reorderedImages.filter(colorGroup => colorGroup.images.length > 0);
+       
         
         // Save the order of images for each color to prevent overwriting
         filteredImages.forEach(group => {
             originalImageOrder[group.color_id] = group.images; // Persist color-specific order
         });
-
+      
         // Prepare the test array with the latest color order
         let test = [];
         for (let colorId in originalImageOrder) {

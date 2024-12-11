@@ -17,7 +17,6 @@ let deletedColorsImages = [];            // This will store deleted images for u
 
 
 
-
 $(document).ready(() => {
     
     initializeColorsSp();

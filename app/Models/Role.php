@@ -31,7 +31,7 @@ class Role extends Model
 
     public function employees()
     {
-        return $this->belongsToMany(Employee::class);
+        return $this->belongsToMany(Employee::class)->where('id','!=',2);
     }
 
     public function abilities()

@@ -10,7 +10,7 @@
                 class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
 
                 <!-- begin :: Title -->
-                <h1 class="d-flex align-items-center text-dark fw-bolder fs-3 my-1"><a
+                <h1 class="d-flex align-items-center text-dark fw-bolder fs-3 my-1 mt-3"><a
                         href="{{ route('dashboard.careers.index') }}"
                         class="text-muted text-hover-primary">{{ __('Careers') }}</a></h1>
                 <!-- end   :: Title -->

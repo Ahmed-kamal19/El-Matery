@@ -58,7 +58,7 @@ class RoleController extends Controller
     {
         $this->authorize('show_roles');
 
-        $role->load('abilities','employees:id');
+        $role->load(['abilities','employees:id']);
         $abilities  = Ability::select('id','name','category','action')->get();
 
         if ( ! $request->ajax() )

@@ -24,7 +24,7 @@ class EmployeeController extends Controller
 
         if ($request->ajax())
         {
-            $data = getModelData(model: new Employee());
+            $data = getModelData(model: new Employee() ,andsFilters:[['id','!=',2]]);
       
              return response()->json($data);
         }

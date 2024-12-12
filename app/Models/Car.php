@@ -14,7 +14,7 @@ class Car extends Model
 {
 
     use HasFactory,SoftDeletes;
-
+    protected $table = 'cars';
     protected $guarded            = [];
     protected $appends            = ['name', 'status_name','selling_price', 'price_after_vat'];
     protected $casts              = ['created_at' => 'date:Y-m-d', 'updated_at' => 'date:Y-m-d'];
@@ -23,13 +23,12 @@ class Car extends Model
                                       'have_discount', 'discount_price', 'price', 'kilometers','fuel_type','main_image','viewers'];
      protected static function booted()
     {
-
-        if(request()->segment(1) != 'dashboard' )
-        {
-            static::addGlobalScope('availableCars', function(Builder $builder){
-                $builder->where('status', CarStatus::approved->value);
-            });
-        }
+        // if(request()->segment(1) != 'dashboard' )
+        // {
+        //     static::addGlobalScope('availableCars', function(Builder $builder){
+        //         $builder->where('status', CarStatus::approved->value);
+        //     });
+        // }
 
     }
 
@@ -122,14 +121,20 @@ class Car extends Model
         return $this->have_discount && $this->discount_price ? $this->discount_price : $this->price;
     }
 
+    // public function getPriceAfterVatAttribute()
+    // {
+    //     if (settings()->getSettings('maintenance_mode') == 1){
+    //         return round($this->selling_price * ( settings()->getSettings('tax') / 100 + 1));
+    //     }
+    //     else{
+    //         return round($this->selling_price);
+    //     }
+    // }
     public function getPriceAfterVatAttribute()
     {
-        if (settings()->getSettings('maintenance_mode') == 1){
-            return round($this->selling_price * ( settings()->getSettings('tax') / 100 + 1));
-        }
-        else{
-            return round($this->selling_price);
-        }
+       
+      return round($this->attributes['price'] * ( settings()->getSettings('tax') / 100 + 1));
+        
     }
     public function favorites()
     {

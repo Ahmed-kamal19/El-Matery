@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BranResourse;
+use App\Http\Resources\CarResource;
 use App\Http\Resources\CarResourse;
 use App\Http\Resources\ColorResourse;
 use App\Http\Resources\ModelResourse;
@@ -43,7 +44,7 @@ class CarController extends Controller
 
   
     }
-
+    
     public function cartype(){
         $data=[
             'New'=>1,
@@ -210,7 +211,7 @@ class CarController extends Controller
             ],
             'Category'=>$categorydata,
             'City'=>$citydata,
-            'sectors'=>Sector::get()->toArray(),
+           
             'banks'=>Bank::where('type','bank')->get()->toArray(),
             'year'=>$years,
             
@@ -245,6 +246,7 @@ class CarController extends Controller
 
 
     public function filter(){
+      
         if (request()->has('search')) {
              $searchKeyword = request()->input('search');
              $query = Car::query();
@@ -268,12 +270,13 @@ class CarController extends Controller
     
             $perPage = 9; 
             $cars = $query->paginate($perPage);
-            $data=CarResourse::collection( $cars );
+            $data=CarResource::collection( $cars );
     
             return $this->successWithPagination(message:"All Pagination Car",data: $data);
         } else {
         
         try{
+            
             $tab = request('tag');
             $type = request('type',[]);
             $gear_shifters = request('gear_shifters', []);
@@ -288,9 +291,9 @@ class CarController extends Controller
             $orderDirection= request('sort');
             $fuel_tank_capacities = request('fuel_tank_capacities', []);
             $brand_ids = request('brand_id', []);
-
-            $query = Car::query()->where('show_in_home_page', 1);
-
+           
+            $query = Car::query()->where('publish', 1);
+         
              //best Selling car
              $query->when($tab, function ($q, $tab) {
                 $tag = Tag::with('cars')->find($tab);
@@ -343,13 +346,15 @@ class CarController extends Controller
                 });
 
                 // Color IDs with multiple values
-            $query->when(!empty($color_ids), function ($q) use ($color_ids) {
-                if (in_array('all', $color_ids)) {
-                    return $q;
-                } else {
-                    return $q->whereIn('color_id', $color_ids);
-                }    
+                $query->whereHas('colors',function($q) use($color_ids){
+                    if (in_array('all', $color_ids)) {
+                        return $q;
+                    } else {
+                        return $q->whereIn('color_id', $color_ids);
+                    }    
                 });
+    
+        
                
                 // Years with multiple values
             $query->when(!empty($years), function ($q) use ($years) {
@@ -386,6 +391,7 @@ class CarController extends Controller
                 if (in_array('all', $brand_ids)) {
                     return $q;
                 } else {
+                  
                     return $q->whereIn('brand_id', $brand_ids);
                 } 
             });
@@ -433,12 +439,13 @@ class CarController extends Controller
                 
             });
             // $query->orderBy('created_at', 'desc');
+         
             $query->orderBy('created_at', $orderDirection?$orderDirection:"desc");
 
 
             $perPage = 9; 
             $que = $query->paginate($perPage);
-            $data=CarResourse::collection( $que );
+            $data=CarResource::collection( $que );
 
             return $this->successWithPagination(message:"Cars per page",data: $data);
 

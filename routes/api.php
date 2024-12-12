@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AdsController;
+use App\Http\Controllers\Api\BankController;
 use App\Http\Controllers\Api\CarController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\citiyController;
@@ -68,7 +69,7 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::get('/brands', 'Api\HomeController@brands');
     Route::get('/questions', 'Api\HomeController@questions');
     Route::get('/getAllData', 'Api\HomeController@getAllData');
-
+    Route::get('/banks',[BankController::class,'index']);
     Route::get('/brand/{id}', 'Api\HomeController@carsbrand');
     Route::get('/why-code-car', 'Api\HomeController@why_code_car');
     Route::get('/financing-advantage', 'Api\HomeController@financing_advantage');

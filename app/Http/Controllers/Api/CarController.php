@@ -498,10 +498,77 @@ class CarController extends Controller
         if ($max_price && $min_price) {
             $query->whereBetween('price',[$min_price,$max_price]);
         }
-    
+ 
         $results = $query->get();
     
         return response()->json($results);
+    }
+    public function advancedSelect($id,$step){
+        $result=[];
+        $lowest_price=0;
+        $highest_price=0;
+        switch($step)
+        {
+            case 0:
+                $result=CarModel::where('brand_id',$id)->get()->map(function($item){
+                    return [
+                        'model_id'=>$item->id,
+                        'model_name'=>$item->name
+                    ];
+                });
+                break;
+            case 1:
+                $cars=Car::with('colors')->where('model_id',$id)->get();
+                $lowest_price=$cars->min('price');
+                $highest_price=$cars->max('price');
+                // $result=$cars->map(function($car) {
+                //     return[
+                //         'fuel_tank_capacity'=>$car->fuel_tank_capacity,
+                //         'year'=>$car->year,                   
+                //         'colors'=>$car->colors->map(function($color) use($car){
+                //                 return [
+                //                     'color_id'=>$color->id,
+                //                     'color_name'=>$color->name,
+                                    
+                //                 ];
+                //             })
+                //     ];
+                // });
+
+                // Collect all unique colors separately
+                $available_colors = $cars->flatMap(function ($car) {
+                    return $car->colors; // Collect all colors
+                })->unique('id') // Remove duplicates based on color ID
+                ->map(function ($color) {
+                    return [
+                        'color_id' => $color->id,
+                        'color_name' => $color->name, // Assuming 'name' is the color's name
+                    ];
+                })->values(); // Re-index the collection
+
+                // Map the cars without the colors array
+                $manufacturing_years=  $cars->pluck('year')->unique()->values();
+                $tank_capacities = $cars->pluck('fuel_tank_capacity')->unique()->values();
+                $result=['available_colors'=> $available_colors
+                ,'manufacturing_years'=>$manufacturing_years
+                ,'tank_capacities'=>$tank_capacities
+                ,'lowest_price'=>$lowest_price
+                ,'highest_price'=>$highest_price,];
+            break;
+        }
+        if(empty($result))
+        {
+            return $this->failure("No data found");
+        }
+        else if($lowest_price>0 && $highest_price>0)
+        {
+            return $this->success(data:$result);
+        }
+        else
+        {
+
+            return $this->success(data:['models'=>$result]);
+        }
     }
 
 }

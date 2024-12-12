@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\CarResourse;
 use App\Http\Resources\CarModelResource;
 use App\Http\Resources\BrandResource;
+use App\Http\Resources\BrandSearchResource;
 use App\Http\Resources\QuestionResource;
 
 class HomeController extends Controller
@@ -21,6 +22,12 @@ class HomeController extends Controller
         $brands = Brand::all();
         return   BrandResource::collection($brands);
 
+
+   }
+   public function brandsSearch()
+   {
+        $brands = Brand::all();
+        return BrandSearchResource::collection($brands);
 
    }
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\citiyController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\FinanceController;
+use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -71,6 +72,8 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::get('/getAllData', 'Api\HomeController@getAllData');
     Route::get('/banks',[BankController::class,'index']);
     Route::get('/brand/{id}', 'Api\HomeController@carsbrand');
+    Route::get('/brands-search',[HomeController::class,'brandsSearch']);
+    Route::get('/advanced-search-selects/{id}/{step}',[CarController::class,'advancedSelect']);
     Route::get('/why-code-car', 'Api\HomeController@why_code_car');
     Route::get('/financing-advantage', 'Api\HomeController@financing_advantage');
     Route::get('/financing-body', 'Api\HomeController@financing_bodies');

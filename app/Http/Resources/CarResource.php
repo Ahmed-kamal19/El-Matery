@@ -16,9 +16,9 @@ class CarResource extends JsonResource
     {
         return[  
         'id' => $this->id,
-        "brand"=> $this->brand->name_.getLocale(),
+        "brand"=> $this->brand->name,
         "model"=>$this->model->name,
-        'name'=> $this->name_ . getLocale().' - '.$this->brand->name_.getLocale().' - '.$this->model->name_.getLocale() ,
+        'name'=> $this->name .' - '.$this->brand->name.' - '.$this->model->name ,
         "price"=> $this->price,
         "discount_price"=>$this->discount_price,
         "price_after_vat"=>$this->price_after_vat,

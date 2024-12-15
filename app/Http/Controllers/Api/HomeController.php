@@ -143,4 +143,16 @@ public function questions(){
      } 
      return $this->success(data:CarResource::collection($cars));
  }
+
+ public function exclusiveOffers()
+ {
+    $carOffers = Car::whereHas('offers',function($query){
+        $query->where('status',1)->where('highlighted',1);
+    })->paginate(10);
+    if(empty($carOffers))
+    {
+        return $this->failure("No cars found");
+    }
+    return $this->success(data:CarResource::collection($carOffers));
+ }
 }

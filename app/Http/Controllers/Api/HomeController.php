@@ -124,12 +124,23 @@ public function questions(){
     {
         $query->where('brand_id',$brand_id);
     }
-    $cars = $query->get();
+    $cars = $query->paginate(10);
     if(empty($cars))
     {
         return $this->failure("No cars found");
     }
     return $this->success(data:CarResource::collection($cars));
  }
+ 
+ public function latestModel()
+ {
 
+     $cars=Car::orderBy('model_id','desc')
+     ->orderBy('id','desc')->paginate(10);
+     if(empty($cars))
+     {
+        return $this->failure("No cars found");
+     } 
+     return $this->success(data:CarResource::collection($cars));
+ }
 }

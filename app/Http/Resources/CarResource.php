@@ -17,13 +17,16 @@ class CarResource extends JsonResource
         return[  
         'id' => $this->id,
         "brand"=> $this->brand->name_.getLocale(),
+        "model"=>$this->model->name,
         'name'=> $this->name_ . getLocale().' - '.$this->brand->name_.getLocale().' - '.$this->model->name_.getLocale() ,
         "price"=> $this->price,
         "discount_price"=>$this->discount_price,
         "price_after_vat"=>$this->price_after_vat,
         "fuel_type"=>__($this->fuel_type),
         "gear_shifter"=>__($this->gear_shifter),
-        "year"=>$this->year
+        "year"=>$this->year,
+        'have_discount'=>$this->have_discount,
+        'discount_percentage' => $this->discount_price != 0 ? round(($this->price - $this->discount_price) / $this->price * 100, 2): 0
         // 'brand'=>$this->brand->name
         ];
     

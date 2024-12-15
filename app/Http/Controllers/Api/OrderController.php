@@ -82,6 +82,7 @@ class OrderController extends Controller
 
     public function individualsCash(Request $request)
 {
+    
     $car = Car::select('id', 'price', 'name_' . getLocale())
     ->where('id', $request->car_id)
     ->first();

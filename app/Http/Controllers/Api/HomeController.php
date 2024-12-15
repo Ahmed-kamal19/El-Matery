@@ -184,4 +184,27 @@ public function questions(){
     
     return $this->success(data:CarResource::collection($results));
 }
+
+
+public function getAllCars()
+{
+    
+    $cars=Car::all();
+    $res=$cars->map(function($car)
+    {
+        return [
+            'id'=>$car->id,
+            'car_name'=>$car->name.' '.$car->brand->name.' '.$car->model->name.' '.$car->year
+        ];
+    });
+    if(empty($res))
+    {
+        return $this->failure("No cars found");
+    }
+    return $this->success(data:$res);
+}
+public function individualCashOrder(Request $request)
+{
+
+}
 }

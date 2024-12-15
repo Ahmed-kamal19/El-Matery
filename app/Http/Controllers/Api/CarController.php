@@ -500,7 +500,7 @@ class CarController extends Controller
         }
  
         $results = $query->get();
-    
+        
         return response()->json($results);
     }
     public function advancedSelect($id,$step){

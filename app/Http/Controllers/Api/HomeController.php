@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api;
 
  use App\Http\Controllers\Controller;
- use App\Models\Brand;
+use App\Http\Resources\BrandHomeResource;
+use App\Models\Brand;
 
  use App\Models\CarModel;
  use App\Models\Car;
@@ -13,6 +14,7 @@ use App\Http\Resources\CarResourse;
 use App\Http\Resources\CarModelResource;
 use App\Http\Resources\BrandResource;
 use App\Http\Resources\BrandSearchResource;
+use App\Http\Resources\CarResource;
 use App\Http\Resources\QuestionResource;
 
 class HomeController extends Controller
@@ -20,7 +22,7 @@ class HomeController extends Controller
     public function brands(){
          
         $brands = Brand::all();
-        return   BrandResource::collection($brands);
+        return   BrandHomeResource::collection($brands);
 
 
    }
@@ -29,6 +31,22 @@ class HomeController extends Controller
         $brands = Brand::all();
         return BrandSearchResource::collection($brands);
 
+   }
+
+   public function modelsSearch($id)
+   {
+        
+        $models=CarModel::where('brand_id',$id)->get()->map(function($item){
+            return [
+                'model_id'=>$item->id,
+                'model_name'=>$item->name
+            ];
+        });
+        if (!empty($models))
+        {
+            return $this->success(data:$models);
+        }
+        return $this->failure("No Models found");    
    }
 
    public function cars(){
@@ -93,5 +111,25 @@ public function questions(){
 //    ]
 //     );
 // }
+ public function normalSearch(Request $request)
+ {
+    $model_id = $request->input('model_id');
+    $brand_id = $request->input('brand_id');
+    $query = Car::query();
+    if($model_id)
+    {
+        $query->where('model_id',$model_id);
+    }
+    if ($brand_id)
+    {
+        $query->where('brand_id',$brand_id);
+    }
+    $cars = $query->get();
+    if(empty($cars))
+    {
+        return $this->failure("No cars found");
+    }
+    return $this->success(data:CarResource::collection($cars));
+ }
 
 }

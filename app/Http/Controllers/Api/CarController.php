@@ -521,32 +521,16 @@ class CarController extends Controller
                 $cars=Car::with('colors')->where('model_id',$id)->get();
                 $lowest_price=$cars->min('price');
                 $highest_price=$cars->max('price');
-                // $result=$cars->map(function($car) {
-                //     return[
-                //         'fuel_tank_capacity'=>$car->fuel_tank_capacity,
-                //         'year'=>$car->year,                   
-                //         'colors'=>$car->colors->map(function($color) use($car){
-                //                 return [
-                //                     'color_id'=>$color->id,
-                //                     'color_name'=>$color->name,
-                                    
-                //                 ];
-                //             })
-                //     ];
-                // });
-
                 // Collect all unique colors separately
                 $available_colors = $cars->flatMap(function ($car) {
-                    return $car->colors; // Collect all colors
-                })->unique('id') // Remove duplicates based on color ID
+                    return $car->colors; 
+                })->unique('id') 
                 ->map(function ($color) {
                     return [
                         'color_id' => $color->id,
-                        'color_name' => $color->name, // Assuming 'name' is the color's name
+                        'color_name' => $color->name,
                     ];
-                })->values(); // Re-index the collection
-
-                // Map the cars without the colors array
+                })->values(); 
                 $manufacturing_years=  $cars->pluck('year')->unique()->values();
                 $tank_capacities = $cars->pluck('fuel_tank_capacity')->unique()->values();
                 $result=['available_colors'=> $available_colors

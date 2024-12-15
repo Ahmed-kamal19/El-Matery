@@ -81,6 +81,7 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::get('/normal-search',[HomeController::class,'normalSearch']);
     Route::get('/latest-models',[HomeController::class,'latestModel']);
     Route::get('/exclusive-offers',[HomeController::class,'exclusiveOffers']);
+    Route::post('/advanced-search',[HomeController::class,'advancedSearchCar']);
     // Route::post('/car/search', 'Api\HomeController@carSearch');
     // ----------------------- Settings --------------------------------
     Route::get('/calc_data', 'Api\HomeController@act_mod');

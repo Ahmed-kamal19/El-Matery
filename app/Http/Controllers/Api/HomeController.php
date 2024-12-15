@@ -155,4 +155,33 @@ public function questions(){
     }
     return $this->success(data:CarResource::collection($carOffers));
  }
+ public function advancedSearchCar(Request $request){
+    $model_id = $request->input('model_id');
+    $car_id = $request->input('car_id');
+    $brand_id = $request->input('brand_id');
+    $min_price = $request->input('min_price');
+    $max_price = $request->input('max_price');
+
+    $query = Car::query();
+
+    if ($model_id) {
+        $query->where('model_id', $model_id);
+    }
+
+    if ($brand_id) {
+        $query->where('brand_id', $brand_id);
+    }
+
+    if ($car_id) {
+        $query->where('id', $car_id);
+    }
+
+    if ($max_price && $min_price) {
+        $query->whereBetween('price',[$min_price,$max_price]);
+    }
+
+    $results = $query->get();
+    
+    return $this->success(data:CarResource::collection($results));
+}
 }

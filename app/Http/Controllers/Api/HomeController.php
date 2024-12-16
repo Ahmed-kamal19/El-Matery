@@ -42,7 +42,7 @@ class HomeController extends Controller
                 'model_name'=>$item->name
             ];
         });
-        if (!empty($models))
+        if (!$models->isEmpty())
         {
             return $this->success(data:$models);
         }
@@ -125,7 +125,7 @@ public function questions(){
         $query->where('brand_id',$brand_id);
     }
     $cars = $query->paginate(10);
-    if(empty($cars))
+    if($cars->isEmpty())
     {
         return $this->failure("No cars found");
     }
@@ -137,7 +137,7 @@ public function questions(){
 
      $cars=Car::orderBy('model_id','desc')
      ->orderBy('id','desc')->paginate(10);
-     if(empty($cars))
+     if($cars->isEmpty())
      {
         return $this->failure("No cars found");
      } 
@@ -149,7 +149,7 @@ public function questions(){
     $carOffers = Car::whereHas('offers',function($query){
         $query->where('status',1)->where('highlighted',1);
     })->paginate(10);
-    if(empty($carOffers))
+    if($carOffers->isEmpty())
     {
         return $this->failure("No cars found");
     }
@@ -197,7 +197,7 @@ public function getAllCars()
             'car_name'=>$car->name.' '.$car->brand->name.' '.$car->model->name.' '.$car->year
         ];
     });
-    if(empty($res))
+    if($res->isEmpty())
     {
         return $this->failure("No cars found");
     }

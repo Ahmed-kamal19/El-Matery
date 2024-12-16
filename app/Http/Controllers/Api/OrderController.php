@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\IndividualOrderCashRequest;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\CompanyOrderResource;
 use Illuminate\Validation\ValidationException;
@@ -80,7 +81,7 @@ class OrderController extends Controller
         }
     }
 
-    public function individualsCash(Request $request)
+    public function individualsCash(IndividualOrderCashRequest $request)
 {
     
     $car = Car::select('id', 'price', 'name_' . getLocale())

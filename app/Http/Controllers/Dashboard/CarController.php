@@ -138,7 +138,6 @@ class CarController extends Controller
             'discount_price' => 'required_with:have_discount|nullable|numeric|not_in:0|lt:' . $price,
             'supplier' => ['required', 'in:gulf,saudi'],
             'is_new' => ['required'],
-            'show_in_home_page' => ['required', 'in:0,1'],
             'kilometers' => ['required_if:is_new,0', 'numeric', 'nullable', 'min:0'],
             'colors' => [$colorImagesRequired ? 'required' : 'nullable', 'array', 'min:1'],
             'colors.*.id' => [$colorImagesRequired ? 'required' : 'nullable', 'integer', 'exists:colors,id'],
@@ -345,7 +344,7 @@ class CarController extends Controller
         foreach ($request->input('colors') as $index => $colorData) {
             $colorId = $colorData['id'];
 
-            CarColorImage::where('car_id',$car->id)->update(['stock'=>$colorData['stock']]);
+            CarColorImage::where('color_id',$colorId)->update(['stock'=>$colorData['stock']]);
             if ($request->hasFile("colors.$index.images")) {
                 $colorImages = $this->uploadCarImages($request->file("colors.$index.images"));
               

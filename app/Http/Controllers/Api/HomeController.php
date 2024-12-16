@@ -203,6 +203,28 @@ public function getAllCars()
     }
     return $this->success(data:$res);
 }
+
+public function getColorsWithPrice($carName)
+{
+    $car=Car::with()
+    if(!$car){
+        return $this->failure("No cars found");
+    }
+    $colors = $car->colors->map(function($color){
+        return [
+            'color_id'=>$color->id,
+            'color_name'=>$color->name,
+            
+        ];
+
+    });
+    if($car->have_discount)
+        $price = $car->discount_price;
+    else 
+        $price = $car->price;
+    return $this->success(data:['price'=>$price , 'colors'=>$colors]);
+    
+}
 public function individualCashOrder(Request $request)
 {
 

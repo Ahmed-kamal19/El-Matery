@@ -571,33 +571,7 @@
 
                                     <div class="separator separator-dashed my-4"></div>
 
-                                    <!-- begin :: Row -->
-                                    <div class="row">
-
-                                        <!-- begin :: Column -->
-                                        <div class="col-md-12 fv-row">
-
-                                            <x-dashboard.radio-btn title="Show in home page" name="show_in_home_page"
-                                                :radio-btns="[
-                                                    [
-                                                        'label' => 'Yes',
-                                                        'value' => '1',
-                                                        'id' => 'show_in_home_page_yes',
-                                                        'checked' => $car['show_in_home_page'] == '1',
-                                                    ],
-                                                    [
-                                                        'label' => 'No',
-                                                        'value' => '0',
-                                                        'id' => 'show_in_home_page_no',
-                                                        'checked' => $car['show_in_home_page'] == '0',
-                                                    ],
-                                                ]" />
-
-                                        </div>
-                                        <!-- end   :: Column -->
-
-                                    </div>
-                                    <!-- end   :: Row -->
+                                
                                     <div class="separator separator-dashed my-4"></div>
 
                                     <!-- end   :: Row -->

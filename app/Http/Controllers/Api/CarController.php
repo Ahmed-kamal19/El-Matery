@@ -554,5 +554,18 @@ class CarController extends Controller
             return $this->success(data:['models'=>$result]);
         }
     }
-
+    public function getColorImages(Car $car,Color $color)
+    {
+     
+        $carColors = $car->colors()->where('color_id',$color->id)->get();
+      
+        if($carColors->isEmpty())
+        {
+            return $this->failure('No images associated with this color for the car.');
+        }
+       
+        return $this->success(data:$carColors->pluck('pivot.full_image_path'));
+        
+        
+    }
 }

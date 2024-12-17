@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
  use App\Http\Controllers\Controller;
+use App\Http\Requests\IndividualOrderCashRequest;
 use App\Http\Resources\BrandHomeResource;
 use App\Models\Brand;
 
@@ -204,9 +205,9 @@ public function getAllCars()
     return $this->success(data:$res);
 }
 
-public function getColorsWithPrice($carName)
+public function getColorsWithPrice(Car $car)
 {
-    $car=Car::with()
+    
     if(!$car){
         return $this->failure("No cars found");
     }
@@ -217,16 +218,14 @@ public function getColorsWithPrice($carName)
             
         ];
 
-    });
+    })->unique('color_id')->values();
     if($car->have_discount)
         $price = $car->discount_price;
     else 
         $price = $car->price;
+    
     return $this->success(data:['price'=>$price , 'colors'=>$colors]);
     
 }
-public function individualCashOrder(Request $request)
-{
 
-}
 }

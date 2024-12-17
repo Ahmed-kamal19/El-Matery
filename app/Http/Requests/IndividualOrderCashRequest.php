@@ -27,7 +27,7 @@ class IndividualOrderCashRequest extends FormRequest
             'name'=>['required','string'],
             'phone' => ['bail', 'required', 'regex:/^((\+|00)966|0)?5[0-9]{8}$/'],
             'color_id'=>['required','exists:car_color_images,color_id'],
-            ''
+            'car_id'=>['required','exists:cars,id'],
         ];
     }
 }

@@ -85,6 +85,8 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::get('/getAllCars',[HomeController::class,'getAllCars']);
     Route::get('/getColorsWithPrice/{car}',[HomeController::class,'getColorsWithPrice']);
     // Route::post('/car/search', 'Api\HomeController@carSearch');
+    // ----------------------- colors filter ---------------------------
+    Route::get('/cars/{car}/colors/{color}',[CarController::class,'getColorImages']);
     // ----------------------- Settings --------------------------------
     Route::get('/calc_data', 'Api\HomeController@act_mod');
     Route::get('/partners', 'Api\PartnerController@index');

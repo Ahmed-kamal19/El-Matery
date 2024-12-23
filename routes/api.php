@@ -156,6 +156,7 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::get('/cars-biggest-discount', [CarController::class, 'carsWithBiggestDiscount']);
     Route::get('/current-year', [CarController::class, 'currentyear']);
     Route::get('/filter', [CarController::class, 'filter']);
+    Route::get('/filterData',[CarController::class,'filterGetApi']);
     //  -------------------------------------------
     Route::post('/search', [SearchController::class, 'search']);
     Route::get('/categories', [CategoryController::class, 'categories']);

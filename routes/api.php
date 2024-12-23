@@ -74,6 +74,7 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::get('/brand/{id}', 'Api\HomeController@carsbrand');
     Route::get('/brands-search',[HomeController::class,'brandsSearch']);
     Route::get('/advanced-search-selects/{id}/{step}',[CarController::class,'advancedSelect']);
+    Route::get('/advanced-select-search/{modelId}',[CarController::class,'advancedSelect2']);
     Route::get('/why-code-car', 'Api\HomeController@why_code_car');
     Route::get('/financing-advantage', 'Api\HomeController@financing_advantage');
     Route::get('/financing-body', 'Api\HomeController@financing_bodies');

@@ -115,7 +115,7 @@ class CarResourse extends JsonResource
                     
                 ];
             }),
-
+            'main_image'=>getImagePathFromDirectory($this->image,'Cars'),
 
             'color'=>$this->color,
         

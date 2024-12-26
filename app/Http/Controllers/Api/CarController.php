@@ -276,21 +276,20 @@ class CarController extends Controller
         } else {
         
         try{
-            
-            $tab = request('tag');
-            $type = request('type',[]);
+            $tab = request('tags');
+            $type = request('is_new',[]);
             $gear_shifters = request('gear_shifters', []);
             $fuel_types = request('fuel_types', []);
-            $car_bodies = request('car_body', []);
-            $color_ids = request('color_id', []);
-            $years = request('year', []);
-            $model_ids = request('model_id', []);
+            $car_bodies = request('car_bodies', []);
+            $color_ids = request('color_ids', []);
+            $years = request('years', []);
+            $model_ids = request('model_ids', []);
             $minPrice = request('min_price');
             $maxPrice = request('max_price');
-            $color_ids = request('color_id', []);
+            $color_ids = request('color_ids', []);
             $orderDirection= request('sort');
             $fuel_tank_capacities = request('fuel_tank_capacities', []);
-            $brand_ids = request('brand_id', []);
+            $brand_ids = request('brand_ids', []);
            
             $query = Car::query()->where('publish', 1);
          
@@ -554,5 +553,121 @@ class CarController extends Controller
             return $this->success(data:['models'=>$result]);
         }
     }
+    public function getColorImages(Car $car,Color $color)
+    {
+     
+        $carColors = $car->colors()->where('color_id',$color->id)->get();
+      
+        if($carColors->isEmpty())
+        {
+            return $this->failure('No images associated with this color for the car.');
+        }
+       
+        return $this->success(data:$carColors->pluck('pivot.full_image_path'));
+        
+        
+    }
+    public function filterGetApi()
+    {   
+        $brands                 = Brand::all();
+        $models                 = CarModel::all();
+        $colors                 = Color::all();
+        $car                    = Car::query()->where('publish',1);
+        $max_price              = $car->max('price');
+        $min_price              = $car->min('price');
+        $years                  = $car->pluck('year')->unique()->sortDesc()->values()->toArray();
+        $fuelTankCapacities     = $car->pluck('fuel_tank_capacity')->unique()->sortDesc()->values()->toArray();                            
+        $result = [
+            'brand_ids'=>$brands->map(function($brand){
+                return [
+                    'id'=>$brand->id,
+                    'name'=>$brand->name
+                ];
+            }),
+            'model_ids'=>$models->map(function($model){
+                return [
+                    'id'=>$model->id,
+                    'name'=>$model->name
+                ];
+            }),
+            'color_ids'=>$colors->map(function($color){
+                return [
+                    'id'=>$color->id,
+                    'name'=>$color->name
+                ];
+            }),
+            'max_price'=>$max_price,
+            'min_price'=>$min_price,
+            'fuel_tank_capacities'=>$fuelTankCapacities,
+            'years'=>$years,
+            'car_bodies'=>collect(['hatchback','sedan','four-wheel-drive','commercial','family'])->map(function($type){
+                return [
+                    'type'=>$type,
+                    'name'=>__($type)
+                ];
+            })->toArray(),
+            'is_new'=>collect(['used','new'])->map(function($type,$index){
+                return [
+                    'type'=>$index,
+                    'name'=>__(($type))
+                ];
+            })->toArray(),
+            'gear_shifters'=>collect(['manual','automatic'])->map(function($type){
+                return [
+                    'type'=>$type,
+                    'name'=>__(($type))
+                ];
+            })->toArray(),
+            'fuel_types'=>collect(['gasoline','diesel','electric','hybrid'])
+            ->map(function($type){
+                return [
+                    'type'=>$type,
+                    'name'=>__(($type))
+                ];
+            })->toArray(),
+            
+        ];
 
+        return $this->success(data:$result);
+
+
+        
+    }
+    public function advancedSelect2($id){
+        
+        $cars=Car::with('colors')->where('model_id',$id)->get();        
+        $lowest_price=$cars->min('price');
+        $highest_price=$cars->max('price');
+        // Collect all unique colors separately
+        $available_colors = $cars->flatMap(function ($car) {
+            return $car->colors; 
+        })->unique('id') 
+        ->map(function ($color) {
+            return [
+                'color_id' => $color->id,
+                'color_name' => $color->name,
+            ];
+        })->values(); 
+        $manufacturing_years=  $cars->pluck('year')->unique()->values();
+        $tank_capacities = $cars->pluck('fuel_tank_capacity')->unique()->values();
+        $result=collect(['available_colors'=> $available_colors
+        ,'manufacturing_years'=>$manufacturing_years
+        ,'tank_capacities'=>$tank_capacities
+        ,'lowest_price'=>$lowest_price
+        ,'highest_price'=>$highest_price,]);
+        // Filter out all non-meaningful values
+        $filteredResult = $result->filter(function ($value) {
+            if ($value instanceof \Illuminate\Support\Collection) {
+                return !$value->isEmpty(); // Keep non-empty collections
+            }
+            return !is_null($value); // Keep non-null scalar values
+        });
+        if($filteredResult->isEmpty())
+        {
+            return $this->success(message:"No data found",data:null);
+        }
+        return $this->success(data:$result);
+    
+
+    }
 }

@@ -26,8 +26,9 @@ class CarResource extends JsonResource
         "gear_shifter"=>__($this->gear_shifter),
         "year"=>$this->year,
         'have_discount'=>$this->have_discount,
-        'discount_percentage' => $this->discount_price != 0 ? round(($this->price - $this->discount_price) / $this->price * 100, 2): 0
+        'discount_percentage' => $this->discount_price != 0 ? round(($this->price - $this->discount_price) / $this->price * 100, 2): 0,
         // 'brand'=>$this->brand->name
+        'image'=>getImagePathFromDirectory($this->main_image,'Cars')
         ];
     
     }

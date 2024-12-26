@@ -40,12 +40,12 @@ class DashboardController extends Controller
             ];
 
         })->values()->toArray();
-
+        
         $carBrandsPercentage = Car::select('brand_id')->get()->groupBy('brand_id')->map(function ($cars) {
 
             return
                 [
-                    'label' => $cars[0]['brand']['name'],
+                    'label' => $cars[0]['brand']['name'] ?? '',
                     'data' => count($cars),
                     'color' => $this->getUniqueColor(),
                 ];

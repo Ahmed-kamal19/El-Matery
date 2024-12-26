@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\CarStatus;
 use App\Http\Requests\Dashboard\StoreOfferRequest;
 use App\Http\Requests\Dashboard\UpdateOfferRequest;
 use App\Models\Car;
@@ -29,10 +30,10 @@ class OfferController extends Controller
     {
         $this->authorize('create_offers');
 
-        $cars = Car::select('id','name_' . getLocale(),'main_image')->get();
-
-        
-        // $cars = Car::select('id','name_' . getLocale() , 'main_image')->get();
+       // $cars = Car::select('id','name_' . getLocale(),'main_image')->get();
+      
+       $cars = Car::select('id','name_' . getLocale(),'main_image')->where('publish',1)->where('status',CarStatus::approved->value)->get();
+    
 
 
         return view('dashboard.offers.create',compact('cars'));
@@ -43,7 +44,7 @@ class OfferController extends Controller
     {
         $this->authorize('update_offers');
 
-        $cars = Car::select('id','name_' . getLocale(),'main_image' )->get();
+        $cars = Car::select('id','name_' . getLocale(),'main_image')->where('publish',1)->where('status',CarStatus::approved->value)->get();
         // $cars = Car::select('id','name_' . getLocale() , 'main_image')->get();
 
 

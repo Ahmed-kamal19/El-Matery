@@ -1222,7 +1222,10 @@
   "stock":"المخزن",
   "four-wheel-drive":"دفع رباعي",
   "new":"جديد",
-  "used":"مستعمل"
+  "used":"مستعمل",
+  "No services found":"لا يوجد خدمات",
+  "no data found":"لا يوجد بيانات",
+  "no cities found":"لا يوجد مدن"
 
   
 

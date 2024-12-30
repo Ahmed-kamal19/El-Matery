@@ -35,9 +35,10 @@ class EmployeeAuthController extends Controller
         ]);
 
         $employee = Employee::where('email', $request->email)->first();
-
+        
         if ($employee)
         {
+           
             if (Hash::check($request->password, $employee->password))
             {
                 Auth::guard('employee')->login($employee, true);

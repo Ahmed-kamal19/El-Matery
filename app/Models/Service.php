@@ -31,5 +31,13 @@ class Service extends Model
     {
         return $this->attributes['description_' . getLocale() ];
     }
-
+    public function getPriceAfterVatAttribute()
+    {
+        if (settings()->getSettings('maintenance_mode') == 1){
+            return round($this->price * ( settings()->getSettings('tax') / 100 + 1));
+        }
+        else{
+            return round($this->price);
+        }
+    }
 }

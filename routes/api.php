@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Home\CalculatorController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ServiceController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -148,7 +150,13 @@ Route::group(['middleware' => ['json.response']], function () {
 
 
 
+     // -----------------------services----------------------
+     Route::get('/services',[ServiceController::class,'index']);
+     Route::get('/services/{service}',[ServiceController::class,'show']);
+     Route::get('/similar-services/{service}',[ServiceController::class,'similarService']);
+     Route::get('/service-city',[ServiceController::class,'revieveCity']);
 
+   //--------------------------------------------------------------
     // ----------------------- Offer ----------------------
     Route::get('/offer/show/{id}', 'Api\OfferController@show');
     Route::get('/offers', 'Api\OfferController@index');

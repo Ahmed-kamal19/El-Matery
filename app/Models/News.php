@@ -31,8 +31,14 @@ class News extends Model
     {
         return $this->attributes['description_' . getLocale() ];
     }
-
-
+ 
+    public function getMainImageAttribute()
+    {
+        return getImagePathFromDirectory($this->attributes['main_image'],'News');
+    }
+    
+   
+    
 
 
 

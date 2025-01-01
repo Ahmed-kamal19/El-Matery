@@ -120,7 +120,7 @@ Route::group(['middleware' => ['json.response']], function () {
     // -------------------------- Subscriber ----------------------------
     Route::post('/subscriber/store', 'Api\SubscriberController@store');
     // -------------------------- News --------------------------------
-    Route::get('/news/show/{id}', 'Api\NewsController@show');
+    Route::get('/news/{id}', 'Api\NewsController@show');
     Route::get('/news', 'Api\NewsController@index');
 
 

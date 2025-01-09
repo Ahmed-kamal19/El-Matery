@@ -10,6 +10,7 @@ use App\Http\Resources\CarFavouriteResource;
 use App\Http\Resources\CarResource;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OffersResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OfferController extends Controller
 {
@@ -17,7 +18,7 @@ class OfferController extends Controller
     {
         try
         {
-            $offer = Offer::find($id);
+            $offer = Offer::findOrFail($id);
             //$cars=CarResource::collection($offer->cars);
               $data=[
                     'offers' =>  
@@ -28,9 +29,9 @@ class OfferController extends Controller
                ];
         
           return $this->success(data: $data);
-        } catch (\Exception $e)
+        } catch (ModelNotFoundException $e)
         {
-            return $this->failure(message: $e->getMessage());
+            return $this->failure(message:__("no data found"));
         }
     }
 

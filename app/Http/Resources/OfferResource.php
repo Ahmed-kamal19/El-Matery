@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\CarResourse;
+use App\Http\Resources\CarResource;
 class OfferResource extends JsonResource
 {
     /**
@@ -15,7 +15,7 @@ class OfferResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "id"=>$this->id,
+            "id"=>$this->id ,
             "image"=>getImagePathFromDirectory($this->image,'Offers') ,
             "cover"=> getImagePathFromDirectory($this->cover,'Offers'),
             "title"=> $this->title_ . getLocale(),
@@ -25,7 +25,7 @@ class OfferResource extends JsonResource
             "created_at"=> $this->created_at->toDateString(),
             "updated_at"=> $this->updated_at->toDateString(),
             "car"=>
-                CarResourse::collection($this->cars),
+                CarResource::collection($this->cars),
             
 
         ];

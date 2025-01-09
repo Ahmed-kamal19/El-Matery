@@ -20,13 +20,13 @@ class CarResource extends JsonResource
         "model"=>$this->model->name,
         'name'=> $this->name .' - '.$this->brand->name.' - '.$this->model->name ,
         "price"=> $this->price,
-        "discount_price"=>$this->discount_price,
+        "price_after_discount"=>$this->discount_price,
         "price_after_vat"=>$this->price_after_vat,
         "fuel_type"=>__($this->fuel_type),
         "gear_shifter"=>__($this->gear_shifter),
         "year"=>$this->year,
         'have_discount'=>$this->have_discount,
-        'discount_percentage' => $this->discount_price != 0 ? round(($this->price - $this->discount_price) / $this->price * 100, 2): 0,
+        'discount_percentage' => $this->discount_price != 0 ? number_format((($this->price - $this->discount_price) / $this->price) * 100, 2): 0,
         // 'brand'=>$this->brand->name
         'image'=>getImagePathFromDirectory($this->main_image,'Cars')
         ];

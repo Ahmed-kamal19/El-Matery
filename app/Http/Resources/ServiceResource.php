@@ -15,33 +15,7 @@ class ServiceResource extends JsonResource
      */
     public function toArray($request)
     {
-        $features= $this->features->filter(function($feature){
-            return $feature->type === FeatureOrPossibility::feature->value; 
-        })
-        ->map(function ($feature) {
-            return [
-                'id' => $feature->id,
-                'title'=> $feature->title,
-                'description' => $feature->pivot->description,
-                'icon' => getImagePathFromDirectory($feature->icon,'Icons'),
-                
-
-            ];
-        })->toArray();
-        $possibilities= $this->features->filter(function($feature){
-            return $feature->type === FeatureOrPossibility::posibility->value; 
-        })
-        ->map(function ($feature) {
-            return [
-                'id' => $feature->id,
-                'title'=> $feature->title,
-                'description' => $feature->pivot->description,
-                'icon' => getImagePathFromDirectory($feature->icon,'Icons'),
-                
-
-            ];
-        })->toArray();
-       
+     
         
         return [
             'id'=>$this->id,
@@ -50,8 +24,7 @@ class ServiceResource extends JsonResource
             'price_after_tax' => $this->getPriceAfterVatAttribute(),
             'image'=>getImagePathFromDirectory($this->image,'Services'),
             'description'=>$this->description,
-            'features'=>$features,
-            'possibilities'=>$possibilities
+          
         ];
     }
 }

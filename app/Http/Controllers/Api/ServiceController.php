@@ -25,13 +25,14 @@ class ServiceController extends Controller
         
         return $this->success(data:ServiceResource::collection($services));
     }
-    public function show(Service $service)
+    public function show( $id)
     {
         try{
+                $service=Service::findOrFail($id);
                 return $this->success(data:new ServiceDetailsResource($service));
         }catch(ModelNotFoundException $e)
         {
-            return $this->success(data:[],message:__("no data found"));
+            return $this->failure(message:__("no data found"));
         }
     }
     public function similarService(Service $service)

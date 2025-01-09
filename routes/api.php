@@ -158,7 +158,7 @@ Route::group(['middleware' => ['json.response']], function () {
 
    //--------------------------------------------------------------
     // ----------------------- Offer ----------------------
-    Route::get('/offer/show/{id}', 'Api\OfferController@show');
+    Route::get('/offers/{id}', 'Api\OfferController@show');
     Route::get('/offers', 'Api\OfferController@index');
     // --------------------------------
     Route::get('/best-selling-cars', [CarController::class, 'BestSellingCars']);

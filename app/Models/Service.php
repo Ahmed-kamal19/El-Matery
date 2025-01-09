@@ -40,4 +40,9 @@ class Service extends Model
             return round($this->price);
         }
     }
+    public function features()
+    {
+        return $this->belongsToMany(Feature::class,'service_features','service_id','feature_id')->withPivot('description_ar', 'description_en');
+    }
+    
 }

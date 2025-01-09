@@ -29,5 +29,14 @@ class Feature extends Model
     {
         return $this->belongsToMany(Service::class,'service_features','feature_id','service_id');
     }
-    
+    public function getDescriptionAttribute()
+    {
+        // Dynamically determine the description key based on the current locale
+        $descriptionKey = 'description_' . app()->getLocale();
+
+        // Return the pivot value for the dynamic key if it exists
+        return $this->pivot && isset($this->pivot->{$descriptionKey})
+            ? $this->pivot->{$descriptionKey}
+            : null; // Return null if the key doesn't exist
+    }
 }

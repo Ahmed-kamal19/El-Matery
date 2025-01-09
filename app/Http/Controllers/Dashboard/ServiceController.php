@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Rules\NotNumbersOnly;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -59,13 +60,21 @@ class ServiceController extends Controller
             'image'             => 'required | mimes:webp|max:2048' ,
             'price'             => 'required | integer | not_in:0',
             'discount_price'    => 'nullable | integer | not_in:0',
+            'features' => ['sometimes', 'array'],
+            'features.*.type' => ['required', 'exists:features,id'],
+            'features.*.id' => ['required', 'exists:features,id'],
+            'features.*.description_ar' => ['required', 'string', new NotNumbersOnly()],
+            'features.*.description_en' => ['required', 'string', new NotNumbersOnly()],
         ]);
 
-
+        $features = $request->features ?? [];
+       
         if ($request->file('image'))
             $data['image'] = uploadImage( $request->file('image') , "Services");
+        unset($data['features']);
+        $service=Service::create($data);
+        $service->features()->attach($this->prepareFeatures($features));
 
-        Service::create($data);
 
     }
 
@@ -83,16 +92,22 @@ class ServiceController extends Controller
             'image'             => 'nullable | mimes:webp|max:2048' ,
             'price'             => 'required | integer | not_in:0',
             'discount_price'    => 'nullable | integer | not_in:0',
+            'features' => ['sometimes', 'array'],
+            'features.*.type' => ['required', 'exists:features,id'],
+            'features.*.id' => ['required', 'exists:features,id'],
+            'features.*.description_ar' => ['required', 'string', new NotNumbersOnly()],
+            'features.*.description_en' => ['required', 'string', new NotNumbersOnly()],
         ]);
 
-
+        $features = $request->features ?? [];
         if ($request->file('image'))
         {
             deleteImage( $service['image'] , "Services");
             $data['image'] = uploadImage( $request->file('image') , "Services");
         }
-
+        unset($data['features']);
         $service->update($data);
+        $service->features()->sync($this->prepareFeatures($features));
     }
 
 
@@ -104,5 +119,15 @@ class ServiceController extends Controller
         {
             $service->delete();
         }
+    }
+    private function prepareFeatures($features)
+    {
+        return collect($features)->map(function ($feature) {
+            return [
+                'feature_id' => $feature['id'] ?? null,
+                'description_ar' => $feature['description_ar'] ?? null,
+                'description_en' => $feature['description_en'] ?? null,
+            ];
+        })->toArray();
     }
 }

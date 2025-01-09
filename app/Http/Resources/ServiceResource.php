@@ -15,7 +15,8 @@ class ServiceResource extends JsonResource
      */
     public function toArray($request)
     {
-     
+       
+       
         
         return [
             'id'=>$this->id,
@@ -24,7 +25,7 @@ class ServiceResource extends JsonResource
             'price_after_tax' => $this->getPriceAfterVatAttribute(),
             'image'=>getImagePathFromDirectory($this->image,'Services'),
             'description'=>$this->description,
-          
+           
         ];
     }
 }

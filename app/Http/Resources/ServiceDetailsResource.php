@@ -17,33 +17,32 @@ class ServiceDetailsResource extends JsonResource
     public function toArray($request)
     {
 
-        $features= $this->features->filter(function($feature){
+        $features= collect($this->features)->filter(function($feature){
             return $feature->type === FeatureOrPossibility::feature->value; 
         })
         ->map(function ($feature) {
             return [
                 'id' => $feature->id,
                 'title'=> $feature->title,
-                'description' => $feature->pivot->description,
+                'description' => $feature->description,
                 'icon' => getImagePathFromDirectory($feature->icon,'Icons'),
                 
 
             ];
         })->toArray();
-        $possibilities= $this->features->filter(function($feature){
+        $possibilities= collect($this->features)->filter(function($feature){
             return $feature->type === FeatureOrPossibility::posibility->value; 
         })
         ->map(function ($feature) {
             return [
                 'id' => $feature->id,
                 'title'=> $feature->title,
-                'description' => $feature->pivot->description,
+                'description' => $feature->description,
                 'icon' => getImagePathFromDirectory($feature->icon,'Icons'),
                 
 
             ];
         })->toArray();
-       
   
         
         return [  

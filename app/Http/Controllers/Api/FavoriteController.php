@@ -29,8 +29,9 @@ class FavoriteController extends Controller
     public function store(StoreFavoriteRequest $request)
     {
          $ip=$request->ip();
-         $favorite = Favorite::where('car_id', $request->car_id)->where(function ($query) {
-            $query->where('vendor_id', Auth::user()->id??null)->orWhere('device_ip', request()->ip());
+         
+         $favorite = Favorite::whereIn('car_id', $request->car_ids)->where(function ($query) {
+            $query->where('device_ip', request()->ip());
         })
         ->first();
         

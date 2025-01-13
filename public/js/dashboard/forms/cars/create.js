@@ -49,7 +49,7 @@ $(document).ready(() => {
                                                         <!-- begin :: Upload image component -->
                                                         <label class="text-center fw-bold mb-4 d-block">${__("images")}</label>
                                                         <input type="file" class="d-none" name="colors[${currentIndex}][images][]" multiple id="inner_images_inp_${ selectedColor['id'] }">
-                                                        <button class="btn btn-secondary m-auto" type="button" id="images_upload_btn_${ selectedColor['id'] }" > <i class="bi bi-upload fs-8" ></i> 0 ${__('File selected')} </button>
+                                                        <button class="btn btn-secondary m-auto" type="button" id="images_upload_btn_${ selectedColor['id'] }_inp" > <i class="bi bi-upload fs-8" ></i> 0 ${__('File selected')} </button>
                                                         <p class="invalid-feedback" id="colors_${currentIndex}_images" ></p>
                                                         <!-- end   :: Upload image component -->
                                                     </div>

@@ -348,23 +348,7 @@
                                                 </div>
                                                 <p class="invalid-feedback" id="fuel_tank_capacity"></p>
                                             </div>
-                                            <div class="col-md-4 fv-row">
-                                                <label class="fs-5 fw-bold mb-2">{{ __('status') }}</label>
-                                                <select class="form-select" name="status" id="status-sp"
-                                                    data-placeholder="{{ __('Choose the status') }}"
-                                                    data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
-                                                    <option value=""></option>
-                                                    @foreach (App\Enums\CarStatus::values() as $key => $value)
-                                                        <option value="{{ $key }}"
-                                                            {{ $car->status == $key ? 'selected' : '' }}>
-                                                            {{ __(ucfirst($value)) }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <p class="invalid-feedback" id="status"></p>
-                                            </div>
-
-
+                                  
                                             <div class="col-md-4 fv-row">
 
                                                 <label class="fs-5 fw-bold mb-2">{{ __('Tags') }}</label>

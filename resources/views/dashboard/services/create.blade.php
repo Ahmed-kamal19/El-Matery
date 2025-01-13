@@ -205,7 +205,7 @@
                                                     <label class="form-label">{{__('type')}}</label>
                                                     <select class="form-select select-type" id="features_0_type_inp" name=features[0][type] data-placeholder="Select an option">
                                                         <option value="" selected disabled>{{__("Select Type")}}</option>
-                                                        <option value="1">{{__("possibility")}}</option>
+                                                        <!-- <option value="1">{{__("possibility")}}</option> -->
                                                         <option value="2">{{__("feature")}}</option>
                                                     </select>
                                                     <div class="text-danger m-0 invalid-feedback" id="features_0_type"></div>

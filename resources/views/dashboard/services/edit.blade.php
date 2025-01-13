@@ -210,7 +210,7 @@
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">{{ __('Type') }}</label>
                                                         <select class="form-select select-type" id="features_{{$loop->index}}_type_inp"name="features[{{ $loop->index }}][type]" data-placeholder="Select an option">
-                                                            <option value="1" {{ $feature->type == 1 ? 'selected' : '' }}>{{ __("possibility") }}</option>
+                                                            <!-- <option value="1" {{ $feature->type == 1 ? 'selected' : '' }}>{{ __("possibility") }}</option> -->
                                                             <option value="2" {{ $feature->type == 2 ? 'selected' : '' }}>{{ __("feature") }}</option>
                                                         </select>
                                                         <div class="text-danger m-0 invalid-feedback"id="features_{{$loop->index}}_type"></div>
@@ -255,7 +255,7 @@
                                                     <div class="col-md-6 mb-3 ">
                                                         <label class="form-label">{{ __('Type') }}</label>
                                                         <select id="features_0_type_inp" class="form-select select-type" name="features[0][type]" data-placeholder="Select an option">
-                                                            <option value="1">{{ __("possibility") }}</option>
+                                                            <!-- <option value="1">{{ __("possibility") }}</option> -->
                                                             <option value="2">{{ __("feature") }}</option>
                                                         </select>
                                                         <div class="text-danger m-0 invalid-feedback" id="features_0_type"></div>

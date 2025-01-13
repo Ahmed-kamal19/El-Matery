@@ -44,5 +44,11 @@ class Service extends Model
     {
         return $this->belongsToMany(Feature::class,'service_features','service_id','feature_id')->withPivot('description_ar', 'description_en');
     }
+    public function getDiscountPriceAttribute()
+    {
+        return  $this->discount_price ? $this->discount_price : $this->price;
+    }
+    
+   
     
 }

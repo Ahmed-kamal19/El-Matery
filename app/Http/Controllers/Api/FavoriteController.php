@@ -6,6 +6,8 @@ use App\Models\Favorite;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Site\StoreFavoriteRequest;
+use App\Http\Resources\CarResource;
+use App\Models\Car;
 use Auth;
 
 class FavoriteController extends Controller
@@ -29,20 +31,35 @@ class FavoriteController extends Controller
     public function store(StoreFavoriteRequest $request)
     {
          $ip=$request->ip();
-         
-         $favorite = Favorite::whereIn('car_id', $request->car_ids)->where(function ($query) {
+         $existingCarIds = Car::whereIn('id', $request->car_ids)->pluck('id')->toArray();
+         $deletedCarIds  = array_diff($request->car_ids,$existingCarIds);
+         $favorites = Favorite::whereIn('car_id', $existingCarIds)->where(function ($query) {
             $query->where('device_ip', request()->ip());
         })
-        ->first();
+        ->get();
         
-         if ($favorite) {
-            $favorite->delete();
-            return $this->success(message:'deleted succssefuly',data: $favorite);
+         if (!$favorites->isEmpty()) {
+            Favorite::whereIn('car_id', $existingCarIds)
+            ->where('device_ip', $ip)
+            ->delete();
+         $carUnFavoriteData = Car::whereIn('id', $existingCarIds)->get();
+
+            return $this->success(message:__('Like has been successfully unliked'),data:['unavailiable_ids'=>array_values($deletedCarIds),'cars'=>CarResource::collection($carUnFavoriteData)]);
         } else {
-            $request['vendor_id'] = auth()->user()->id??null;
             $request['device_ip']=$request->getClientIp(); 
-            $favorite = Favorite::create($request->all());
-            return $this->success(data: $favorite);
+            $data = array_map(function ($carId) use ($request) {
+                return [
+                    'car_id' => $carId,
+                    'device_ip' => $request->ip(),
+                   // 'vendor_id' => Auth::user()->id ?? null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }, $request->car_ids);
+            
+            $favorites=Favorite::insert($data);
+            $carFavoriteData = Car::whereIn('id',$existingCarIds)->get();
+            return $this->success(message:__("Like successfully"),data: ['unavailiable_ids'=>array_values($deletedCarIds),'cars'=>CarResource::collection($carFavoriteData)]);
         }
     }
     

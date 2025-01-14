@@ -56,15 +56,15 @@ Route::group(['middleware' => ['json.response']], function () {
         Route::get('/addss', [UserController::class,'ads']);
         Route::post('/update-status/{id}', 'Api\UserController@updateAdsShowInHomePage');
         Route::get('/filter-addss', 'Api\UserController@filter');
-        Route::post('/add-favorite-withauth', 'Api\FavoriteController@store');
+        //Route::post('/add-favorite-withauth', 'Api\FavoriteController@store');
         Route::get('/requests_auth','Api\RequestController@index')->name('get-requests');
         Route::post('/finance-Order', [FinanceController::class, 'financeOrder'])->name('finance.order');
-        Route::post('/favorite-auth', 'Api\UserController@favorite');
+        //Route::post('/favorite-auth', 'Api\UserController@favorite');
 
     });
-    Route::post('/favorite-withoutauth', 'Api\UserController@favorite');
+   // Route::post('/favorite-withoutauth', 'Api\UserController@favorite');
     Route::post('/add-favorite-withoutauth', 'Api\FavoriteController@store');
-
+    
     // ------------------------- Home ---------------------------------------
 
     Route::get('/models', 'Api\HomeController@models');

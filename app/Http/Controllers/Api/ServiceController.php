@@ -18,6 +18,7 @@ class ServiceController extends Controller
     {
         
         $services = Service::all();
+     
         if($services->isEmpty())
         {
             return $this->success(data:[],message:__("No services found"));

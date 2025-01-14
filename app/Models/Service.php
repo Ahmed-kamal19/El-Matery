@@ -46,7 +46,7 @@ class Service extends Model
     }
     public function getDiscountPriceAttribute()
     {
-        return  $this->discount_price ? $this->discount_price : $this->price;
+        return  $this->attributes['discount_price'] ? $this->attributes['discount_price'] : 0;
     }
     
    

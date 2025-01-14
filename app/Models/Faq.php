@@ -13,4 +13,13 @@ class Faq extends Model
         'created_at' => 'date:Y-m-d',
         'updated_at' => 'date:Y-m-d'
     ];
+    protected $append = ['question','answer'];
+    public function getQuestionAttribute()
+       {
+           return $this->attributes['question_' . app()->getLocale()];
+       }
+    public function getAnswerAttribute()
+       {
+           return $this->attributes['answer_' . app()->getLocale()];
+       }
 }

@@ -16,12 +16,13 @@ class ServiceResource extends JsonResource
     public function toArray($request)
     {
        
-       
+    //    dd($this->discount_price);
         
         return [
             'id'=>$this->id,
             'name'=>$this->name,
-            'price'=>$this->price,
+            'price_before_discount'=>$this->price,
+            'price_after_discouht'=>$this->discount_price??null,
             'price_after_tax' => $this->getPriceAfterVatAttribute(),
             'image'=>getImagePathFromDirectory($this->image,'Services'),
             'description'=>$this->description,

@@ -23,6 +23,7 @@ use App\Models\Sector;
 use App\Models\Tag;
 use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 use function PHPUnit\Framework\returnSelf;
@@ -38,11 +39,11 @@ class CarController extends Controller
 
     }
     public function cardetails($id){
-        $car=Car::findOrFail($id);
-        return new CarResourse($car);
-
-
-  
+        try{
+            $car=Car::findOrFail($id);
+            return new CarResourse($car);
+        }catch(ModelNotFoundException $e)
+        {return $this->failure(__("No data"));}
     }
     
     public function cartype(){

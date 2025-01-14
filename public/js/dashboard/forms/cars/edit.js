@@ -20,10 +20,7 @@ let deletedColorsImages = [];            // This will store deleted images for u
 $(document).ready(() => {
     
     initializeColorsSp();
-    // colorsWithUniqueImages = colorsWithUniqueImages.map(color => ({
-    //     ...color,
-    //     images: [...color.images] // Create a new array for images
-    // }));
+ 
     
     undoDeleteBtn.click(function () {
         let restoredImage = deletedColorsImages.pop();
@@ -97,80 +94,7 @@ $(document).ready(() => {
         previouslySelected = currentlySelected; // Update the previous selection
     });
     
-    // colorsSp.change(function () {
-    //     let currentlySelected = $(this).val(); // Array of selected color IDs
-    //     let currentIndex = currentlySelected.length - 1;
-    //     let lastSelectedColorId = null;
-    //     let isAdding = currentlySelected.length > previouslySelected.length;
-
-    //     if (isAdding) {
-    //         lastSelectedColorId = currentlySelected.find(
-    //             (element) => !previouslySelected.includes(element)
-    //         );
-
-    //         // console.log("Last selected color ID:", lastSelectedColorId);
-
-    //         // Find the selected color's details
-    //         let selectedColor = colors.find(
-    //             (color) => color['id'] == lastSelectedColorId
-    //         );
-            
-    //         // Find the color in colorsWithUniqueImages
-    //         let colorData = colorsWithUniqueImages.find(
-    //             (color) => color['color_id'] == lastSelectedColorId
-    //         );
-
-    //         // Use a fallback if colorData is undefined
-    //         if (!colorData) {
-    //             colorData = { stock: 0, images: [] }; // Default fallback values
-    //         }
-             
-    //         // Get the number of images for this color
-    //         let carImagesCount = colorData && colorData.images.length > 0 ? `( ${colorData.images.length} )` : '';
-
-
-    //         // Append the color div with the correct image count
-    //         carColorsDiv.append(`
-    //             <div class="rounded border border-3 p-5 mb-4" id="color-${lastSelectedColorId}">
-    //                 <div class="row text-center">
-    //                     <div class="col-md-4 fv-row">
-    //                         <h4>${selectedColor['name']}</h4>
-    //                         <div class="rounded-circle w-80px h-80px m-auto" style="border:1px solid lightslategrey;background:${selectedColor['hex_code']}"></div>
-    //                         <input type="hidden" name="colors[${currentIndex}][id]" value="${selectedColor['id']}" id="color_inp_${currentIndex}">
-    //                         <p class="invalid-feedback" id="colors_${currentIndex}_color"></p>
-    //                     </div>
-    //                     <div class="col-md-4 fv-row">
-    //                         <label class="text-center fw-bold mb-4 d-block">${__("images")}</label>
-    //                         <input type="file" class="d-none" name="colors[${currentIndex}][images][]" multiple id="images_inp_${selectedColor['id']}">
-    //                         <button class="btn btn-secondary m-auto" type="button" id="images_upload_btn_${selectedColor['id']}"><i class="bi bi-upload fs-8"></i> 0 ${__('File selected')}</button>
-    //                         <a class="text-primary mt-2 d-block" href="javascript:openImagesModal(${selectedColor['id']})">${__('preview photos') + ' ' + carImagesCount}</a>
-    //                         <p class="invalid-feedback" id="colors_${currentIndex}_images"></p>
-    //                     </div>
-    //                         <!-- begin :: Column -->
-    //                         <div class="col-md-4 fv-row">
-    //                         <!-- begin -->
-    //                         <label class="text-center fw-bold mb-4 d-block">${ __("stock")}</label>
-    //                         <input type="number" class="form-control" name="colors[${currentIndex}][stock]" value="${colorData['stock']}" id="colors_stock_inp_${ selectedColor['id'] }">
     
-    //                         <p class="invalid-feedback" id="colors_${currentIndex}_stock" ></p>
-    //                         <!-- end   -->
-    //                         </div>
-    //                         <!-- end   :: Column -->
-    //                 </div>
-    //             </div>
-    //         `);
-    //     } else {
-    //         lastSelectedColorId = previouslySelected.find(
-    //             (element) => !currentlySelected.includes(element)
-    //         );
-
-
-    //         carColorsDiv.find(`[id=color-${lastSelectedColorId}]`).eq(0).remove();
-    //     }
-
-    //     previouslySelected = currentlySelected;
-    // });
-
     $("#discount-price-switch").change(function () {
         discountInp.prop("disabled", !$(this).prop("checked"));
     });
@@ -281,12 +205,10 @@ let deleteColorImage = (colorId, imageToDelete) => {
         return; // Exit if color not found
     }
     // Deep clone the color object to avoid affecting other colors
-    // let selectedColor = JSON.parse(JSON.stringify({ ...colorsWithUniqueImages[selectedColorIndex], images: [...colorsWithUniqueImages[selectedColorIndex].images] }));
     let selectedColor = { ...colorsWithUniqueImages[selectedColorIndex] };
     
 
     selectedColor.images = [...colorsWithUniqueImages[selectedColorIndex].images];
-    // Add the deleted image to deletedColorsImages for undo functionality
     deletedColorsImages.push({
         color_id: colorId,
         image: imageToDelete,
@@ -294,9 +216,7 @@ let deleteColorImage = (colorId, imageToDelete) => {
     
     
     // Remove the image from the selected color's images array
-    // console.log(selectedColor.images)
     selectedColor.images = selectedColor.images.filter((image) => image !== imageToDelete);
-    // console.log(selectedColor.images)
 
     // Update `colorsWithUniqueImages` with the modified color object
     colorsWithUniqueImages[selectedColorIndex].images = selectedColor.images;
@@ -322,15 +242,7 @@ let deleteColorImage = (colorId, imageToDelete) => {
     } else {
         $("#no-images-text").addClass("d-none");
     }
-    
-
-    // let imagesInContainer = $("#images-container .draggable").length;
-
-    // if (imagesInContainer === 0) {
-    //     $("#no-images-text").removeClass("d-none");
-    // } else {
-    //     $("#no-images-text").addClass("d-none");
-    // }
+  
 };
 
 
@@ -421,23 +333,11 @@ let validateStep = async (successCallback) => {
     });
 };
 
-// $("#next-btn").click(() => {
-//     // console.log(carId)
-//     // validateStep(null, carId !== null, carId); // Pass `isEdit` as true if carId is available
-// });
+
 let cleanImageName = (image) => {
     return image.replaceAll("/", "").replaceAll(".", "").replaceAll(" ", "");
 };
 
-// let initializeColorsSp = () => {
-//     let tempArr = [];
-
-//     carColorsIds.forEach((id, index) => {
-//         tempArr.push(id);
-
-//         colorsSp.val(tempArr).trigger('change', true);
-//     });
-// };
 let initializeColorsSp = () => {
     let tempArr = [];
 

@@ -3,11 +3,14 @@
 namespace App\Http\Resources;
 
 use App\Enums\CarStatus;
+use App\Enums\FeatureOrPossibility;
+use App\Enums\PriceFieldStatus;
+use App\Models\Car;
+use App\Models\CarColorImage;
 use App\Models\CarOrder;
 use App\Models\Favorite;
 use App\Models\Order;
 use Auth;
-use DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,28 +24,62 @@ class CarResourse extends JsonResource
      */
     public function toArray($request)
     {
-         $statue=CarStatus::from($this->status)->name;
-        $order = Order::where('car_id', $this->id)->get();
-       
-
-        $financeOrdersCountPerCar = Order::where('car_id', $this->id)->whereHas('orderDetailsCar', function ($query) {
-            $query->where('payment_type', 'finance');
-        })->with('orderDetailsCar')->count();
-        $orderCount=$order->count();
-
-        $fav = Favorite::where('car_id', $this->id)
-        ->where(function ($query) {
-            $query->where(function ($subquery) {
-                // Check if the user is logged in
-                if (Auth::check()) {
-                    $subquery->where('vendor_id', Auth::user()->id);
-                } else {
-                    // If not logged in, use the IP address
-                    $subquery->where('device_ip', request()->ip());
-                }
-            });
+        $price_field_status = PriceFieldStatus::values()[$this->price_field_status]??'available_upon_request';
+        $features= $this->features->filter(function($feature){
+            return $feature->type === FeatureOrPossibility::feature->value; 
         })
-        ->exists();     
+        ->map(function ($feature) {
+            return [
+                'id' => $feature->id,
+                'title'=> $feature->title,
+                'description' => $feature->pivot->description,
+                'icon' => getImagePathFromDirectory($feature->icon,'Icons'),
+                
+
+            ];
+        })->toArray();
+        $possibilities = $this->features->filter(function($feature){
+            return $feature->type === FeatureOrPossibility::posibility->value; 
+        })
+        ->map(function ($feature) {
+            return [
+                'id' => $feature->id,
+                'title'=> $feature->title,
+                'description' => $feature->pivot->description,
+                'icon' => getImagePathFromDirectory($feature->icon,'Icons'),
+                
+
+            ];
+        })->toArray();
+       // Group colors by color_id with details
+        $groupedColors = $this->colors->mapToGroups(function ($color) {
+            return [
+                $color->id => [
+                    'color_id' => $color->id,
+                    'name' => $color->name,
+                    'hexa' => $color->hex_code,
+                    'image' => getImagePathFromDirectory($color->pivot->image, 'Cars'),
+                ],
+            ];
+        });
+
+        // First Array: Color details (color_id, name, hexa)
+        $colorDetails = $groupedColors->map(function ($group, $colorId) {
+            return [
+                'color_id' => $colorId,
+                'name' => $group->first()['name'],
+                'hexa' => $group->first()['hexa'],
+            ];
+        })->values()->toArray();
+
+        
+       
+        // $financeOrdersCountPerCar = Order::where('car_id', $this->id)->whereHas('orderDetailsCar', function ($query) {
+        //     $query->where('payment_type', 'finance');
+        // })->with('orderDetailsCar')->count();
+        // $orderCount=$order->count();
+
+     
         return [
             'id' => $this->id,
             'title' => Str::limit($this->name, 35),
@@ -57,24 +94,21 @@ class CarResourse extends JsonResource
             'fuel_typekey'=>$this->fuel_type,
             'gear_shifter'=>__($this->gear_shifter),
             'gear_shifterkey'=>$this->gear_shifter,
-            'is_fav'=> $fav,
             'year'=>$this->year,
-            'price'=>$this->price,
+            'price_field_status'=>__($price_field_status) === __('others') ? $this->other_description:__($price_field_status),
+            'price'=> $price_field_status === PriceFieldStatus::show_details->name ?$this->price:0,
             'supplier'=>__($this->supplier),
             'supplier_english'=>$this->supplier,
             'have_discount'=>$this->have_discount,
             'video_url'=>$this->video_url,
-            'discount_price'=>$this->discount_price,
-            'discount_percentage' => $this->discount_price != 0 ? round(($this->price - $this->discount_price) / $this->price * 100, 2): 0,
-            'selling_price'=>$this->getSellingPriceAttribute(),
+            'discount_price'=>$price_field_status === PriceFieldStatus::show_details->name ?$this->discount_price:0,
+           // 'discount_percentage' =>$price_field_status === PriceFieldStatus::show_details->name ? $this->discount_price != 0 ? round(($this->price - $this->discount_price) / $this->price * 100, 2): 0:null,
+            'selling_price'=>$price_field_status === PriceFieldStatus::show_details->name ?$this->getSellingPriceAttribute():0,
             'tax'=>settings()->getSettings('maintenance_mode') == 1 ? settings()->getSettings('tax') : 0,
-
-            'price_after_tax' => $this->getPriceAfterVatAttribute(),
-'statusCar' => $this->status == 1 ? 'pending' : ($this->status == 2 ? 'approved' : ($this->status == 3 ? 'rejected' : '')),
-'show_in_home_page' => (bool) $this->show_in_home_page,
+            'price_after_tax' =>$price_field_status === PriceFieldStatus::show_details->name ? $this->getPriceAfterVatAttribute():0,
+            'show_in_home_page' => (bool) $this->show_in_home_page,
             'car_style'=>$this->car_body,
-            'fuel_tank_capacity'=>$this->fuel_tank_capacity,
-           
+            'fuel_tank_capacity'=>$this->fuel_tank_capacity, 
             'brand' => [
                 'id' => $this->brand->id,
                 'title'=>$this->brand->name_ . getLocale(),
@@ -91,54 +125,12 @@ class CarResourse extends JsonResource
                 'title'=>$this->category->name_ . getLocale()??"",
             ],
             'city' => [
-                'id' => $this->city->id,
-                'title'=>$this->city->name,
+                'id' => $this->city->id??' ',
+                'title'=>$this->city->name??' ',
             ],
-
-            'features' => $this->features->map(function ($feature) {
-                return [
-                    'id' => $feature->id,
-                    'title' => $feature['title_' . getLocale()],
-                    'description' => $feature['description_' . getLocale()],
-                    'icon' => $feature->icon,
-                    
-                ];
-            }),
-            'possibilities' => $this->possibilities->map(function ($possibility) {
-                return [
-                    'id' => $possibility->id,
-                    
-                    'title' => $possibility['title_' . getLocale()], // Check the concatenation here
-                    'description' => $possibility['description_' . getLocale()],
-                    'icon' => $possibility->icon,
-
-                    
-                ];
-            }),
-            'main_image'=>getImagePathFromDirectory($this->image,'Cars'),
-
-            'color'=>$this->color,
-        
-            // 'color' => [
-            //     'id'=>$this->color->id,
-            //     'title'=>$this->color->name,
-            // ],
-            'reports'=>[
-                'viewers'=>$this->viewers,
-                'financerequests'=>$financeOrdersCountPerCar,
-                'Orders'=>$orderCount,
-            ],
-            'images_ads' => $this->images->map(function ($image) {
-                return [
-                    'url' => getImagePathFromDirectory($image->image, 'Cars'),
-                    'id' => $image->id
-                ];
-            })->toArray(),
-
-            'images' => $this->images->map(function ($image) {
-                return getImagePathFromDirectory($image->image, 'Cars');
-            })->toArray()
-            
+            'features' =>!empty($features) ? $features : null,
+            'possibilities'=>!empty($possibilities) ? $possibilities :null,  
+            'colors' => !empty($colorDetails) ? $colorDetails   :null,
         ];
     }
 }

@@ -99,12 +99,13 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::get('/social', 'Api\SettingController@social');
     Route::get('/cars-news', 'Api\SettingController@cars_news');
     Route::get('/contact-us', 'Api\SettingController@contact_us');
-    Route::get('/about', 'Api\SettingController@about');
+    Route::get('/about', 'Api\SettingController@aboutUs');
     Route::get('/filter_count', 'Api\SettingController@filter_count');
 
     Route::get('/offer', 'Api\SettingController@offer');
     Route::get('/setting', 'Api\SettingController@setting');
-    Route::get('/terms-condition-privacy', 'Api\SettingController@termsCondition');
+    Route::get('/privacy', 'Api\SettingController@privacy');
+    Route::get('/terms-condition', 'Api\SettingController@termsCondition');
     Route::get('/settings', 'Api\SettingController@setting');
     Route::get('/allsettings', 'Api\SettingController@AllDescription');
     Route::get('/cashing', 'Api\SettingController@cach');

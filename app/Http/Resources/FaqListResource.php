@@ -3,8 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\CarResourse;
-class OffersResource extends JsonResource
+
+class FaqListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,16 +14,9 @@ class OffersResource extends JsonResource
      */
     public function toArray($request)
     {
-
         return [
-            "id"=>$this->id,
-            // "image"=>getImagePathFromDirectory($this->image,'Offers') ,
-            "cover"=> getImagePathFromDirectory($this->cover,'Offers'),
-            "title"=> $this->title,
-            "description"=> $this->description,
-     
-
+            'question' => $this->question,
+            'answer' => $this->answer,
         ];
-
     }
 }

@@ -7,6 +7,9 @@ use App\Models\News;
 use App\Models\Offer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BranchResource;
+use App\Http\Resources\FaqListResource;
+use App\Models\Branch;
 use App\Models\Car;
 use Artisan;
 
@@ -16,6 +19,7 @@ class SettingController extends Controller
     {
         try
         {
+            $branches  = Branch::get();
             $data = [
                 'logo' => getImagePathFromDirectory(settings()->getSettings('logo'), 'Settings'),
                 'description' => settings()->getSettings('footer_text_' . getLocale()),
@@ -28,7 +32,9 @@ class SettingController extends Controller
                 'tiktok' => settings()->getSettings('tiktok'),
                 'whatsapp' => settings()->getSettings('whatsapp_url'),
                 'working_time' => settings()->getSettings('working_time'),
-
+                'email'=>settings()->getSettings('email'),
+                'address'=>settings()->getSettings('address'),
+                'branches' => !$branches->isEmpty() ?  BranchResource::collection($branches) : ""
             ];
             return $this->success(data: $data);
         } catch (\Exception $e)
@@ -36,6 +42,7 @@ class SettingController extends Controller
             return $this->failure(message: $e->getMessage());
         }
     }
+
 
     public function finance()
     {
@@ -147,28 +154,14 @@ class SettingController extends Controller
         }
     }
 
-    public function about()
-    {
-        try
-        {
-            $data = [
-                'description' => settings()->getSettings('about_us_' . getLocale()),
-                'description_card' => settings()->getSettings('about_us_description_' . getLocale()),
-                'card_left' => settings()->getSettings('about_us_card_left_' . getLocale()),
-                'card_right' => settings()->getSettings('about_us_card_right_' . getLocale()),
-                'text_card_left' => settings()->getSettings('about_us_section_card_left_' . getLocale()),
-                'text_card_right' => settings()->getSettings('about_us_section_card_right_' . getLocale()),
-                'image' => getImagePathFromDirectory(settings()->getSettings('who_code_car_photo'), 'Settings'),
-                'icon_card_left' => getImagePathFromDirectory(settings()->getSettings('about_us_card_left_icon'), 'Settings'),
-                'icon_card_right' => getImagePathFromDirectory(settings()->getSettings('about_us_card_right_icon'), 'Settings'),
-                'faq' => Faq::get(),
-            ];
- 
-            return $this->success(data: $data);
-        } catch (\Exception $e)
-        {
-            return $this->failure(message: $e->getMessage());
-        }
+    public function aboutUs(){
+        return $this->success(data:[
+            'title'=>settings()->getSettings('title_' . getLocale()),
+            'description'=> settings()->getSettings('description_'.getLocale()),
+            'image'=> getImagePathFromDirectory(settings()->getSettings('image_about_us'),'Settings'),
+            'cover'=>getImagePathFromDirectory(settings()->getSettings('cover_about_us'),'Settings'),
+            'faqs'=>FaqListResource::collection(Faq::all())
+        ]);
     }
     public function filter_count(){
         $car=Car::get();
@@ -220,13 +213,24 @@ class SettingController extends Controller
         try
         {
             $data = [
-                'privacy' => settings()->getSettings('privacy_policy_' . getLocale()),
+              
                 'terms_and_conditions'=>settings()->getSettings('terms_and_conditions_' . getLocale()),
              ];
             return $this->success(data: $data);
         } catch (\Exception $e)
         {
             return $this->failure(message: $e->getMessage());
+        }
+    }
+    
+    public function privacy(){
+        try{
+            $data = [
+                'privacy' => settings()->getSettings('privacy_policy_' . getLocale()),
+            ];
+            return $this->success(data:$data);
+        }catch(\Exception $e){
+            return $this->failure(message:$e->getMessage());
         }
     }
 

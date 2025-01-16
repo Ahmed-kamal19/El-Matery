@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Employee;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use App\Rules\PasswordValidate;
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,7 +28,7 @@ class StoreEmployeeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'      => ['required', 'string', 'max:255',new NotNumbersOnly()],
+            'name'      => ['required', 'string', 'max:255',new NotNumbersOnly(),new ExistButDeleted(new Employee())],
             'phone'     => ['required','numeric','unique:employees,phone', 'regex:/^((\+|00)966|0)?5[0-9]{8}$/'],
             'password' => ['required', 'string', 'min:8', 'max:255',new PasswordValidate(), 'confirmed'],
             'password_confirmation' => ['required','same:password'],

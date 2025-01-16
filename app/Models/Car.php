@@ -16,7 +16,7 @@ class Car extends Model
     use HasFactory,SoftDeletes;
     protected $table = 'cars';
     protected $guarded            = [];
-    protected $appends            = ['name', 'status_name','selling_price', 'price_after_vat'];
+    protected $appends            = ['name','selling_price', 'price_after_vat'];
     protected $casts              = ['created_at' => 'date:Y-m-d', 'updated_at' => 'date:Y-m-d'];
 
     static array $carCardColumns  = [ 'id', 'name_ar' , 'name_en' , 'is_new', 'year',
@@ -42,10 +42,7 @@ class Car extends Model
 
 
 
-    public function getStatusNameAttribute()
-    {
-        return __(ucfirst(CarStatus::tryFrom($this->attributes['status'])->name));
-    }
+   
     public function images()
     {
     return $this->hasMany(CarImage::class, 'car_id');
@@ -53,12 +50,12 @@ class Car extends Model
 
     public function getNameAttribute()
     {
-        return $this->attributes['name_' . getLocale()];
+        return $this->attributes['name_' . getLocale()]??null;
     }
 
     public function priceOtherText($lang)
     {
-        return $this->price_field_status == 'other' ? json_decode($this->attributes['price_field_value'], true)['text_' . $lang] : '';
+        return $this->attributes['price_field_status'] == 'other' ? json_decode($this->attributes['price_field_value'], true)['text_' . $lang] : '';
     }
 
     public function getPriceFieldValueAttribute()
@@ -118,7 +115,11 @@ class Car extends Model
 
     public function getSellingPriceAttribute()
     {
-        return $this->have_discount && $this->discount_price ? $this->discount_price : $this->price;
+        $haveDiscount = $this->attributes['have_discount'] ?? false;
+        $discountPrice = $this->attributes['discount_price'] ?? 0;
+        $price = $this->attributes['price'] ?? 0;
+
+        return $haveDiscount && $discountPrice ? $discountPrice : $price;
     }
 
     // public function getPriceAfterVatAttribute()
@@ -133,12 +134,16 @@ class Car extends Model
     public function getPriceAfterVatAttribute()
     {
        
-      return round($this->attributes['price'] * ( settings()->getSettings('tax') / 100 + 1));
+      return round($this->attributes['price']??0 * ( settings()->getSettings('tax') / 100 + 1));
         
     }
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+    public function getPriceAttribute()
+    {
+        return $this->attributes['price'] ?? 0;
     }
 
 

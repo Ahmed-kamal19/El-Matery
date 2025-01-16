@@ -42,10 +42,10 @@ class BranchController extends Controller
         $this->authorize('update_branches');
 
         $cities         = City::select('id','name_' . getLocale() )->get();
-         [ $lat , $lng ] = getCoordinates($branch['google_map_url']);
+        //  [ $lat , $lng ] = getCoordinates($branch['google_map_url']);
 
 
-        return view('dashboard.branches.edit',compact('branch','cities','lat','lng'));
+        return view('dashboard.branches.edit',compact('branch','cities'));
     }
 
     public function show(Branch $branch)

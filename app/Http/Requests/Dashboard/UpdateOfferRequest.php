@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Offer;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,8 +29,8 @@ class UpdateOfferRequest extends FormRequest
         $offer = request()->route('offer');
 
         return [
-            'title_ar'          => ['required','string','max:255',"unique:offers,title_ar,$offer->id",new NotNumbersOnly()],
-            'title_en'          => ['required','string','max:255',"unique:offers,title_en,$offer->id",new NotNumbersOnly()],
+            'title_ar'          => ['required','string','max:255',"unique:offers,title_ar,$offer->id",new NotNumbersOnly(),new ExistButDeleted(new Offer())],
+            'title_en'          => ['required','string','max:255',"unique:offers,title_en,$offer->id",new NotNumbersOnly(),new ExistButDeleted(new Offer())],
             'description_ar'    => ['required','string'],
             'description_en'    => ['required','string'],
             'cars'              => ['required','array','min:1'],

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Branch;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,8 +29,8 @@ class UpdateBranchRequest extends FormRequest
         $branch = request()->route('branch');
 
         return [
-            'name_ar'       => ['required' , 'string' ,' unique:branches,name_ar,' . $branch->id , 'max:255',new NotNumbersOnly()],
-            'name_en'       => ['required' , 'string' ,' unique:branches,name_en,' . $branch->id , 'max:255',new NotNumbersOnly()],
+            'name_ar'       => ['required' , 'string' ,' unique:branches,name_ar,' . $branch->id , 'max:255',new NotNumbersOnly(),new ExistButDeleted(new Branch())],
+            'name_en'       => ['required' , 'string' ,' unique:branches,name_en,' . $branch->id , 'max:255',new NotNumbersOnly(),new ExistButDeleted(new Branch())],
             'address_ar'    => 'required | string | max:255 | unique:branches,address_ar,' . $branch->id,
             'address_en'    => 'required | string | max:255 | unique:branches,address_en,' . $branch->id,
              'phone'     => ['required','numeric','unique:branches,phone,' . $branch->id,'regex:/^((\+|00)966|0)?5[0-9]{8}$/'],

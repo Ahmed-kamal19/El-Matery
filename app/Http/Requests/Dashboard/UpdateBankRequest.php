@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Bank;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,8 +29,8 @@ class UpdateBankRequest extends FormRequest
         $bank = request()->route('bank');
 
         return [
-            'name_ar'    => ['required' , 'string' , 'max:255' , 'unique:banks,name_ar,' . $bank->id,new NotNumbersOnly()],
-            'name_en'    => ['required' , 'string' , 'max:255' , 'unique:banks,name_en,' . $bank->id,new NotNumbersOnly()],
+            'name_ar'    => ['required' , 'string' , 'max:255' , 'unique:banks,name_ar,' . $bank->id,new NotNumbersOnly(),new NotNumbersOnly(),new ExistButDeleted(new Bank())],
+            'name_en'    => ['required' , 'string' , 'max:255' , 'unique:banks,name_en,' . $bank->id,new NotNumbersOnly(),new NotNumbersOnly(),new ExistButDeleted(new Bank())],
             'image'      => 'nullable|mimes:webp|max:2048'
         ];
     }

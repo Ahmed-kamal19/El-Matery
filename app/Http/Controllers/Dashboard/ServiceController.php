@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ServiceController extends Controller
 {
@@ -51,8 +53,8 @@ class ServiceController extends Controller
         $this->authorize('create_services');
 
         $data = $request->validate([
-            'name_ar'           => 'required | string |  max:255 | unique:services',
-            'name_en'           => 'required | string |  max:255 | unique:services',
+            'name_ar'           =>[ 'required', ' string' ,'  max:255' ,' unique:services' , new ExistButDeleted(new Service())],
+            'name_en'           => [ 'required', ' string' ,'  max:255' ,' unique:services' , new ExistButDeleted(new Service())],
             'title_ar'          => 'nullable | string |  max:255',
             'title_en'          => 'nullable | string |  max:255',
             'description_ar'    => 'required | string',
@@ -83,8 +85,8 @@ class ServiceController extends Controller
         $this->authorize('update_services');
 
         $data = $request->validate([
-            'name_ar'           => 'required | string |  max:255 | unique:services,id,' . $service->id,
-            'name_en'           => 'required | string |  max:255 | unique:services,id,' . $service->id,
+            'name_ar'           => ['required' , 'string' ,  'max:255',   Rule::unique('services', 'name_ar')->ignore($service->id) ,new ExistButDeleted(new Service())], 
+            'name_en'           => ['required' , 'string' ,  'max:255', Rule::unique('services', 'name_ar')->ignore($service->id) ,new ExistButDeleted(new Service())],
             'title_ar'          => 'nullable | string |  max:255',
             'title_en'          => 'nullable | string |  max:255',
             'description_ar'    => 'required | string',

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\StoreBankRequest;
+use App\Http\Requests\Dashboard\UpdateBankRequest;
 use App\Models\Bank;
 use App\Models\Sector;
 use App\Rules\NotNumbersOnly;
@@ -27,7 +29,7 @@ class BankController extends Controller
         return view('dashboard.banks.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreBankRequest $request)
     {
 
         $this->authorize('create_banks');
@@ -59,7 +61,7 @@ class BankController extends Controller
         abort(404);
     }
 
-    public function update(Request $request, Bank $bank)
+    public function update(UpdateBankRequest $request, Bank $bank)
     {
         $this->authorize('update_banks');
 

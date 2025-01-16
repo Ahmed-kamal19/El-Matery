@@ -279,8 +279,7 @@
 @endsection
 @push('scripts')
     <script>
-        // let lat = {{ $lat }};
-        // let lng = {{ $lng }};
+    
     </script>
     {{-- <script src="{{ asset('js/map_create.js') }}"></script> --}}
     {{-- <script

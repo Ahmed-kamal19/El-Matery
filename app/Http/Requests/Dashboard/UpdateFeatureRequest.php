@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Dashboard;
 
 use App\Enums\FeatureOrPossibility;
+use App\Models\Feature;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -28,8 +30,8 @@ class UpdateFeatureRequest extends FormRequest
     {
         $feature = request()->route('feature');
         return [
-             'title_ar'    => ['required' , 'string' ,'unique:features,title_ar,' . $feature->id, 'max:255' ,new NotNumbersOnly()],
-             'title_en'    => ['required' , 'string' ,'unique:features,title_en,' . $feature->id, 'max:255' ,new NotNumbersOnly()],
+             'title_ar'    => ['required' , 'string' ,'unique:features,title_ar,' . $feature->id, 'max:255' ,new NotNumbersOnly(),new ExistButDeleted(new Feature())],
+             'title_en'    => ['required' , 'string' ,'unique:features,title_en,' . $feature->id, 'max:255' ,new NotNumbersOnly(),new ExistButDeleted(new Feature())],
              'icon'        => ['nullable' , 'file'   ,'image' ,'mimes:png,jpg,svg','unique:features,icon,'.$feature->id,'max:4050'],
              'type'        => ['required', Rule::in(array_keys(FeatureOrPossibility::values()))],
         ];

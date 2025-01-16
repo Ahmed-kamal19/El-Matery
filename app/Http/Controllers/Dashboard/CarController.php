@@ -503,7 +503,9 @@ private function prepareFeatures($features)
 
     }
 
-    public function storeBrandCarsTypeCount($carType, $brandId)
+    public function 
+    
+    storeBrandCarsTypeCount($carType, $brandId)
     {
         $brand = Brand::find($brandId);
 

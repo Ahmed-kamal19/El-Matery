@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Career;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,8 +27,8 @@ class UpdateCareerRequest extends FormRequest
     public function rules()
     {
         return [
-            'title_ar'             => ['required', 'string', 'max:255',new NotNumbersOnly()],
-            'title_en'             => ['required', 'string', 'max:255',new NotNumbersOnly()],
+            'title_ar'             => ['required', 'string', 'max:255',new NotNumbersOnly(),new ExistButDeleted(new Career())],
+            'title_en'             => ['required', 'string', 'max:255',new NotNumbersOnly(),new ExistButDeleted(new Career())],
             'work_type'            => ['required', 'in:full-time,part-time,remotely'],
             // 'address'           => ['required','string','max:255'],
             // 'short_description' => ['required','string'],

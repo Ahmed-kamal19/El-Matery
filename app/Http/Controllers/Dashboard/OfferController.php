@@ -32,7 +32,7 @@ class OfferController extends Controller
 
        // $cars = Car::select('id','name_' . getLocale(),'main_image')->get();
       
-       $cars = Car::select('id','name_' . getLocale(),'main_image')->where('publish',1)->where('status',CarStatus::approved->value)->get();
+       $cars = Car::select('id','name_' . getLocale(),'main_image')->where('publish',1)->get();
     
 
 
@@ -44,7 +44,8 @@ class OfferController extends Controller
     {
         $this->authorize('update_offers');
 
-        $cars = Car::select('id','name_' . getLocale(),'main_image')->where('publish',1)->where('status',CarStatus::approved->value)->get();
+        $cars = Car::select('id','name_' . getLocale(),'main_image')->where('publish',1)->get();
+
         // $cars = Car::select('id','name_' . getLocale() , 'main_image')->get();
 
 

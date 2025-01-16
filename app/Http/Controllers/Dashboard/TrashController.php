@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Car;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class TrashController extends Controller
@@ -31,10 +33,35 @@ class TrashController extends Controller
     public function forceDelete($modelName, $id)
     {
         $this->authorize('delete_recycle_bin');
+       
+        $modelClass = 'App\\Models\\' . $modelName;
+        if (!class_exists($modelClass)) {
+            abort(404, 'Model not found.');
+        }
 
-        $model = app('App\\Models\\' . $modelName);
+        // Get the model instance with soft-deleted records
+        $model = $modelClass::onlyTrashed()->find($id);
+        if (!$model) {
+            abort(404, 'Record not found in recycle bin.');
+        }
 
-        $model->onlyTrashed()->find($id)->forceDelete();
+        // Handle specific model types
+        if ($modelName === 'Car') {
+            if ($model->main_image) {
+                deleteImage($model->main_image, 'Cars');
+            }
+        } elseif ($modelName === 'Order') {
+            if ($model->Insurance_Image) {
+                deleteImage($model->Insurance_Image, 'Orders');
+            }
+            if ($model->Hr_Letter_Image) {
+                deleteImage($model->Hr_Letter_Image, 'Orders');
+            }
+        }
+
+        // Force delete the record
+        $model->forceDelete();
+
     }
 
     public function restore($modelName, $id)
@@ -43,6 +70,7 @@ class TrashController extends Controller
         
         $model = app('App\\Models\\' . $modelName);
         $resultRestore=$model->onlyTrashed()->find($id)->restore();
+       
         if($modelName == "CarModel" && $resultRestore)
         {
             
@@ -55,35 +83,32 @@ class TrashController extends Controller
             return redirect()->route('dashboard.categories.index');
 
         }
-        else if($modelName == "Feature" && $resultRestore)
-        {
-            
-            return redirect()->route('dashboard.features.index');
-
-        }
-        else if($modelName == "Brand" && $resultRestore)
-        {
-            
-            return redirect()->route('dashboard.brands.index');
-
-        }
+      
         else if($modelName == "City" && $resultRestore)
         {
             
             return redirect()->route('dashboard.cities.index');
 
         }
-        else if($modelName == "Color" && $resultRestore)
-        {
-            
-            return redirect()->route('dashboard.colors.index');
-
-        }
+      
         else if($modelName == 'Car')
         {
             $car = $model->find($id);
-            ( new CarController)->storeBrandCarsTypeCount($car['is_new'], $car['brand_id']);
+         
+          
+           ( new CarController)->storeBrandCarsTypeCount($car['is_new'], $car['brand_id']);
         }
+        else if($modelName =='Branch' && $resultRestore)
+        {
+            return redirect()->route( 'dashboard.branches.index' );
+        }
+        else
+        {
+
+            $dynamicRoute = 'dashboard.' . lcfirst($modelName) . 's.index';
+            return redirect()->route(  $dynamicRoute);
+        }
+
     }
 
 }

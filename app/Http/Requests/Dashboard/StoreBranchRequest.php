@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Branch;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,8 +27,8 @@ class StoreBranchRequest extends FormRequest
     public function rules()
     {
         return [
-            'name_ar'       => ['required' , 'string' ,' unique:branches,name_ar', 'max:255',new NotNumbersOnly()],
-            'name_en'       => ['required' , 'string' ,' unique:branches,name_en', 'max:255',new NotNumbersOnly()],
+            'name_ar'       => ['required' , 'string' ,' unique:branches,name_ar', 'max:255',new NotNumbersOnly(),new ExistButDeleted(new Branch())],
+            'name_en'       => ['required' , 'string' ,' unique:branches,name_en', 'max:255',new NotNumbersOnly(),new ExistButDeleted(new Branch())],
             'address_ar'    => 'required | string | max:255 ',
             'address_en'    => 'required | string | max:255 ',
             'phone'     => ['required','numeric','unique:branches,phone', 'regex:/^((\+|00)966|0)?5[0-9]{8}$/'],

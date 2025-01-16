@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Employee;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use App\Rules\PasswordValidate;
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,7 +29,7 @@ class UpdateEmployeeRequest extends FormRequest
     {
         $employee = request()->route('employee');
          return [
-            'name'     => ['required', 'string', 'max:255',new NotNumbersOnly()],
+            'name'     => ['required', 'string', 'max:255',new NotNumbersOnly()],new ExistButDeleted(new Employee()),
             'phone'    => ['required','numeric','unique:employees,phone,' . $employee->id,'regex:/^((\+|00)966|0)?5[0-9]{8}$/'],
             'password' => ['nullable','exclude_if:password,null','string','min:8','max:255',new PasswordValidate(),'confirmed'],
             'password_confirmation' => ['nullable','exclude_if:password_confirmation,null','same:password'],

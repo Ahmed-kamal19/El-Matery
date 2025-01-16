@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Offer;
+use App\Rules\ExistButDeleted;
 use App\Rules\NotNumbersOnly;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,8 +27,8 @@ class StoreOfferRequest extends FormRequest
     public function rules()
     {
         return [
-            'title_ar'          => ['required','string','max:255','unique:offers',new NotNumbersOnly()],
-            'title_en'          => ['required','string','max:255','unique:offers',new NotNumbersOnly()],
+            'title_ar'          => ['required','string','max:255','unique:offers',new NotNumbersOnly(),new ExistButDeleted(new Offer())],
+            'title_en'          => ['required','string','max:255','unique:offers',new NotNumbersOnly(),new ExistButDeleted(new Offer())],
             'description_ar'    => ['required','string'],
             'description_en'    => ['required','string'],
             'cars'              => ['required','array','min:1'],

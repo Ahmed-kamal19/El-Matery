@@ -34,7 +34,7 @@ class StoreFeatureRequest extends FormRequest
         return [
            
             'title_ar'    => ['required' , 'string' ,'unique:features', 'max:255' ,new NotNumbersOnly(),new ExistButDeleted(new Feature())],
-            'title_en'    => ['required' , 'string' ,'unique:features', 'max:255' ,new NotNumbersOnly()],
+            'title_en'    => ['required' , 'string' ,'unique:features', 'max:255' ,new NotNumbersOnly(),new ExistButDeleted(new Feature())],
             'icon'       => ['required' , 'file'   ,'image' ,'mimes:png,jpg,svg'],
             'type'       => ['required', Rule::in(array_keys(FeatureOrPossibility::values()))],
         ];

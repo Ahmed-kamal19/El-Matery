@@ -373,7 +373,7 @@ public function companyCash(Request $request)
             'car_id' => __("You must select a car")
         ]);
     }
-
+  
     $order = Order::create([
         'car_id' => $request->car_id,
         'color_id' => $request->color_id,

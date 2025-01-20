@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model
 {
     use HasFactory,SoftDeletes;
-    protected $fillable = ['id','name','email', 'phone','sex','employee_id','price','nationality_id','identity_no', 'car_name', 'car_id', 'city_id', 'type', 'identity_Card', 'License_Card','Hr_Letter_Image','Insurance_Image','status_id', 'client_id','opened_at','opened_by','birth_date'];
+    protected $fillable = ['id','name','email', 'quantity','phone','sex','employee_id','price','nationality_id','identity_no', 'car_name', 'car_id', 'city_id', 'type', 'identity_Card', 'License_Card','Hr_Letter_Image','Insurance_Image','status_id', 'client_id','opened_at','opened_by','birth_date'];
     protected $casts   = [
         'created_at' => 'date:Y-m-d',
         'updated_at' => 'date:Y-m-d'
@@ -49,6 +49,11 @@ class Order extends Model
     {
         return $this->belongsTo(Employee::class,'opened_by');
     }
+    public function opened()
+    {
+        return $this->hasOne(Employee::class ,'id','opened_by');
+    }
+    
     
     //   public function finance_approval()
     // {

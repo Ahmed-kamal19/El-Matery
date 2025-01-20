@@ -580,7 +580,7 @@
                                                     <div class="d-flex justify-content-end align-items-center">
                                                         <!--be  gin::Title-->
                                                         <div class="ms-5">
-                                                            <a href="{{route('dashboard.cars.show',$order->car->id)}}"
+                                                            <a href="{{route('dashboard.cars.show',$order->car->id)}}" target="_blank"
                                                                 class="fw-boldest text-gray-600 text-hover-primary">{{ $order->car->name }}</a>
                                                         </div>
                                                         <!--end::Title-->
@@ -647,49 +647,12 @@
                                                     </div>
                                                 </td>
 
-                                                <td>
-                                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                        <div class="modal-dialog">
-                                                          <div class="modal-content">
-                                                            <div class="modal-header">
-                                                              <h5 class="modal-title" id="exampleModalLabel">chassis</h5>
-                                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                               <ul>
-                                                                @foreach ($carStores as $carStore )
-                                                                 <li> {{$carStore->chassis }}
-                                                                </li>
-                                                                 @endforeach
- 
-                                                              </ul>
-                                                            </div>
-                                                            <div class="modal-footer">
-
-
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                      
-                                                      
-                                                </td>
+                                            
                                             </tr>
 
 
-                                            <td class="text-start fw-boldest" colspan="4">{{ __('chassis') }}
-                                            </td>
-                                            <td>
-                                                <div class="d-flex justify-content-end align-items-center">
-                                                    <!--be  gin::Title-->
-                                                    <div class="ms-5">
-                                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                            {{__('show Chassis')}}
-                                                        </button>
-                                                    </div>
-                                                    <!--end::Title-->
-                                                </div>
-                                            </td>
+                                          
+                                           
 @endif
 
 

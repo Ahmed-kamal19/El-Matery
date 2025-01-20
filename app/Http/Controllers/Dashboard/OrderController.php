@@ -22,27 +22,96 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-         $this->authorize('view_orders');
 
-        if ($request->ajax())
-        {
-
+        $this->authorize('show_orders');
+        $params = $request->all();
+    
+        if ($request->ajax()) {
             $user = Employee::find(Auth::user()->id);
-
-            if ($user->roles->contains('id', 1))
-            {
-                $data = getModelData(model: new Order(), andsFilters: [['verified', '=', 1],['status_id', '!=', 7]], relations: ['employee' => ['id', 'name']]);
-            } else
-            {
-                // User does not have role 1, return orders where employee_id is the user's ID
-                $data = getModelData(model: new Order(), andsFilters: [['employee_id', '=', $user->id], ['verified', '=', 1],['status_id', '!=', 7]], relations: ['employee' => ['id', 'name']]);
-
+    
+            // Initialize the query builder
+            $data = Order::query();
+    
+            // Check user permissions and set up relations
+            if ($user->roles()->whereHas('abilities', function ($query) {
+                $query->where('name', 'view_orders');
+            })->exists()) {
+                $data->with(['opened:id,name']);
+            } elseif ($user->roles()->whereHas('abilities', function ($query) {
+                $query->where('name', 'view your order_orders');
+            })->exists()) {
+                $data->with(['bank:id,name_ar', 'opened:id,name'])
+                    ->where('employee_id', auth()->user()->id);
             }
-            return response()->json($data);
-        }
+    
+            // Apply filtering by `request->columns[5]`
+            if (!empty($request->columns[5]['search']['value'])) {
+                $filterValue = $request->columns[5]['search']['value'];
+    
+                if ($filterValue == 'all') {
+                    // Retrieve all data without any filter on status_id
+                    $data->where('status_id','!=','12');
+                } else {
+                    if (is_numeric($filterValue)) {
+                        // Filter by status_id (excluding status_id = 8)
+                        $data->where('status_id', $filterValue)
+                            ->where('status_id', '!=', '12');
+                    } else {
+                        // Filter by related `opened.name`
+                        $data->whereHas('opened', function ($query) use ($filterValue) {
+                            $query->where('name', 'like', "%$filterValue%")
+                                ->where('status_id', '!=', 12); // Exclude status_id = 8 from the search
+                        });
+                    }
+                }
+            } else {
+                // No filter applied, so fetch all orders including status_id = 8
+                // Ensure no restriction on status_id
+                $data->where('status_id','!=','12');
+            }
 
+            if (!empty($request->columns[7]['search']['value'])) {
+                $data->whereHas('orderDetailsCar', function ($query) use ($request) {
+                    $query->where('type', $request->columns[7]['search']['value']);
+                });
+            }
+            
+            if (!empty($request->columns[6]['search']['value'])) {
+                $dateRange = explode(' - ', $request->columns[6]['search']['value']); // Split the range by " - "
+            
+                if (count($dateRange) === 2) {
+                    $startDate = $dateRange[0];
+                    // Add time '23:59:59' to the end date to cover the entire day
+                    $endDate = $dateRange[1] . ' 23:59:59';
+            
+                    $data->whereBetween(DB::raw('DATE(created_at)'), [$startDate, $endDate]);
+                    
+                }
+            }
+            if (!empty($request->search['value'])) {
+                  
+            
+                $data->where('name', 'LIKE', '%' . $request->search['value'] . '%');
+                    
+             }
+
+
+            
+            $data->orderBy('created_at', 'desc');
+
+            // Paginate the data
+            $response = [
+                "recordsTotal" => $data->count(),
+                "recordsFiltered" => $data->count(),
+                'data' => $data->skip($params['start'])->take($params['length'])->get(),
+            ];
+    
+            return response()->json($response);
+        }
+    
         return view('dashboard.orders.index');
     }
+    
     
      public function orders_not_approval(Request $request)
     {
@@ -71,21 +140,20 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $precentage_approve = !$order['orderDetailsCar']['having_loan'] ? 45 : 65;
-        $commitment         = $order['orderDetailsCar']['commitments'];
-        $salary             = $order['orderDetailsCar']['salary'];
-        if ($commitment > $salary)
-        {
-            $approve_amount = 0;
-        } else
-        {
-            $approve_amount = ($salary - $commitment) * ($precentage_approve / 100);
-        }
+        //  $commitment         = $order['orderDetailsCar']['commitments'];
+        // $salary             = $order['orderDetailsCar']['salary'];
+        // if ($commitment > $salary)
+        // {
+        //     $approve_amount = 0;
+        // } else
+        // {
+        //     $approve_amount = ($salary - $commitment) * ($precentage_approve / 100);
+        // }
 
         $employees = Employee::select('id', 'name')->whereHas('roles.abilities', function ($query) {
-            $query->where('name', 'received_order_received');
+            $query->where('name', 'show_orders');
         })->get();
-
+         $userAssign = $order->employee;
         $employee = Employee::find($order->employee_id) ?? null;
 
         $this->authorize('show_orders');
@@ -113,8 +181,9 @@ class OrderController extends Controller
                 return $th;
             }
         }
+        // dD( $userAssign->name);
 
-        return view('dashboard.orders.show', compact('order', 'organization_activity', 'organization_type', 'employees', 'employee', 'precentage_approve', 'approve_amount'));
+        return view('dashboard.orders.show', compact('order','userAssign', 'organization_activity', 'organization_type', 'employees', 'employee'));
     }
 
 

@@ -44,7 +44,7 @@ class FavoriteController extends Controller
             ->delete();
          $carUnFavoriteData = Car::whereIn('id', $existingCarIds)->get();
 
-            return $this->success(message:__('Like has been successfully unliked'),data:['unavailiable_ids'=>array_values($deletedCarIds),'cars'=>CarResource::collection($carUnFavoriteData)]);
+            return $this->success(data:['unavailiable_ids'=>array_values($deletedCarIds),'cars'=>CarResource::collection($carUnFavoriteData)]);
         } else {
             $request['device_ip']=$request->getClientIp(); 
             $data = array_map(function ($carId) use ($request) {
@@ -59,7 +59,7 @@ class FavoriteController extends Controller
             
             $favorites=Favorite::insert($data);
             $carFavoriteData = Car::whereIn('id',$existingCarIds)->get();
-            return $this->success(message:__("Like successfully"),data: ['unavailiable_ids'=>array_values($deletedCarIds),'cars'=>CarResource::collection($carFavoriteData)]);
+            return $this->success(data: ['unavailiable_ids'=>array_values($deletedCarIds),'cars'=>CarResource::collection($carFavoriteData)]);
         }
     }
     

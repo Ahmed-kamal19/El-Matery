@@ -1,4 +1,16 @@
+
 @extends('partials.dashboard.master')
+@push('styles')
+    <link href="{{ asset('dashboard-assets/css/wizard' . (isArabic() ? '.rtl' : '') . '.css') }}" rel="stylesheet"
+        type="text/css" />
+    <style>
+        .separator-dashed {
+            border-color: #e4e6ef !important;
+        }
+    </style>
+@endpush
+
+
 @section('content')
     <!-- begin :: Subheader -->
     <div class="toolbar">
@@ -11,7 +23,7 @@
 
                 <!-- begin :: Title -->
                 <h1 class="d-flex align-items-center text-dark fw-bolder fs-3 my-1"><a
-                        href="{{ route('orders.index.index') }}"
+                       href="{{ route('dashboard.orders.index') }}"
                         class="text-muted text-hover-primary">{{ __('Orders') }}</a></h1>
                 <!-- end   :: Title -->
 
@@ -46,6 +58,7 @@
                     <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab"
                         href="#kt_ecommerce_sales_order_summary">{{ __('Order Summary') }}</a>
                 </li>
+                
                 <!--end:::Tab item-->
                 <!--begin:::Tab item-->
                 <li class="nav-item">
@@ -60,7 +73,8 @@
             <div class="w-200px">
 
                 <!--begin::Select2-->
-                <select class="form-select" data-control="select2" data-hide-search="false" id="order-status-sp"
+                @if($order['status_id'] == '9' ||$order['status_id'] == '11' )
+                 <select class="form-select" data-control="select2" data-hide-search="false" disabled name="status" id="order-status-sp"
                     data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" data-placeholder="{{ __('Status') }}">
                     @foreach (settings()->getOrdersStatus() ?? [] as $status)
                         <option value="{{ $status['id'] . '_' . $status['name_en'] }}"
@@ -68,23 +82,38 @@
                             {{ $status['name_' . getLocale()] }}</option>
                     @endforeach
                 </select>
+
+                @else
+                <select class="form-select" data-control="select2" data-hide-search="false"   name="status" id="order-status-sp"
+                data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}" data-placeholder="{{ __('Status') }}">
+                @foreach (settings()->getOrdersStatus() ?? [] as $status)
+                    <option value="{{ $status['id'] . '_' . $status['name_en'] }}"
+                        {{ $status['id'] == $order['status_id'] ? 'selected' : '' }}>
+                        {{ $status['name_' . getLocale()] }}</option>
+                @endforeach
+            </select>
+                @endif
                 <!--end::Select2-->
             </div>
-            @can('update_Distribution_of_Orders')
-                <div class="w-200px">
-                    <select class="form-select" data-control="select2" data-hide-search="false" name="employee_id"
-                        id="employee-sp" data-placeholder="{{ __('Assign the employee') }}"
-                        data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
-                        <option value="" selected disabled>{{ __('Assign the employee') }}</option>
-                        @foreach ($employees as $employeedat)
-                            <option value="{{ $employeedat->id }}" {{ $employee->id == $employeedat->id ? 'selected' : '' }}>
-                                {{ $employeedat->name }} </option>
-                        @endforeach
-                    </select>
-                    <p class="invalid-feedback" id="employee_id"></p>
-
-                </div>
-            @endcan
+            @can('show_orders')
+            <div class="w-200px">
+                <select class="form-select" data-control="select2" data-hide-search="false" name="employee_id"
+                    id="employee-sp"  
+                    data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
+                    <option value="" disabled>{{ __('Assign the employee') }}</option>
+                    @foreach ($employees as $employeedat)
+                        @if($employeedat)
+                            <option value="{{ $employeedat->id }}" 
+                                {{  $userAssign->name == $employeedat->name ? 'selected' : '' }}>
+                                {{ $employeedat->name }}
+                            </option>
+                        @endif
+                    @endforeach
+                </select>
+                <p class="invalid-feedback" id="employee_id"></p>
+            </div>
+        @endcan
+        
             {{-- @endif --}}
 
 
@@ -108,35 +137,9 @@
                         <table class="table align-middle table-row-bordered mb-0 fs-6 gy-5 min-w-300px">
                             <!--begin::Table body-->
                             <tbody class="fw-bold text-gray-600">
-                                @if ($order['orderDetailsCar']['bank_offer_id'])
-                                    <tr>
-                                    
-                                        <td class="text-muted">
-                                            <div class="d-flex align-items-center">
-                                                <span>
-                                                    <i class="fa fa-briefcase mx-2"></i>
-                                                </span> {{ __('offer name') }}
-                                            </div>
-                                        </td>
-                                         <td class="fw-bolder text-end"><a href="/dashboard/bank-offers/{{ $order['orderDetailsCar']->bank_offer->id}}" ><h5 style="font-weight:bold;color:rgb(0, 74, 111)">{{ $order['orderDetailsCar']->bank_offer->title }}</h5></a>
-                                        </td>
-                                  
-                                    </tr>
-                                @endif
-                                @if ($order['orderDetailsCar']['sector_id'])
-                                    <tr>
-                                        <td class="text-muted">
-                                            <div class="d-flex align-items-center">
-                                                <span>
-                                                    <i class="fa fa-briefcase mx-2"></i>
-                                                </span> {{ __('The Sector') }}
-                                            </div>
-                                        </td>
-                                        <td class="fw-bolder text-end">{{ $order['orderDetailsCar']->sector->name }}
-                                        </td>
-                                    </tr>
-                                @endif
-                                @if ($order['city_id'])
+                       
+                             
+                                @if ($order->city_id)
                                     <tr>
                                         <td class="text-muted">
                                             <div class="d-flex align-items-center">
@@ -150,19 +153,7 @@
                                         </td>
                                     </tr>
                                 @endif
-                                @if ($order['nationality_id'])
-                                    <tr>
-                                        <td class="text-muted">
-                                            <div class="d-flex align-items-center">
-                                                <span>
-                                                    <i class="fa fa-briefcase mx-2"></i>
-                                                </span> {{ __('The nationality') }}
-                                            </div>
-                                        </td>
-                                        <td class="fw-bolder text-end">{{ $order->nationality->name }}
-                                        </td>
-                                    </tr>
-                                @endif
+                              
                                 <!--begin::Date-->
                                 <tr>
                                     <td class="text-muted">
@@ -188,6 +179,36 @@
                                     <td class="fw-bolder text-end">{{ date('H:i a', strtotime($order['created_at'])) }}
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="text-muted">
+                                        <div class="d-flex align-items-center">
+                                            <span>
+                                                <i class="fa fa-clock mx-2"></i>
+                                            </span> {{ __('Payment Type') }}
+                                        </div>
+                                    </td>
+                                    <td class="fw-bolder text-end">
+                                    {{ __(ucfirst($order['orderDetailsCar']['payment_type'] ?? '')) }}
+
+                                    </td>
+                                </tr>
+                           
+                                
+
+
+
+                               
+
+
+
+
+                         
+                                
+                             
+                                
+                             
+                                
+                                
                                 <!--end::Time-->
                             </tbody>
                             <!--end::Table body-->
@@ -207,7 +228,8 @@
 
                     </div>
 
-                    @if ($order['orderDetailsCar']['type'] == 'individual')
+                    @if($order->orderDetailsCar)
+                    @if ($order->orderDetailsCar->type == 'individual')
                         <div class="ps-4">
                             <a href="https://wa.me/{{ $order['phone'] }}?text={{ urlencode(__('السلام عليكم. موقع كود كار للسيارات يرحب بكم ويسعدنا التواصل معك بخصوص طلبك رقم ' . $order['id'] . ' لسيارة: ' . $order['car_name'] . '')) }}"
                                 target="_blank" title="Chat on WhatsApp" class="whatsapp-icon">
@@ -227,24 +249,14 @@
                                     @php
                                         $carCount += $car['count'];
                                     @endphp
-                                @endif <!--end::Cars-->
+                                @endif  
+
                             @endforeach
-                            <div class="ps-4">
-                                <a href="https://wa.me/{{ $order['phone'] }}?text={{ urlencode(__('السلام عليكم. موقع كود كار للسيارات يرحب بكم ويسعدنا التواصل معك بخصوص طلبك رقم ' . $order['id'] . ' ' . ' العدد الطلوب' . ' ' . $carCount . ' ' . 'سيارة')) }}"
-                                    target="_blank" title="Chat on WhatsApp" class="whatsapp-icon">
-                                    <img src="{{ asset('dashboard-assets/media/svg/social-logos/whatsapp.svg') }}"
-                                        alt="WhatsApp Logo"
-                                        style="width:50px; height: 50px; margin-left: 23px; margin-right: 23px;">
-                                </a>
+                           
                             </div>
                         @else
-                            <a href="https://wa.me/{{ $order['phone'] }}?text={{ urlencode(__('السلام عليكم. موقع كود كار للسيارات يرحب بكم ويسعدنا التواصل معك بخصوص طلبك رقم ' . $order['id'] . ' لسيارة: ' . ' ' . $order['car_name'] . ' ' . 'عدد' . ' ' . $order['orderDetailsCar']['car_count'])) }}"
-                                target="_blank" title="Chat on WhatsApp" class="whatsapp-icon">
-                                <img src="{{ asset('dashboard-assets/media/svg/social-logos/whatsapp.svg') }}"
-                                    alt="WhatsApp Logo"
-                                    style="width:50px; height: 50px; margin-left: 23px; margin-right: 23px;">
-                            </a>
-                        @endif
+                         @endif
+                    @endif
                     @endif
 
 
@@ -272,11 +284,31 @@
                                     <td class="fw-bolder text-end">
                                         <div class="d-flex align-items-center justify-content-end">
                                             <!--begin::Name-->
-                                            {{ $order['name'] }}
+                                            @if ($order->orderDetailsCar->type == 'individual')
+                                            {{ $order->name }}
+                                            @else
+                                            {{ $order->orderDetailsCar->organization_name }}
+                                            @endif
                                             <!--end::Name-->
                                         </div>
                                     </td>
                                 </tr>
+                                @if($order->orderDetailsCar->type == 'organization')
+                                <tr>
+                                        <td class="text-muted">
+                                            <div class="d-flex align-items-center">
+                                                <span>
+                                                    <i class="fa fa-user mx-2"></i>
+                                                </span>
+                                                {{ __('Organization Age') }}
+                                            </div>
+                                        </td>
+                                        <td class="text-end fw-boldest" colspan="4">
+                                                        {{ $order['orderDetailsCar']['organization_age']}}
+                                                    </td>                                        </td>
+                                    </tr>
+                                                      
+                                @endif
                                 <!--end::Customer name-->
                                 <!--begin::Date-->
                                 @if ($order['phone'])
@@ -297,9 +329,10 @@
                                                 {{ __('Phone') }}
                                             </div>
                                         </td>
-                                        <td class="fw-bolder text-end">{{ $order['phone'] }}</td>
+                                        <td class="fw-bolder text-end">{{ $order->phone }}</td>
                                     </tr>
                                 @endif
+                                
                                 @if ($order['identity_no'])
                                     <tr>
                                         <td class="text-muted">
@@ -314,35 +347,177 @@
                                         </td>
                                     </tr>
                                 @endif
-                                @if ($order['sex'])
-                                    <tr>
+                                @if($order->orderDetailsCar->payment_type == 'finance' && $order->orderDetailsCar->type == 'individual')
+
+                                <tr>
+                                    <td class="text-muted">
+                                        <div class="d-flex align-items-center">
+                                            <span>
+                                                <i class="fa fa-clock mx-2"></i>
+                                            </span> {{ __('Salary') }}
+                                        </div>
+                                    </td>
+                                    <td class="fw-bolder text-end">
+                                        {{ $order['orderDetailsCar']['salary'] . ' ' . currency() }}
+                                        
+                                    </td>
+                                </tr>
+                                @endif
+                                @if($order->orderDetailsCar->type == 'individual')
+
+                                <tr>
+                                    <td class="text-muted">
+                                        <div class="d-flex align-items-center">
+                                            <span>
+                                                <i class="fa fa-clock mx-2"></i>
+                                            </span> {{ __('Email') }}
+                                        </div>
+                                    </td>
+                                    <td class="fw-bolder text-end">
+                                        {{ $order->email }}
+                                        
+                                    </td>
+                                </tr>
+
+                                @endif
+
+
+
+                                 @if($order->orderDetailsCar->payment_type == 'finance' && $order->orderDetailsCar->type == 'individual')
+
+                                <tr>
+                                    <td class="text-muted">
+                                        <div class="d-flex align-items-center">
+                                            <span>
+                                                <i class="fa fa-clock mx-2"></i>
+                                            </span> {{ __('Work type') }}
+                                        </div>
+                                    </td>
+                                    <td class="fw-bolder text-end">
+  
+                                     {{ $order->orderDetailsCar->work }}
+
+ 
+                                     </td>
+                                </tr>
+                                @endif
+
+                                @if ($order->orderDetailsCar->bank)
+
+                                     <tr>
                                         <td class="text-muted">
                                             <div class="d-flex align-items-center">
                                                 <span>
-                                                    <i class="fa fa-user mx-2"></i>
+                                                    <i class="fa fa-map-marker mx-2"></i>
                                                 </span>
-                                                {{ __('Sex') }}
+                                                {{ __('Bank') }}
                                             </div>
                                         </td>
-                                        <td class="fw-bolder text-end">{{ __($order['sex']) }}
+                                        <td class="fw-bolder text-end">
+                                            
+                                        {{ $order->orderDetailsCar->bank['name_' . getLocale()] }}
                                         </td>
                                     </tr>
                                 @endif
+                                @if ($order->orderDetailsCar['commitments'])
 
-                                @if ($order['email'])
+                                     <tr>
+                                        <td class="text-muted">
+                                            <div class="d-flex align-items-center">
+                                                <span>
+                                                    <i class="fa fa-map-marker mx-2"></i>
+                                                </span>
+                                                {{ __('Commitments') }}
+                                            </div>
+                                        </td>
+                                        <td class="fw-bolder text-end">
+                                            
+                                             {{ $order->orderDetailsCar->commitments }}
+
+                                        </td>
+                                    </tr>
+                                @endif
+ 
+
+
+
+
+
+                                @if ($order->orderDetailsCar['organization_name'])
                                     <tr>
                                         <td class="text-muted">
                                             <div class="d-flex align-items-center">
                                                 <span>
                                                     <i class="fa fa-map-marker mx-2"></i>
                                                 </span>
-                                                {{ __('Email') }}
+                                                {{ __('Organization Name') }}
                                             </div>
                                         </td>
-                                        <td class="fw-bolder text-end">{{ $order['email'] }}
+                                        <td class="fw-bolder text-end">{{ $order->orderDetailsCar['organization_name']}}
                                         </td>
                                     </tr>
                                 @endif
+
+                                @if ($order->orderDetailsCar['organization_email'])
+                                    <tr>
+                                        <td class="text-muted">
+                                            <div class="d-flex align-items-center">
+                                                <span>
+                                                    <i class="fa fa-map-marker mx-2"></i>
+                                                </span>
+                                                {{ __('Organization Email') }}
+                                            </div>
+                                        </td>
+                                        <td class="fw-bolder text-end">{{ $order->orderDetailsCar['organization_email']}}
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($order->orderDetailsCar['organization_location'])
+                                    <tr>
+                                        <td class="text-muted">
+                                            <div class="d-flex align-items-center">
+                                                <span>
+                                                    <i class="fa fa-map-marker mx-2"></i>
+                                                </span>
+                                                {{ __('location') }}
+                                            </div>
+                                        </td>
+                                        <td class="fw-bolder text-end">{{ $order->orderDetailsCar['organization_location']}}
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($order->orderDetailsCar['organization_activity'])
+                                    <tr>
+                                        <td class="text-muted">
+                                            <div class="d-flex align-items-center">
+                                                <span>
+                                                    <i class="fa fa-map-marker mx-2"></i>
+                                                </span>
+                                                {{ __('Organization Activity') }}
+                                            </div>
+                                        </td>
+                                        <td class="fw-bolder text-end">{{ $order->orderDetailsCar['organization_activity']}}
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($order->orderDetailsCar['organization_seo'])
+                                    <tr>
+                                        <td class="text-muted">
+                                            <div class="d-flex align-items-center">
+                                                <span>
+                                                    <i class="fa fa-map-marker mx-2"></i>
+                                                </span>
+                                                {{ __('The Chief Executive Officer (CEO)') }}
+                                            </div>
+                                        </td>
+                                        <td class="fw-bolder text-end">{{ $order->orderDetailsCar['organization_seo']}}
+                                        </td>
+                                    </tr>
+                                @endif
+
+
+
+
 
                                 @if ($order['birth_date'])
                                     <tr>
@@ -377,353 +552,7 @@
             <div class="tab-pane fade show active" id="kt_ecommerce_sales_order_summary" role="tab-panel">
                 <!--begin::Orders-->
 
-                @if ($order['type'] == 'car')
-                    @if ($order['orderDetailsCar']['type'] == 'individual')
-                        <div class="d-flex flex-column gap-7 gap-lg-10">
-
-                            <!--begin::Product List-->
-                            <div class="card card-flush  flex-row-fluid overflow-hidden">
-                                <!--begin::Card header-->
-                                <div class="card-header">
-                                    <div class="card-title">
-                                        <h2>{{ __('Order') }} #{{ $order['id'] . ' ' }} </h2>
-                                    </div>
-                                    <div class="card-title">
-                                        <h2>{{ __('Order Type') . ' : ' }}
-                                            {{ __(ucfirst($order['orderDetailsCar']['type'])) . ' ' }} </h2>
-                                    </div>
-                                </div>
-                                <!--end::Card header-->
-                                <!--begin::Card body-->
-                                <div class="card-body pt-0">
-                                    <div class="table-responsive">
-                                        <!--begin::Table-->
-                                        <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
-                                            <!--begin::Table body-->
-                                            <tbody class="fw-bold text-gray-600">
-                                                <tr>
-                                                    <td class="text-start fw-boldest" colspan="4">{{ __('Car') }}
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex justify-content-end align-items-center">
-                                                            @if ($order->car)
-                                                                <!--begin::Thumbnail-->
-                                                                <a href="/dashboard/cars/{{ $order['car_id'] }}"
-                                                                    class="symbol symbol-50px">
-                                                                    <img src="{{ getImagePathFromDirectory($order->car->main_image, 'Cars') }}"
-                                                                        alt="Car Image" class="symbol-label">
-                                                                </a>
-                                                                <div class="ms-5">
-                                                                    <a href="/dashboard/cars/{{ $order['car_id'] }}"
-                                                                        target="_blank"
-                                                                        class="fw-boldest text-gray-600 text-hover-primary">{{ $order['car_name'] }}</a>
-                                                                </div>
-                                                            @else
-                                                                <div class="ms-5">
-                                                                    <a href="#"
-                                                                        class="fw-boldest text-gray-600 text-hover-primary">{{ $order['car_name'] }}</a>
-                                                                </div>
-                                                            @endif
-
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-boldest">{{ __('Price') }}</td>
-                                                    <td class="text-end fw-boldest" colspan="4">
-                                                        {{ $order['price'] . ' ' . currency() }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-boldest">{{ __('Payment Type') }}</td>
-                                                    <td class="text-end fw-boldest" colspan="4">
-                                                        {{ __(ucfirst($order['orderDetailsCar']['payment_type'])) }}
-                                                    </td>
-                                                </tr>
-                                                @if ($order['orderDetailsCar']['payment_type'] == 'finance')
-                                                    @if ($order['orderDetailsCar']['work'])
-                                                        <tr>
-                                                            <td class="fw-boldest">{{ __('Work') }}</td>
-                                                            <td class="text-end fw-boldest" colspan="4">
-                                                                {{ $order['orderDetailsCar']['work'] }}</td>
-                                                        </tr>
-                                                    @endif
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Salary') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['salary'] . ' ' . currency() }}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Commitments') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['commitments'] . ' ' . currency() }}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Is there a mortgage loan') }}
-                                                        </td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['having_loan'] ? __('Yes') : __('No') }}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="fw-boldest" style="font-weight:900">
-                                                            {{ __('Max limit to monthely installment') . ' ' }}
-                                                        </td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $approve_amount . ' ' . currency() }}
-                                                        </td>
-                                                    </tr>
-                                                    @if ($order['orderDetailsCar']['driving_license'])
-                                                        <tr>
-                                                            <td class="fw-boldest">{{ __('Driving License Status') }}</td>
-                                                            <td class="text-end fw-boldest" colspan="4">
-                                                                {{ __(str_replace('_', ' ', $order['orderDetailsCar']['driving_license'])) }}
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                    @if ($order['orderDetailsCar']['traffic_violations']==0||1)
-                                                        <tr>
-                                                            <td class="fw-boldest">{{ __('traffic violations') }}</td>
-                                                            <td class="text-end fw-boldest" colspan="4">
-                                                                {{ $order['orderDetailsCar']['traffic_violations'] ? __('Yes') : __('No') }}
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Installment Time') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['installment'] . ' ' . __('years') }}
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('The first installment') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['first_installment'] }} %
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('The first installment amount') }}
-                                                        </td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['first_payment_value'] . ' ' . currency() }}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('The last installment') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['last_installment'] }} %
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('The last installment amount') }}
-                                                        </td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['last_payment_value'] . ' ' . currency() }}
-                                                        </td>
-                                                    </tr>
-
-                                                    @if ($order['orderDetailsCar']['bank'])
-                                                        <tr>
-                                                            <td class="fw-boldest">{{ __('Bank') }}</td>
-                                                            <td class="text-end fw-boldest" colspan="4">
-                                                                {{ $order['orderDetailsCar']['bank']['name'] }}</td>
-                                                        </tr>
-                                                    @endif
-                                                @endif
-                                            </tbody>
-                                            <!--end::Table head-->
-                                        </table>
-                                        <!--end::Table-->
-                                    </div>
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Product List-->
-                        </div>
-                    @else
-                        <div class="d-flex flex-column gap-7 gap-lg-10">
-
-                            <!--begin::Product List-->
-                            <div class="card card-flush  flex-row-fluid overflow-hidden">
-
-                                <div class="card-header">
-                                    <div class="card-title">
-                                        <h2>{{ __('Order') }} #{{ $order['id'] . ' ' }} </h2>
-                                    </div>
-                                    <div class="card-title">
-                                        <h2>{{ __('Order Type') . ' : ' }}
-                                            {{ __(ucfirst($order['orderDetailsCar']['type'])) . ' ' }} </h2>
-                                    </div>
-                                </div>
-                                <!--end::Card header-->
-                                <!--begin::Card body-->
-                                <div class="card-body pt-0">
-                                    <div class="table-responsive">
-                                        <!--begin::Table-->
-                                        <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0">
-
-                                            <!--begin::Table body-->
-                                            <tbody class="fw-bold text-gray-600">
-                                                <!--begin::Cars-->
-                                                @if ($order['orderDetailsCar']['cars'])
-                                                    <!--begin::Table head-->
-                                                    <thead>
-                                                        <tr
-                                                            class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
-                                                            <th class="min-w-175px fw-boldest">{{ __('Car') }}
-                                                            </th>
-                                                            <th class="min-w-70px text-end fw-boldest" colspan="4">
-                                                                {{ __('Quantity') }}</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <!--end::Table head-->
-                                                    @foreach (json_decode($order['orderDetailsCar']['cars'], true) as $car)
-                                                        @if (isset($car))
-                                                            <tr class="p-5">
-                                                                <td class="text-start fw-boldest">
-                                                                    {{ $car['car_name'] }}
-                                                                </td>
-                                                                <td class="text-end fw-boldest" colspan="4">
-                                                                    {{ $car['count'] . ' ' . __('car') }}</td>
-                                                            </tr>
-                                                        @endif <!--end::Cars-->
-                                                    @endforeach
-                                                @else
-                                                    <tr>
-                                                        <td class="text-start fw-boldest" colspan="4">
-                                                            {{ __('Car') }}
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex justify-content-end align-items-center">
-                                                                @if ($order->car)
-                                                                    <!--begin::Thumbnail-->
-                                                                    <a href="/dashboard/cars/{{ $order['car_id'] }}"
-                                                                        class="symbol symbol-50px">
-                                                                        <img src="{{ getImagePathFromDirectory($order->car->main_image, 'Cars') }}"
-                                                                            alt="Car Image" class="symbol-label">
-                                                                    </a>
-                                                                    <div class="ms-5">
-                                                                        <a href="/dashboard/cars/{{ $order['car_id'] }}"
-                                                                            target="_blank"
-                                                                            class="fw-boldest text-gray-600 text-hover-primary">{{ $order['car_name'] }}</a>
-                                                                    </div>
-                                                                @else
-                                                                    <div class="ms-5">
-                                                                        <a href="#"
-                                                                            class="fw-boldest text-gray-600 text-hover-primary">{{ $order['car_name'] }}</a>
-                                                                    </div>
-                                                                @endif
-
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                @if (!$order['orderDetailsCar']['cars'])
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Price') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order->car->getPriceAfterVatAttribute() . ' ' . currency() }}</td>
-                                                    </tr>
-                                                    @if ($order['orderDetailsCar']['car_count'])
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Total Price') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['price'] * $order['orderDetailsCar']['car_count'] . ' ' . currency() }}</td>
-                                                    </tr>
-                                                    @endif
-                                                @endif
-                                                <tr>
-                                                    <td class="fw-boldest">{{ __('Payment Type') }}</td>
-                                                    <td class="text-end fw-boldest" colspan="4">
-                                                        {{ __(ucfirst($order['orderDetailsCar']['payment_type'])) }}
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-boldest">{{ __('Organization Name') }}</td>
-                                                    <td class="text-end fw-boldest" colspan="4">
-                                                        {{ $order['orderDetailsCar']['organization_name'] }}</td>
-                                                </tr>
-                                                @if ($order['orderDetailsCar']['organization_email'])
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Organization Email') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['organization_email'] }}</td>
-                                                    </tr>
-                                                @endif
-                                                @if ($order['orderDetailsCar']['commercial_registration_no'])
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('commercial registration no') }}
-                                                        </td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['commercial_registration_no'] }}
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                @if ($organization_activity)
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Organization Activity') }}
-                                                        </td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $organization_activity->title }}
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                @if ($organization_type->title)
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Organization Type') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $organization_type->title }}
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                <tr>
-                                                    <td class="fw-boldest">{{ __('Organization Age') }}</td>
-                                                    <td class="text-end fw-boldest" colspan="4">
-                                                        {{ $order['orderDetailsCar']['organization_age'] . ' ' . __('Years') }}
-                                                    </td>
-                                                </tr>
-                                                @if ($order['orderDetailsCar']['car_count'])
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Cars Count') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['car_count'] . ' ' . __('Cars') }}
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                @if ($order['orderDetailsCar']['bank'])
-                                                    <tr>
-                                                        <td class="fw-boldest">{{ __('Bank') }}</td>
-                                                        <td class="text-end fw-boldest" colspan="4">
-                                                            {{ $order['orderDetailsCar']['bank']['name'] }}</td>
-                                                    </tr>
-                                                @endif
-                                                @if ($order['orderDetailsCar']['payment_type'] == 'finance')
-                                                    @if ($order['orderDetailsCar']['organization_location'])
-                                                        <tr>
-                                                            <td class="fw-boldest">
-                                                                {{ __("The company's headquarter") }}
-                                                            </td>
-                                                            <td class="text-end fw-boldest" colspan="4">
-                                                                {{ $order['orderDetailsCar']['organization_location'] }}
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                @endif
-                                            </tbody>
-                                            <!--end::Table head-->
-                                        </table>
-                                        <!--end::Table-->
-                                    </div>
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Product List-->
-                        </div>
-                    @endif
-                @else
-                    <div class="d-flex flex-column gap-7 gap-lg-10">
+                                 <div class="d-flex flex-column gap-7 gap-lg-10">
                         <!--begin::Product List-->
                         <div class="card card-flush flex-row-fluid overflow-hidden">
                             <!--begin::Card header-->
@@ -733,7 +562,7 @@
                                 </div>
                                 <div class="card-title">
                                     <h2>{{ __('Order Type') . ' : ' }}
-                                        {{ __(str_replace('_', ' ', $order['type'])) . ' ' }} </h2>
+                                        {{ __(str_replace('_', ' ', $order->orderDetailsCar->type ?? null)) . ' '}} </h2>
                                 </div>
                             </div>
                             <!--end::Card header-->
@@ -751,18 +580,163 @@
                                                     <div class="d-flex justify-content-end align-items-center">
                                                         <!--be  gin::Title-->
                                                         <div class="ms-5">
-                                                            <a href="#"
-                                                                class="fw-boldest text-gray-600 text-hover-primary">{{ $order['car_name'] }}</a>
+                                                            <a href="{{route('dashboard.cars.show',$order->car->id)}}"
+                                                                class="fw-boldest text-gray-600 text-hover-primary">{{ $order->car->name }}</a>
                                                         </div>
                                                         <!--end::Title-->
                                                     </div>
                                                 </td>
                                             </tr>
+                                            @if(settings()->getSettings('maintenance_mode') == 1 )
+                                            @if($order->orderDetailsCar->type == 'organization')
                                             <tr>
-                                                <td class="fw-boldest">{{ __('City') }}</td>
-                                                <td class="text-end fw-boldest" colspan="4">
-                                                    {{ $order['city']['name'] }}</td>
+                                                <td class="text-start fw-boldest" colspan="4">{{ __('price') }}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-end align-items-center">
+                                                        <!--be  gin::Title-->
+                                                        <div class="ms-5">
+                                                            <a href="#"
+                                                                class="fw-boldest text-gray-600 text-hover-primary">
+                                                                {{  $order->car->price_field_status!='show'?$order->car->price_field_status:$order->price}}
+
+                                                            
+                                                            </a>
+                                                        </div>
+                                                        <!--end::Title-->
+                                                    </div>
+                                                </td>
                                             </tr>
+                                            @else 
+                                            <tr>
+                                                <td class="text-start fw-boldest" colspan="4">{{ __('price') }}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-end align-items-center">
+                                                        <!--be  gin::Title-->
+                                                        <div class="ms-5">
+                                                            <a href="#"
+                                                                class="fw-boldest text-gray-600 text-hover-primary">
+                                                                {{  $order->car->price_field_status!='show'?$order->car->price_field_status:$order->price}}
+
+                                                            
+                                                            </a>
+                                                        </div>
+                                                        <!--end::Title-->
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endif
+                                            @endif
+                                            @if($order->orderDetailsCar->type == 'organization')
+
+<tr>
+                                                <td class="text-start fw-boldest" colspan="4">{{ __('Quantity') }}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-end align-items-center">
+                                                        <!--be  gin::Title-->
+                                                        <div class="ms-5">
+                                                                <a href="#" class="fw-boldest text-gray-600 text-hover-primary">
+                                                                    {{$order->quantity}}
+                                                                </a>
+                                                            
+
+                                                        </div>
+                                                        <!--end::Title-->
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                          <div class="modal-content">
+                                                            <div class="modal-header">
+                                                              <h5 class="modal-title" id="exampleModalLabel">chassis</h5>
+                                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                               <ul>
+                                                                @foreach ($carStores as $carStore )
+                                                                 <li> {{$carStore->chassis }}
+                                                                </li>
+                                                                 @endforeach
+ 
+                                                              </ul>
+                                                            </div>
+                                                            <div class="modal-footer">
+
+
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      
+                                                      
+                                                </td>
+                                            </tr>
+
+
+                                            <td class="text-start fw-boldest" colspan="4">{{ __('chassis') }}
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-end align-items-center">
+                                                    <!--be  gin::Title-->
+                                                    <div class="ms-5">
+                                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                            {{__('show Chassis')}}
+                                                        </button>
+                                                    </div>
+                                                    <!--end::Title-->
+                                                </div>
+                                            </td>
+@endif
+
+
+                                            @if($order->orderDetailsCar->driving_license)
+                                            <tr>
+                                                <td class="fw-boldest">{{ __('Driving License Status') }}</td>
+                                                <td class="text-end fw-boldest" colspan="4">
+                                                                                                                  {{ __(str_replace('_', ' ', $order['orderDetailsCar']['driving_license'])) }}
+</td>
+                                            </tr>
+                                              
+@endif
+
+
+
+                                           
+                                            
+                                @if($order->orderDetailsCar->payment_type == 'finance' && $order->orderDetailsCar->type == 'individual' )
+ 
+ <tr>
+     <td class="fw-boldest">{{ __('Is there a mortgage loan') }}</td>
+     <td class="text-end fw-boldest" colspan="4">
+         {{ $order->orderDetailsCar->having_loan == 1? __('Yes'): __('No')}}</td>
+ </tr>
+ @endif
+
+
+ @if($order->orderDetailsCar->payment_type == 'finance' && $order->orderDetailsCar->type == 'individual')
+                                            <tr>
+                                                <td class="fw-boldest">{{ __('The first installment') }}</td>
+                                                <td class="text-end fw-boldest" colspan="4">
+                                                {{ $order->orderDetailsCar->first_payment_value }}
+                                                </tr>
+ 
+@endif
+@if($order->orderDetailsCar->payment_type == 'finance' && $order->orderDetailsCar->type == 'individual')
+
+<tr>
+                                                <td class="fw-boldest"> {{ __('The last installment') }}</td>
+                                                <td class="text-end fw-boldest" colspan="4">
+
+                                                {{ $order->orderDetailsCar->last_payment_value }}                                                </tr>
+
+@endif
+                          
+
+
                                         </tbody>
                                         <!--end::Table head-->
                                     </table>
@@ -774,8 +748,6 @@
                         <!--end::Product List-->
                     </div>
 
-
-                @endif
                 <!--end::Orders-->
                 <!-- Assuming you are using Bootstrap that comes with Metronic -->
                 @if ($order['identity_Card'] || $order['License_Card'] || $order['Hr_Letter_Image'] || $order['Insurance_Image'])
@@ -858,18 +830,41 @@
                                     <tbody class="fw-bold text-gray-600">
 
                                         @foreach ($order->statusHistory as $record)
-                                            @php($statusObj = getStatusObject($record['status']))
+                                        @php
+         $statusObj = getStatusObject($record['status']);
+         
+
+     @endphp
 
                                             <tr>
 
                                                 <td>
                                                     <div class="badge"
                                                         style="background-color:{{ $statusObj['color'] }}">
-                                                        {{ $statusObj['name_' . getLocale()] }}</div>
+                                                        @if($statusObj['name_ar'] == 1)
+                                                    new
+
+                                                    @endif
+                                                    @if($statusObj['name_ar'] == 2)
+                                                    processing
+                                                    @endif
+                                                    @if($statusObj['name_ar'] == 3)
+                                                    accepted
+                                                    @endif
+                                                    @if($statusObj['name_ar'] == 4)
+                                                    rejected
+                                                    @endif
+                                                    @if($statusObj['name_ar'] == 5)
+                                                    please send your paper
+                                                    @endif
+                                                    @if($statusObj['name_ar'] == 6)
+                                                    delivered
+                                                 @endif                                                    
+                                                    </div>
                                                 </td>
 
                                                 <td>{{ $record['comment'] ?? '-' }}</td>
-                                                <td>{{ $record['employee']['name'] }}</td>
+                                                <td>{{ $record['employee']['name'] ??''}}</td>
 
                                                 <td>{{ $record['assign']['name'] ?? '-' }}</td>
 
@@ -897,7 +892,6 @@
     </div>
 
 
-
     <!--end::Order details page-->
 @endsection
 @push('styles')
@@ -913,44 +907,184 @@
     </style>
 @endpush
 @push('scripts')
-    <script>
-        $('#order-status-sp').change(function() {
+<script>
+    $('#order-status-sp').change(function () {
 
-            let newStatus = $(this).val();
-            let comment = '';
+        const orderStatusId = {{ $order->status_id }};
 
-            inputAlert().then((result) => {
+        let newStatus = $(this).val();
+        let id = newStatus.split('_')[0]; // Extract the order status ID
+        let comment = '';
+    
+        inputAlert().then((result) => {
+            comment = result.value[0] || '';
+    
+            if (result.isConfirmed) {
+                // Check if a chassis exists for this order
+                $.ajax({
+                    url: `/dashboard/chassis/{{ $order['car_id'] }}`,
+                    method: 'POST',
+                    headers: {
+                                                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                                    },
+                     
+                            data: {
+                                order: {{ $order['id'] }}
+                            },
 
-                comment = result.value[0] || '';
+                    success: (chassisData) => {
+                        if (orderStatusId == '8'&&chassisData && chassisData.chassis.length === 0) {
+                            
+                                errorAlert('{{ __("There are no chassis available for this car") }}');
 
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "/dashboard/change-status/" + "{{ $order['id'] }}",
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        method: 'POST',
-                        data: {
-                            status: newStatus,
-                            comment
-                        },
-                        success: (response) => {
-                            successAlert('{{ __('status has been changed successfully') }}')
-                                .then(() => window.location.reload())
-                        },
-                        error: (error) => {
-                            console.log(error)
-                        },
+ 
+                            // If chassis exists, stop order status update and show an alert
+                            return; // Exit the process
+                        }
+    
+                        // If no chassis exists, proceed to change the order status
+                        $.ajax({
+                            url: "/dashboard/change-status/" + "{{ $order['id'] }}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            method: 'POST',
+                            data: {
+                                status: id,
+                                comment
+                            },
+                            success: (response) => {
+                                successAlert('{{ __('status has been changed successfully') }}')
+                                    .then(() => {
+                                        // Check if the order status ID is 11 (cancellation)
+                                        if (id === '11') { // Ensure the comparison is with string '11'
+                                            $.ajax({
+                                                url: `/dashboard/change/chassis/status/${id}`,
+                                                headers: {
+                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                },
+                                                method: 'POST',
+                                                data: {
+                                                    order_status_id: id,
+                                                    order: {{ $order['id'] }}
+                                                },
+                                                success: (statusResponse) => {
+                                                    console.log("Chassis status updated successfully", statusResponse);
+                                                    location.reload(); // Reload the page after successful update
+                                                },
+                                                error: (error) => {
+                                                    console.log("Error updating chassis status:", error);
+                                                }
+                                            });
+                                        } else{
+                                            // Loop until a chassis is selected
+                                            function requestChassisSelection() {
+                                                $.ajax({
+                                                    url: `/dashboard/chassis/{{ $order['car_id'] }}`,
+                                                    method: 'POST',
+                                                    headers: {
+                                                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                                    },
+                                                                    data: {
+                                order: {{ $order['id'] }}
+                            },
+                                                    success: (chassisData) => {
+                                                        if (!chassisData || chassisData.length === 0) {
+                                                            errorAlert('{{ __("There are no chassis available for this car.") }}');
+                                                            return; // Exit the function if no chassis is available
+                                                        }
+    
+                                                        console.log('data', chassisData);
 
-                    });
-                }
+                                                            if(id=== '10'){
+                                                        addchassis(chassisData).then((chassisResult) => {
+                                if (chassisResult.isConfirmed && chassisResult.value.length > 0) {
+                                const selectedChassis = chassisResult.value; // Array of selected chassis IDs
 
-            });
+                                // Send selected chassis IDs to change their status
+                                $.ajax({
+                                    url: `/dashboard/change/chassis/status/${id}`,
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    method: 'POST',
+                                    data: {
+                                        chassis_ids: selectedChassis, // Array of chassis IDs
+                                        order_status_id: id,
+                                        order: {{ $order['id'] }},
+                                        comment
+                                    },
+                                    success: (response) => {
+                                        console.log("Chassis statuses updated successfully:", response);
+                                        successAlert('{{ __("Status has been changed successfully.") }}')
+                                            .then(() => {
+                                                location.reload(); // Reload the page after successful update
+                                            });
+                                    },
+                                    error: (error) => {
+                                        console.log("Error updating chassis statuses:", error);
+                                        errorAlert('{{ __("An error occurred while updating chassis statuses.") }}');
+                                    }
+                                });
+                            } else {
+                                errorAlert('{{ __("Please select at least one chassis to proceed.") }}');
+                            }
+                        });
 
 
+
+                    }else{
+                        $.ajax({
+                                    url: `/dashboard/change/chassis/status/${id}`,
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    method: 'POST',
+                                    data: {
+                                         order_status_id: id,
+                                        order: {{ $order['id'] }},
+                                     },
+                                    success: (response) => {
+                                        console.log("Chassis statuses updated successfully:", response);
+                                        successAlert('{{ __("Status has been changed successfully.") }}')
+                                            .then(() => {
+                                                location.reload(); // Reload the page after successful update
+                                            });
+                                    },
+                                    error: (error) => {
+                                        console.log("Error updating chassis statuses:", error);
+                                        errorAlert('{{ __("An error occurred while updating chassis statuses.") }}');
+                                    }
+                                });
+                    }
+
+ 
+                                                    },
+                                                    error: (error) => {
+                                                        console.log("Error fetching chassis data:", error);
+                                                    }
+                                                });
+                                            }
+    
+                                            // Start the chassis selection loop
+                                            requestChassisSelection();
+                                        }
+                                    });
+                            },
+                            error: (error) => {
+                                console.log(error);
+                            },
+                        });
+                    },
+                    error: (error) => {
+                        console.log("Error checking chassis data:", error);
+                    }
+                });
+            }
         });
+    });
     </script>
-    <script>
+        <script>
         $('#employee-sp').change(function() {
             let employee_id = $(this).val();
             let comment = '';

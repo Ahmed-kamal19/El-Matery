@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Home\CalculatorController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\ServiceController;
 
 /*
@@ -196,6 +197,10 @@ Route::group(['middleware' => ['json.response']], function () {
 
     Route::get('/requests','Api\RequestController@index')->name('get-requests-without-auth');
     Route::post('/finance-Order', [FinanceController::class, 'financeOrder'])->name('finance.order2');
+
+    //otp validation 
+    Route::post('/valid/otp',[OtpController::class,'validOtp']);
+    Route::post('/resend/otp',[OtpController::class,'resendOtp']);
 
 });
 

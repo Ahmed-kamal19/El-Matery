@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ServiceRequest;
 use App\Http\Resources\ServiceDetailsResource;
 use App\Http\Resources\ServiceResource;
 use App\Models\City;
 use App\Models\RequestService;
 use App\Models\Service;
-use App\Rules\NotNumbersOnly;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -78,5 +78,24 @@ class ServiceController extends Controller
     //     RequestService::create($validatedData);
     //     return $this->success();
     // }
+    public function requestService(ServiceRequest $request)
+    {
+        // Get all request data
+        $data = $request->all();
+    
+        // Concatenate '+966' to the phone number
+        $data['phone'] = '+966' . ltrim($data['phone']); // Remove leading '0' if present
+        RequestService::create($data);
 
+        if(app()->getLocale() == 'en'){
+            return response()->json([
+               'message'=>'Your request has been successfully confirmed and we will contact you as soon as possible'
+            ],200);
+           }else{
+               return response()->json([
+                   'message'=>'تم تاكيد طلبك بنجاح وسيتم التواصل معك في اقرب وقت'
+                ],200);
+           
+           }
+     }
 }

@@ -1,4 +1,5 @@
 "use strict";
+let pageLanguage = 'en'; // Default language set to English
 
 // Class definition
 let KTDatatable = (function () {
@@ -9,15 +10,27 @@ let KTDatatable = (function () {
 
     // Private functions
     let initDatatable = function () {
+        let columns = [
+            { data: "id" },
+            { data: "name" },
+            { data: "phone" },
+            { data: "price" },
+            { data: "status_id", name: "status_id" },
+            { data: "created_at", name: "created_at" },
+            { data: "opened.name", name: "opened_by" },
+ 
+            { data: "opened_at" , name: "opened_at"},
+            { data: null },
+        ];
         datatable = $("#kt_datatable").DataTable({
             orderable: false,
             searchDelay: 500,
             processing: true,
             serverSide: true,
-            order: [[6, "desc"]], // display records number and ordering type
+            order: [[4, "desc"]], // display records number and ordering type
             stateSave: false,
             select: {
-               // style: "os",
+                style: "os",
                 selector: "td:first-child",
                 className: "row-selected",
             },
@@ -34,54 +47,38 @@ let KTDatatable = (function () {
                         );
                 },
             },
-            columns: [
-                { data: "id" },
-                { data: "name" },
-                { data: "phone" },
-                { data: "price" },
-                { data: "type" },
-                { data: "status_id", name: "status_id" },
-                { data: "created_at", name: "created_at" },
-                { data: "employee.name" },
-                { data: "opened_at" },
-                // { data: "employee_id" },
-                { data: null },
-            ],
+            columns: columns,
+
             columnDefs: [
                 {
-                    targets: 3,
-                    render: function (data, type, row) {
-                        if (data) return data + " " + __(currency);
-                        return "<h1>-</h1>";
-                    },
-                },
-                    
-                {
-                    targets: 5,
-                    render: function (data, type, row) {
-                        return getStatusObject(data)["name_" + locale];
-                    },
+                    targets: 6,
+                    width: 150,
+                    render: function(data, type, row) {
+                        if (row.opened_by === null) {
+                            return '';
+                        } else {
+                            return row.opened.name ?? '';
+                        }
+
+
+
+                    }
                 },
                 {
                     targets: 4,
-                    render: function (data, type, row) {
-                        return __(data.replace("_", " "));
-                    },
+                    width: 150,
+                    render: function(data, type, row) {
+                        return getStatusObject(data)["name_" + locale];
+
+                         
+
+                    
+                    }
                 },
-                {
-                    targets: -2,
-                    render: function (data, type, row) {
-                        if (data) return data;
-                        return "<h1>-</h1>";
-                    },
-                },
-                {
-                    targets: -3,
-                    render: function (data, type, row) {
-                        if (data) return data;
-                        return "<h1>-</h1>";
-                    },
-                },
+
+
+            
+                        
                 {
                     targets: -1,
                     data: null,
@@ -96,28 +93,26 @@ let KTDatatable = (function () {
                             <!--begin::Menu-->
                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4" data-kt-menu="true">
 
+                                <!--begin::Menu item-->
+                                 <!--end::Menu item-->
 
                                 <!--begin::Menu item-->
                                 <div class="menu-item px-3">
-                                    <a href="/dashboard/orders/${
-                                        row.id
-                                    }" class="menu-link px-3 d-flex justify-content-between" >
+                                    <a href="/dashboard/orders/${row.id}" class="menu-link px-3 d-flex justify-content-between" >
                                        <span> ${__("Show")} </span>
                                        <span>  <i class="fa fa-eye text-black-50"></i> </span>
                                     </a>
+
                                 </div>
                                 <!--end::Menu item-->
 
                                 <!--begin::Menu item-->
-                                <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3 d-flex justify-content-between delete-row" data-row-id="${
-                                        row.id
-                                    }" data-type="${__("order")}">
-                                       <span> ${__("Delete")} </span>
-                                       <span>  <i class="fa fa-trash text-danger"></i> </span>
-                                    </a>
-                                </div>
+                                
                                 <!--end::Menu item-->
+                                <!--start::change status-->
+                                
+                                <!--end::change status-->
+                        
 
                             </div>
                             <!--end::Menu-->
@@ -130,9 +125,9 @@ let KTDatatable = (function () {
         table = datatable.$;
 
         datatable.on("draw", function () {
-            handleDeleteRows();
-            handleFilterDatatable();
             KTMenu.createInstances();
+            handleFilterDatatable();
+            handleDeleteRows();
         });
     };
 
@@ -143,62 +138,50 @@ let KTDatatable = (function () {
         });
     };
 
-    // Filter Datatable
-    let handleFilterDatatable = () => {
-        $(".filter-datatable-inp").each((index, element) => {
-            $(element).change(function () {
-                let columnIndex = $(this).data("filter-index"); // index of the searching column
-                datatable.column(columnIndex).search($(this).val()).draw();
-            });
-        });
-    };
-
-    // Delete record
     let handleDeleteRows = () => {
-        $(".delete-row").click(function () {
+        $(document).on("click", ".delete-row", function (e) {
+            e.preventDefault();
+    
             let rowId = $(this).data("row-id");
             let type = $(this).data("type");
-
+    
             deleteAlert(type).then(function (result) {
                 if (result.value) {
                     loadingAlert(__("deleting now ..."));
-
+    
                     $.ajax({
-                        method: "delete",
+                        method: "DELETE",
                         headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                         },
-                        url: "/dashboard/orders/" + rowId,
+                        url: `/dashboard/orders/${rowId}`,
                         success: () => {
                             setTimeout(() => {
-                                successAlert(
-                                    `${
-                                        __("You have deleted the") +
-                                        " " +
-                                        type +
-                                        " " +
-                                        __("successfully !")
-                                    } `
-                                ).then(function () {
+                                successAlert(`${__("You have deleted the")} ${type} ${__("successfully!")}`).then(function () {
                                     datatable.draw();
                                 });
                             }, 1000);
                         },
                         error: (err) => {
-                            if (err.hasOwnProperty("responseJSON")) {
-                                if (
-                                    err.responseJSON.hasOwnProperty("message")
-                                ) {
-                                    errorAlert(err.responseJSON.message);
-                                }
+                            if (err.responseJSON && err.responseJSON.message) {
+                                errorAlert(err.responseJSON.message);
                             }
                         },
                     });
                 } else if (result.dismiss === "cancel") {
-                    errorAlert(__("was not deleted !"));
+                    errorAlert(__("was not deleted!"));
                 }
+            });
+        });
+    };
+
+    // Filter Datatable
+    let handleFilterDatatable = () => {
+        $(".filter-datatable-inp").each((index, element) => {
+            $(element).change(function () {
+                let columnIndex = $(this).data("filter-index"); // index of the searching column
+
+                datatable.column(columnIndex).search($(this).val()).draw();
             });
         });
     };

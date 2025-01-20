@@ -51,5 +51,8 @@ class Service extends Model
     }
     
    
+    public function requestservice(){
+        return $this->hasMany(RequestService::class);
+    }
     
 }

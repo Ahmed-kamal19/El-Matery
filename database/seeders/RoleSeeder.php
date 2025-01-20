@@ -72,8 +72,9 @@ class RoleSeeder extends Seeder
             'news_subscribers' => ['unused_actions' => [1, 2, 3]],
             'slider_dashboard' => ['unused_actions' => [1, 2, 3, 4]],
             'recycle_bin' => ['unused_actions' => [1, 2, 3], 'extra_actions' => ['restore']],
-            'Distribution_of_Orders' => ['unused_actions' => [0, 1, 2, 4]],
-            'order_received' => ['unused_actions' => [0, 1, 2, 3, 4], 'extra_actions' => ['received']],
+            'orders'      => [ 'unused_actions' => [ 2,4] , 'extra_actions' => ['view_your_order']],
+            'Distribution_of_Orders'      => [ 'unused_actions' => [ 2,4 ]],
+            'order_received'      => [ 'unused_actions' => [ 2,4 ]],
         ];
 
 

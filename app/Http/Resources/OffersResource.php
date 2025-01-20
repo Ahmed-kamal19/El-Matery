@@ -17,8 +17,8 @@ class OffersResource extends JsonResource
 
         return [
             "id"=>$this->id,
-            // "image"=>getImagePathFromDirectory($this->image,'Offers') ,
-            "cover"=> getImagePathFromDirectory($this->cover,'Offers'),
+             "image"=>getImagePathFromDirectory($this->image,'Offers') ,
+            //"cover"=> getImagePathFromDirectory($this->cover,'Offers'),
             "title"=> $this->title,
             "description"=> $this->description,
      

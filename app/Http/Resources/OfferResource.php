@@ -16,8 +16,8 @@ class OfferResource extends JsonResource
     {
         return [
             "id"=>$this->id ,
-            "image"=>getImagePathFromDirectory($this->image,'Offers') ,
-            // "cover"=> getImagePathFromDirectory($this->cover,'Offers'),
+            //"image"=>getImagePathFromDirectory($this->image,'Offers') ,
+             "cover"=> getImagePathFromDirectory($this->cover,'Offers'),
             "title"=> $this->title_ . getLocale(),
             "description_ar"=> $this->description_ . getLocale(),
             "status"=>$this->status == 1 ?'available':'unavailable',

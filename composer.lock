@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d14a03e81c3749c7b799bdad00692eb7",
+    "content-hash": "0bfefc4f410564fbc32e985ca49e93f6",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -4800,18 +4800,6 @@
         },
         {
             "name": "symfony/css-selector",
-<<<<<<< HEAD
-            "version": "v6.4.13",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/css-selector.git",
-                "reference": "cb23e97813c5837a041b73a6d63a9ddff0778f5e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/cb23e97813c5837a041b73a6d63a9ddff0778f5e",
-                "reference": "cb23e97813c5837a041b73a6d63a9ddff0778f5e",
-=======
             "version": "v7.2.0",
             "source": {
                 "type": "git",
@@ -4822,7 +4810,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/css-selector/zipball/601a5ce9aaad7bf10797e3663faefce9e26c24e2",
                 "reference": "601a5ce9aaad7bf10797e3663faefce9e26c24e2",
->>>>>>> 6ae82c10f72eda5fa8e5e4205b2c02f0ff21810f
                 "shasum": ""
             },
             "require": {
@@ -4858,9 +4845,7 @@
             "description": "Converts CSS selectors to XPath expressions",
             "homepage": "https://symfony.com",
             "support": {
-
                 "source": "https://github.com/symfony/css-selector/tree/v7.2.0"
-
             },
             "funding": [
                 {
@@ -4876,9 +4861,7 @@
                     "type": "tidelift"
                 }
             ],
-
             "time": "2024-09-25T14:21:43+00:00"
-
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -6730,6 +6713,54 @@
                 }
             ],
             "time": "2024-11-08T15:21:10+00:00"
+        },
+        {
+            "name": "taqnyat/php",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/taqnyat/php.git",
+                "reference": "090348cbe732a025f2542d0f0d2e9810bab55804"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/taqnyat/php/zipball/090348cbe732a025f2542d0f0d2e9810bab55804",
+                "reference": "090348cbe732a025f2542d0f0d2e9810bab55804",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "TaqnyatSms.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taqnyat",
+                    "email": "dev@taqnyat.sa"
+                }
+            ],
+            "description": "A PHP wrapper for Taqnyat's API",
+            "homepage": "https://taqnyat.sa/",
+            "keywords": [
+                "api",
+                "php",
+                "sms",
+                "taqnyat",
+                "taqnyat.sa"
+            ],
+            "support": {
+                "issues": "https://github.com/taqnyat/php/issues",
+                "source": "https://github.com/taqnyat/php/tree/1.0.2"
+            },
+            "time": "2021-10-24T13:46:54+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

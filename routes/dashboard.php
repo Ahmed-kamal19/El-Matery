@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\CarController;
 use App\Http\Controllers\Dashboard\FeatureController;
 use App\Http\Controllers\Dashboard\FinanceApprovalsController;
 use App\Http\Controllers\Dashboard\OrderController;
+use App\Http\Controllers\Dashboard\RequestServiceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/send', function () {
@@ -103,6 +104,7 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::get('trash/{modelName}/{id}', 'TrashController@restore')->name('trash.restore');
     // Route::get('trash/{modelName}/{id}/restore', 'TrashController@restore')->name('trash.restore');
     Route::delete('trash/{modelName}/{id}', 'TrashController@forceDelete');
+    Route::get('/request/service', [RequestServiceController::class,'index'])->name('requestService.index');
    
 
     Route::get('/Images/{type}', function ($type) {

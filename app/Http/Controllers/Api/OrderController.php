@@ -349,6 +349,7 @@ return response()->json([
 
 public function companyCash(Request $request)
 {
+   
     $request->validate([
         'car_id'=>['required','integer','exists:cars,id'],
         'color_id'    => ['required','exists:colors,id'],

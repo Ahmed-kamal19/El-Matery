@@ -1239,8 +1239,11 @@
   "branch":"فرع",
   "offer":"عرض",
   "tag":"وسم",
-  "requestService":"طلبات الخدمات"
-  
+  "requestService":"طلبات الخدمات", 
+  "view_your_order":"مشاهدة طلباتك",
+  "Order Received":"استقبال الطلبات",
+  "Distribution Of Orders":"توزيع الطلبات",
+  "Financing Companies":"شركات التمويل"
 
   
 

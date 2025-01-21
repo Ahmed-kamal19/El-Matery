@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Notifications\NewNotification;
+use Illuminate\Support\Facades\Notification;
 
 if ( !function_exists('isRtl') ) {
 
@@ -369,20 +370,21 @@ if(!function_exists('removeFromFavourite')){
  * created By Khaled @ 15-06-2021
  */
 if(!function_exists('storeAndPushNotification')) {
-    function storeAndPushNotification($titleAr, $titleEn, $descriptionAr, $descriptionEn, $icon, $color, $url,$ability=NULL)
+    function storeAndPushNotification($titleAr, $titleEn, $descriptionAr, $descriptionEn, $icon, $color, $url,$ability=NULL,$userId=Null)
     {
+        
         /* add notification to first Employee */
         $date = Carbon::now()->diffForHumans();
         $notification = new NewNotification($titleAr, $titleEn, $descriptionAr, $descriptionEn, $date, $icon, $color, $url);
-        $admins = Employee::
-        whereHas('roles.abilities', function ($query) use($ability) {
-            $query->where('category', $ability);
-        })->get();
+        $admins = Employee::whereHas('roles.abilities', function ($query) use($ability) {
+            $query->where('category', $ability)->where('role_id',1);
+        })->orWhere('id',$userId)->get();
 
-       
-        foreach ($admins as $admin) {
-            $admin->notify($notification);
-        }
+     
+        // foreach ($admins as $admin) {
+        //     $admin->notify($notification);
+        // }
+        Notification::send($admins,$notification);
 
         /* push notifications to all admins */
         $firebaseToken = Employee::whereNotNull('device_token')->pluck('device_token')->all();

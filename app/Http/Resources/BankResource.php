@@ -15,8 +15,7 @@ class BankResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'name_ar'=>$this->name_ar,
-            'name_en'=>$this->name_en,
+            'name'=>$this->name,
             'image'=>getImagePathFromDirectory($this->image,'Banks')
         ];
     }

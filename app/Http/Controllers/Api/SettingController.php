@@ -108,7 +108,7 @@ class SettingController extends Controller
                 'instagram' => settings()->getSettings('instagram_url'),
                 'youtube' => settings()->getSettings('youtube_url'),
                 'snapchat' => settings()->getSettings('snapchat_url'),
-                'address_iframe' => settings()->getSettings('address_iframe'),
+                // 'address_iframe' => settings()->getSettings('address_iframe'),
             ];
 
             $iframeTag = settings()->getSettings('address_iframe');

@@ -374,9 +374,12 @@ if(!function_exists('storeAndPushNotification')) {
         /* add notification to first Employee */
         $date = Carbon::now()->diffForHumans();
         $notification = new NewNotification($titleAr, $titleEn, $descriptionAr, $descriptionEn, $date, $icon, $color, $url);
-        $admins = Employee::whereHas('roles.abilities', function ($query) use($ability) {
+        $admins = Employee::
+        whereHas('roles.abilities', function ($query) use($ability) {
             $query->where('category', $ability);
         })->get();
+
+       
         foreach ($admins as $admin) {
             $admin->notify($notification);
         }

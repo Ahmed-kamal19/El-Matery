@@ -32,7 +32,7 @@ trait NotificationTrait
           $icon,
           $color,
           route('dashboard.orders.show', $order->id),
-          'contact_us',
+          'view_order_received',
           $userId // Add the user ID to specify the notification recipient
       );
       }

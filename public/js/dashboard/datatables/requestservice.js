@@ -38,6 +38,7 @@ let KTDatatable = function () {
                 {data: 'Meter_reading'},
                 {data:'service.name'  ,name:'service_id'},
                 {data:'city.name' ,name:'city_id'},
+                {data:'status.name', name:'status_id'}
                 // {data: 'reply'},
                 // {data: null},
             ],

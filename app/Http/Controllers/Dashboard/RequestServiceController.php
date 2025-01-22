@@ -18,7 +18,8 @@ class RequestServiceController extends Controller
             $data = getModelData(model: new RequestService(), relations: [
                 
                 'service' => ['id', 'name_' . getLocale(),'description_en','description_ar'] ,
-                'city' => ['id', 'name_' . getLocale() ] 
+                'city' => ['id', 'name_' . getLocale() ],
+                'status'=>['id','name_'.getLocale()],
             
             
             

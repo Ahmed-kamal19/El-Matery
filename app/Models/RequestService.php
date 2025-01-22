@@ -23,4 +23,7 @@ class RequestService extends Model
     public function city(){
         return $this->belongsTo(City::class);
     }
+    public function status(){
+        return $this->belongsTo(SettingOrderStatus::class,'status_id');
+    }
 }

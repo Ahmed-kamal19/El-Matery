@@ -88,7 +88,7 @@ class ServiceController extends Controller
         $data['phone'] = '+966' . ltrim($data['phone']); // Remove leading '0' if present
         $data["status_id"] = 8;
         RequestService::create($data);
-
+        
         if(app()->getLocale() == 'en'){
             return response()->json([
                'message'=>'Your request has been successfully confirmed and we will contact you as soon as possible'

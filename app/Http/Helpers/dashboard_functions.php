@@ -381,9 +381,7 @@ if(!function_exists('storeAndPushNotification')) {
         })->orWhere('id',$userId)->get();
 
      
-        // foreach ($admins as $admin) {
-        //     $admin->notify($notification);
-        // }
+     
         Notification::send($admins,$notification);
 
         /* push notifications to all admins */

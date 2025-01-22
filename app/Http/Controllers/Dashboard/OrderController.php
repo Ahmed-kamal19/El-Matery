@@ -31,14 +31,14 @@ class OrderController extends Controller
     
             // Initialize the query builder
             $data = Order::query();
-    
+          
             // Check user permissions and set up relations
             if ($user->roles()->whereHas('abilities', function ($query) {
                 $query->where('name', 'view_orders');
             })->exists()) {
                 $data->with(['opened:id,name']);
             } elseif ($user->roles()->whereHas('abilities', function ($query) {
-                $query->where('name', 'view your order_orders');
+                $query->where('name', 'view_your_order_orders');
             })->exists()) {
                 $data->with(['bank:id,name_ar', 'opened:id,name'])
                     ->where('employee_id', auth()->user()->id);

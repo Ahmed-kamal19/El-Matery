@@ -153,6 +153,7 @@ Route::group(['middleware' => ['json.response']], function () {
 
 
      // -----------------------services----------------------
+     Route::post('/service-request',[ServiceController::class,'requestService']);
      Route::get('/services',[ServiceController::class,'index']);
      Route::get('/services/{service}',[ServiceController::class,'show']);
      Route::get('/similar-services/{service}',[ServiceController::class,'similarService']);

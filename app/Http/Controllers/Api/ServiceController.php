@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
+    
     public function index(Request $request)
     {
         
@@ -82,9 +83,10 @@ class ServiceController extends Controller
     {
         // Get all request data
         $data = $request->all();
-    
+        
         // Concatenate '+966' to the phone number
         $data['phone'] = '+966' . ltrim($data['phone']); // Remove leading '0' if present
+        $data["status_id"] = 8;
         RequestService::create($data);
 
         if(app()->getLocale() == 'en'){

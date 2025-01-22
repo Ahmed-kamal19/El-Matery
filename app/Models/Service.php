@@ -11,7 +11,7 @@ class Service extends Model
     use HasFactory,SoftDeletes;
 
     protected $guarded = [];
-    protected $appends = [ 'name' , 'title' , 'description' ];
+    protected $appends = [ 'name'  , 'description' ];
     protected $casts   = [
         'created_at' => 'date:Y-m-d',
         'updated_at' => 'date:Y-m-d'
@@ -23,10 +23,10 @@ class Service extends Model
         return $this->attributes['name_' . getLocale() ];
     }
 
-    public function getTitleAttribute()
-    {
-        return $this->attributes['title_' . getLocale() ];
-    }
+    // public function getTitleAttribute()
+    // {
+    //     return $this->attributes['title_' . getLocale() ];
+    // }
 
     public function getDescriptionAttribute()
     {

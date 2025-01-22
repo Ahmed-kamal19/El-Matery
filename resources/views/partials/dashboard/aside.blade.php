@@ -153,7 +153,7 @@
 
                 <!-- start   :: orders section -->
 
-                @canany(['view_orders'])
+                @canany(['view_orders','view_your_order_orders'])
                     <div class="menu-item">
                         <div class="menu-content pt-8 pb-0">
                             <span class="menu-section text-muted text-uppercase fs-8 ls-1">{{ __('Orders') }}</span>
@@ -161,7 +161,7 @@
                     </div>
                 @endcanany
 
-                @can('view_orders')
+                @canany(['view_orders','view_your_order_orders'])
                     <div class="menu-item">
                         <a class="menu-link {{ isTabActive('orders') }}" href="{{ route('dashboard.orders.index') }}"
                             data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
@@ -172,8 +172,8 @@
                             <span class="menu-title"> {{ __('Orders') }}</span>
                         </a>
                     </div>
-                @endcan
-                @can('view_orders')
+                @endcanany
+                @canany(['view_orders','view_your_order_orders'])
                 <div class="menu-item">
                     <a class="menu-link {{ isTabActive('requestService') }}" href="{{ route('dashboard.requestService.index') }}"
                         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
@@ -184,7 +184,8 @@
                         <span class="menu-title"> {{ __('requestService') }}</span>
                     </a>
                 </div>
-                @endcan
+                @endcanany
+
 
 
                 <!-- end   :: orders section -->

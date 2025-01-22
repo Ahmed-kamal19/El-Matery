@@ -47,28 +47,7 @@ let KTDatatable = function () {
                     width:150,
                 },
                
-                // {
-                //     targets: 5,
-                //     width:180,
-                //     render:function (data, type, row) {
-
-                //         if (!data)
-                //             return "<h1>-</h1>";
-
-                //         return `<a     onclick="showMoreInDT(this)" > <span  class="cursor-pointer" title="${ __('show more')}" >${ data.substr(0, 18) }</span> </a>
-                //                 <span  title="${ __('show more')}"> ${ data.length > 18 ? '...' : ''} </span>
-                //                 <span  style="display:none"> ${ data.substr(18) } </span>` ;
-                //     }
-                // },
-                // {
-                //     targets: -1,
-                //     data: null,
-                //     render: function (data, type, row) {
-
-                //         return `<a href="/dashboard/contact-us/${row.id}/edit"> <i class="fa fa-reply fa-flip-horizontal"></i> </a> `;
-
-                //     },
-                // },
+              
             ],
 
         });

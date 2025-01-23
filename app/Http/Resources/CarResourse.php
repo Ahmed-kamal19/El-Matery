@@ -112,19 +112,19 @@ class CarResourse extends JsonResource
             'car_body'=>$this->car_body,
             'fuel_tank_capacity'=>$this->fuel_tank_capacity, 
             'brand' => [
-                'id' => $this->brand->id,
-                'title'=>$this->brand->name_ . getLocale(),
-                "image"=> getImagePathFromDirectory($this->brand->image,'Brands'),
-                "cover"=> $this->brand->cover,
-                'car_available_types'=>$this->brand->car_available_types
+                'id' => $this->brand->id??"",
+                'title'=>$this->brand->name??"",
+                "image"=> getImagePathFromDirectory($this->brand->image,'Brands')??"",
+                "cover"=> $this->brand->cover??"",
+                'car_available_types'=>$this->brand->car_available_types??""
             ],
             'model' => [
-                'id' => $this->model->id,
-                'title'=>$this->model->name_ . getLocale(),
+                'id' => $this->model->id??"",
+                'title'=>$this->model->name??"",
             ],
             'categories' => [
                 'id' => $this->category->id??"",
-                'title'=>$this->category->name_ . getLocale()??"",
+                'title'=>$this->category->name??"",
             ],
             'city' => [
                 'id' => $this->city->id??' ',

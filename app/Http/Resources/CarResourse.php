@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use app\Enums\CarBodyType;
 use App\Enums\CarStatus;
 use App\Enums\FeatureOrPossibility;
 use App\Enums\PriceFieldStatus;
@@ -100,14 +101,15 @@ class CarResourse extends JsonResource
             'supplier'=>__($this->supplier),
             'supplier_english'=>$this->supplier,
             'have_discount'=>$this->have_discount,
-            'video_url'=>$this->video_url,
+            'video_url'=>$this->video_url,  
             'price'=>$price_field_status === PriceFieldStatus::show_details->name ?$this->discount_price:0,
-           // 'discount_percentage' =>$price_field_status === PriceFieldStatus::show_details->name ? $this->discount_price != 0 ? round(($this->price - $this->discount_price) / $this->price * 100, 2): 0:null,
-            'selling_price'=>$price_field_status === PriceFieldStatus::show_details->name ?$this->getSellingPriceAttribute():0,
-            'tax'=>settings()->getSettings('maintenance_mode') == 1 ? settings()->getSettings('tax') : 0,
+            'price_before_discount'=>$price_field_status === PriceFieldStatus::show_details->name ?($this->price):0,
             'price_after_tax' =>$price_field_status === PriceFieldStatus::show_details->name ? ($this->getPriceAfterVatAttribute()==$this->price?0:$this->getPriceAfterVatAttribute()):0,
+           // 'discount_percentage' =>$price_field_status === PriceFieldStatus::show_details->name ? $this->discount_price != 0 ? round(($this->price - $this->discount_price) / $this->price * 100, 2): 0:null,
+            //'selling_price'=>$price_field_status === PriceFieldStatus::show_details->name ?$this->getSellingPriceAttribute():0,
+            'tax'=>settings()->getSettings('maintenance_mode') == 1 ? settings()->getSettings('tax') : 0,
             'show_in_home_page' => (bool) $this->show_in_home_page,
-            'car_style'=>$this->car_body,
+            'car_body'=>$this->car_body,
             'fuel_tank_capacity'=>$this->fuel_tank_capacity, 
             'brand' => [
                 'id' => $this->brand->id,
@@ -128,9 +130,9 @@ class CarResourse extends JsonResource
                 'id' => $this->city->id??' ',
                 'title'=>$this->city->name??' ',
             ],
-            'features' =>!empty($features) ? $features : null,
-            'possibilities'=>!empty($possibilities) ? $possibilities :null,  
-            'colors' => !empty($colorDetails) ? $colorDetails   :null,
+            'features' =>!empty($features) ? $features : [],
+            'possibilities'=>!empty($possibilities) ? $possibilities :[],  
+            'colors' => !empty($colorDetails) ? $colorDetails   :[],
         ];
     }
 }

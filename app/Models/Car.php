@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CarBodyType;
 use App\Enums\CarStatus;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Model;
@@ -17,11 +18,16 @@ class Car extends Model
     protected $table = 'cars';
     protected $guarded            = [];
     protected $appends            = ['name','selling_price', 'price_after_vat'];
-    protected $casts              = ['created_at' => 'date:Y-m-d', 'updated_at' => 'date:Y-m-d'];
+    protected $casts              = 
+        [
+      
+        'created_at' => 'date:Y-m-d', 'updated_at' => 'date:Y-m-d'];
 
     static array $carCardColumns  = [ 'id', 'name_ar' , 'name_en' , 'is_new', 'year',
                                       'have_discount', 'discount_price', 'price', 'kilometers','fuel_type','main_image','viewers'];
-     protected static function booted()
+    
+
+    protected static function booted()
     {
         // if(request()->segment(1) != 'dashboard' )
         // {
@@ -32,7 +38,22 @@ class Car extends Model
 
     }
 
-
+    public function getCarBodyAttribute(): string
+    {
+         
+        if(getLocale()=='ar')
+        {
+            return match($this->attributes['car_body']) {
+                'hatchback' => CarBodyType::hatchback->value,
+                'sedan' => CarBodyType::sedan->value,
+                'four_wheel_drive' => CarBodyType::four_wheel_drive->value,
+                'commercial' => CarBodyType::commercial->value,
+                'family' => CarBodyType::family->value,
+            };
+        }
+        return $this->attributes['car_body'];
+        
+    }
     public function features()
     {
         return $this->belongsToMany(Feature::class, 'car_feature', 'car_id', 'feature_id')->withPivot('description_ar', 'description_en');

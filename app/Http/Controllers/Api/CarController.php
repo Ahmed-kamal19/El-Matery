@@ -278,13 +278,13 @@ class CarController extends Controller
         } else {
         
         try{
+            
             $tab = request('tags');
             $type = request('is_new',[]);
             $gear_shifters = request('gear_shifters', []);
             $fuel_types = request('fuel_types', []);
             $car_bodies = request('car_bodies', []);
-            $color_ids = request('color_ids', []);
-            $years = request('years', []);
+            $years = request('years', []); 
             $model_ids = request('model_ids', []);
             $minPrice = request('min_price');
             $maxPrice = request('max_price');
@@ -292,11 +292,11 @@ class CarController extends Controller
             $orderDirection= request('sort');
             $fuel_tank_capacities = request('fuel_tank_capacities', []);
             $brand_ids = request('brand_ids', []);
-           
+
             $query = Car::query()->where('publish', 1);
-         
+            
              //best Selling car
-             $query->when($tab, function ($q, $tab) {
+             $query->when(!empty($tab), function ($q, $tab) {
                 $tag = Tag::with('cars')->find($tab);
               
                 if ($tag) {
@@ -347,37 +347,40 @@ class CarController extends Controller
                 });
 
                 // Color IDs with multiple values
-                $query->whereHas('colors',function($q) use($color_ids){
+                $query->when(!empty($color_ids), function ($q) use ($color_ids) {
                     if (in_array('all', $color_ids)) {
-                        return $q;
-                    } else {
-                        return $q->whereIn('color_id', $color_ids);
-                    }    
-                });
+                        return $q->whereHas('colors',function($qc) {
+                            return $qc->get();
+                        });
+                    }
+                    else{
     
+                        return $q->whereHas('colors',function($qc) use($color_ids){
+                           return $qc->whereIn('color_id',$color_ids);
+                        });
+                    }
+                });
         
                
                 // Years with multiple values
-            $query->when(!empty($years), function ($q) use ($years) {
+                $query->when(!empty($years), function ($q) use ($years) {
+                    if (in_array('all', $years)) {
+                        return $q;
+                    }
                 
-                if (in_array('all', $years)) {
-                    return $q;
-                } else {
-                    foreach ($years as $year) {
-                        if($year==1){
-                           return $q->where(function ($query) use ($years) {
-                               $query->where('year', '<', 2010)
-                                   ->orWhereIn('year', $years);
-                           });
-                       }
-                       return $q->whereIn('year', $years);
-       
-                   }
-                }    
+                    if (in_array(1, $years)) {
+                        return $q->where(function ($query) use ($years) {
+                            $query->where('year', '<', 2010)
+                                  ->orWhereIn('year', $years);
+                        });
+                    }
+                    
+                    return $q->whereIn('year', $years);
+                    
                 });
 
               
-         
+        
                 // Model IDs with multiple values
             $query->when(!empty($model_ids), function ($q) use ($model_ids) {
                 if (in_array('all', $model_ids)) {
@@ -386,7 +389,6 @@ class CarController extends Controller
                     return $q->whereIn('model_id', $model_ids);
                 }  
                 });
-
                 //brand_id
             $query->when(!empty($brand_ids), function ($q) use ($brand_ids) {
                 if (in_array('all', $brand_ids)) {

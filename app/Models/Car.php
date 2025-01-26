@@ -40,8 +40,8 @@ class Car extends Model
 
     public function getCarBodyAttribute(): string
     {
-         
-        if(getLocale()=='ar')
+        $isFromDashboard = request()->is('dashboard/*') || request()->routeIs('dashboard.*');
+        if(getLocale()=='ar' && ! $isFromDashboard)
         {
             return match($this->attributes['car_body']) {
                 'hatchback' => CarBodyType::hatchback->value,

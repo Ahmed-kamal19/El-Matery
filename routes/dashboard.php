@@ -40,7 +40,7 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     /** ajax for features and it can't be after features resource route */
     Route::get('/features/get-options',[FeatureController::class,'getOptions']); //  add car features and possibilities 
     Route::resource('features', 'FeatureController');
-
+    Route::resource('partners','PartnerController');
     Route::resource('orders', 'OrderController');
     Route::resource('questions', 'QuestionController');
     Route::resource('roles', 'RoleController');

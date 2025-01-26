@@ -51,7 +51,8 @@ class RoleSeeder extends Seeder
                 'order_received',
                 'Distribution_of_Orders',
                 // 'questions',
-                'services'
+                'services',
+                'partners'
         
             ];
         Ability::whereNotIn('category', $categories)->delete();

@@ -18,8 +18,8 @@ class PartnerResource extends JsonResource
         'id'=>$this->id,
         "image"=>            getImagePathFromDirectory($this->image, "Partners"),
 
-        "created_at"=>$this->created_at->toDateString(),
-        "updated_at"=>$this->updated_at->toDateString(),
+        // "created_at"=>$this->created_at->toDateString(),
+        // "updated_at"=>$this->updated_at->toDateString(),
         ];
     }
 }

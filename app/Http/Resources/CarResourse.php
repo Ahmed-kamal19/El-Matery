@@ -125,7 +125,7 @@ class CarResourse extends JsonResource
             'categories' => [
                 'id' => $this->category->id??"",
                 'title'=>$this->category->name??"",
-            ],
+            ]  ,
             'city' => [
                 'id' => $this->city->id??' ',
                 'title'=>$this->city->name??' ',

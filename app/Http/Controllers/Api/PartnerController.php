@@ -10,7 +10,8 @@ use App\Http\Resources\PartnerResource;
 class PartnerController extends Controller
 {
      public function index(){
-        $partners = Partner::paginate(10);
+         
+        $partners = Partner::all();
         return   PartnerResource::collection($partners);
 
          

@@ -27,7 +27,7 @@ use App\Http\Controllers\Api\ServiceController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group(['middleware' => ['json.response']], function () {
+Route::group(['middleware' => ['json.response','removeTrailingSlash']], function () {
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return $request->user();
     });

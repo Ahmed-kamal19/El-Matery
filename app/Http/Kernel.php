@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'set_locale' => \App\Http\Middleware\SetLocale::class,
         'maintenance_mode' => \App\Http\Middleware\MaintenanceMode::class,
         'json.response' => \App\Http\Middleware\ForceJsonResponse::class,
+        'removeTrailingSlash'=> \App\Http\Middleware\RemoveTrailingSlash::class
     ];
 }

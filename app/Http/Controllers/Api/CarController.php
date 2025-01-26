@@ -11,6 +11,7 @@ use App\Http\Resources\ModelResourse;
 use App\Models\Bank;
 use App\Models\Brand;
 use App\Models\Car;
+use App\Models\CarColorImage;
 use App\Models\CarModel;
 use App\Models\Category;
 use App\Models\City;
@@ -554,10 +555,17 @@ class CarController extends Controller
             return $this->success(data:['models'=>$result]);
         }
     }
-    public function getColorImages(Car $car,Color $color)
+    public function getColorImages(Car $car,Color $color=null)
     {
-     
-        $carColors = $car->colors()->where('color_id',$color->id)->get();
+        $colorSelected = CarColorImage::where('car_id',$car->id)->pluck('color_id');
+        $carColors=[];
+        if(!$color){
+             $carColors = $car->colors()->where('color_id',$colorSelected[0])->get();    
+        }
+        else
+        {
+            $carColors = $car->colors()->where('color_id',$color->id)->get();
+        }
       
         if($carColors->isEmpty())
         {

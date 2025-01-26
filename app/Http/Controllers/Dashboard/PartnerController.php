@@ -69,6 +69,7 @@ class PartnerController extends Controller
     {
         $this->authorize('delete_partners');
         $partner = Partner::findOrFail($id);
+        deleteImage($partner->image,'Partners');
         $partner->delete();
         return view('dashboard.partner.index');
 

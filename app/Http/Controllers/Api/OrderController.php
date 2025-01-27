@@ -177,7 +177,7 @@ class OrderController extends Controller
             ]);
     
             $this->distribute($order->id);
-            $otp = $this->sendOtp($request, $request->phone,$order->id);
+            // $otp = $this->sendOtp($request, $request->phone,$order->id);
 
             $carOrder = CarOrder::create([
                 'type' => 'individual',
@@ -199,7 +199,7 @@ class OrderController extends Controller
     return response()->json([
         'message'=>'success',
         'data'=>new OrderResource($order),
-        'otp'=>$otp,
+        // 'otp'=>$otp,
     ]);
     
     
@@ -240,20 +240,13 @@ $order = Order::create([
      
 ]);
 $this->distribute($order->id);
-$otp = $this->sendOtp($request, $request->phone,$order->id);
+// $otp = $this->sendOtp($request, $request->phone,$order->id);
 
 $carOrder = CarOrder::create([
     'type' => 'individual',
     'payment_type' => 'cash',
      'organization_seo' => $request->organization_seo,
-
-
- 
-
-  
-    
     'order_id' => $order->id, 
-
     
 ]);
 
@@ -263,7 +256,7 @@ $carOrder = CarOrder::create([
 return response()->json([
     'message'=>'success',
     'data'=>$order,
-    'otp'=>$otp
+    // 'otp'=>$otp
 
 ]);
 
@@ -310,7 +303,7 @@ $order = Order::create([
      
 ]);
 $this->distribute($order->id);
-$otp = $this->sendOtp($request, $request->phone,$order->id);
+// $otp = $this->sendOtp($request, $request->phone,$order->id);
 
 $carOrder = CarOrder::create([
     'type' => 'organization',
@@ -340,7 +333,7 @@ $carOrder = CarOrder::create([
 return response()->json([
     'message'=>'success',
     'data'=>$order,
-    'otp'=>$otp
+    // 'otp'=>$otp
 
 ]);
 
@@ -387,7 +380,7 @@ public function companyCash(Request $request)
     ]);
 $this->distribute($order->id);
 
-    $otp = $this->sendOtp($request, $request->phone,$order->id);
+    // $otp = $this->sendOtp($request, $request->phone,$order->id);
 
     $carOrder = CarOrder::create([
         'type' => 'organization',
@@ -409,7 +402,7 @@ $this->distribute($order->id);
     return response()->json([
         'message'=>'success',
         'data'=>$order,
-        'otp'=>$otp
+        // 'otp'=>$otp
     ]);
 
 
@@ -418,11 +411,6 @@ $this->distribute($order->id);
 
     
 
-// public function serviceOrder(Request $request)
-// {
-//     $request->validate([
-//         ''
-//     ])
-// }
+
 
 }

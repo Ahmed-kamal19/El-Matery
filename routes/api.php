@@ -27,10 +27,11 @@ use App\Http\Controllers\Api\ServiceController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group(['middleware' => ['json.response','removeTrailingSlash']], function () {
+Route::group(['middleware' => ['json.response']], function () {
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return $request->user();
     });
+    Route::get('/filterCar',[CarController::class,'carFilter']);
     Route::post('/register', 'Api\Auth\AuthController@register');
     Route::post('/login', 'Api\Auth\AuthController@login');
     Route::post('/send-otp', 'Api\Auth\ForgetPasswordController@sendOtp');

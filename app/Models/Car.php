@@ -43,14 +43,14 @@ class Car extends Model
         $isFromDashboard = request()->is('dashboard/*') || request()->routeIs('dashboard.*');
         if(getLocale()=='ar' && ! $isFromDashboard)
         {
-            return match($this->attributes['car_body']) {
-                'hatchback' => CarBodyType::hatchback->value,
-                'sedan' => CarBodyType::sedan->value,
-                'four-wheel-drive'=>CarBodyType::four_wheel_drive->value,
-                'four_wheel_drive' => CarBodyType::four_wheel_drive->value,
-                'commercial' => CarBodyType::commercial->value,
-                'family' => CarBodyType::family->value,
-            };
+            // return match($this->attributes['car_body']) {
+            //     'hatchback' => CarBodyType::hatchback->value,
+            //     'sedan' => CarBodyType::sedan->value,
+            //     'four-wheel-drive'=>CarBodyType::four_wheel_drive->value,
+            //     'four_wheel_drive' => CarBodyType::four_wheel_drive->value,
+            //     'commercial' => CarBodyType::commercial->value,
+            //     'family' => CarBodyType::family->value,
+            // };
         }
         return $this->attributes['car_body'];
         

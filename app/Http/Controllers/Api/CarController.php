@@ -292,7 +292,7 @@ class CarController extends Controller
             $orderDirection= request('sort');
             $fuel_tank_capacities = request('fuel_tank_capacities', []);
             $brand_ids = request('brand_ids', []);
-
+            
             $query = Car::query()->where('publish', 1);
             
              //best Selling car
@@ -461,6 +461,131 @@ class CarController extends Controller
 
     }
 
+    public function carFilter()
+    {
+        if (request()->has('search')) {
+            $searchKeyword = request()->input('search');
+            $query = Car::query();
+    
+           $query->where(function ($query) use ($searchKeyword) {
+               $query->where('name_ar', 'LIKE', "%$searchKeyword%")
+               ->orWhere('name_en', 'LIKE', "%$searchKeyword%")->orWhere('description_ar','LIKE', "%$searchKeyword%")->orWhere('description_en', "%$searchKeyword%");
+           });
+   
+           if ($searchKeyword) {
+               $query->with('brand')->orWhereHas('brand', function ($brandQuery) use ($searchKeyword) {
+                   $brandQuery->where('name_ar', 'LIKE', "%$searchKeyword%")->orWhere('name_en','LIKE',"%$searchKeyword%")->orWhere('meta_desc_en','LIKE', "%$searchKeyword%")->orWhere('meta_keyword_ar', "%$searchKeyword%")->orWhere('meta_keyword_ar', "%$searchKeyword%");
+               });
+           }
+       
+           if ($searchKeyword) {
+               $query->with('model')->orWhereHas('model', function ($modelQuery) use ($searchKeyword) {
+                   $modelQuery->where('name_ar', 'LIKE', "%$searchKeyword%")->orWhere('name_en','LIKE',"%$searchKeyword%")->orWhere('meta_keyword_ar','LIKE',"%$searchKeyword%")->orWhere('meta_keyword_en','LIKE',"%$searchKeyword%")->orWhere('meta_desc_ar','LIKE',"%$searchKeyword%");
+               });
+           }
+   
+           $perPage = 9; 
+           $cars = $query->paginate($perPage);
+           $data=CarResource::collection( $cars );
+   
+           return $this->successWithPagination(message:"All Pagination Car",data: $data);
+       } else {
+        try {
+        // Convert comma-separated strings to arrays and handle defaults
+        $type = $this->getArrayFromRequest(request('is_new'));
+        $gear_shifters = $this->getArrayFromRequest(request('gear_shifters'));
+        $fuel_types = $this->getArrayFromRequest(request('fuel_types'));
+        $car_bodies = $this->getArrayFromRequest(request('car_bodies'));
+        $years = $this->getArrayFromRequest(request('years'));
+        $model_ids = $this->getArrayFromRequest(request('model_ids'));
+        $color_ids = $this->getArrayFromRequest(request('color_ids'));
+        $fuel_tank_capacities = $this->getArrayFromRequest(request('fuel_tank_capacities'));
+        $brand_ids = $this->getArrayFromRequest(request('brand_ids'));
+
+        $minPrice = request('min_price');
+        $maxPrice = request('max_price');
+        $orderDirection = request('sort', 'desc'); 
+        $query = Car::query()->where('publish', 1);
+
+        $query->when(!empty($type), fn($q) => $this->filterInArray($q, 'is_new', $type));
+        $query->when(!empty($gear_shifters), fn($q) => $this->filterInArray($q, 'gear_shifter', $gear_shifters));
+        $query->when(!empty($fuel_types), fn($q) => $this->filterInArray($q, 'fuel_type', $fuel_types));
+        $query->when(!empty($car_bodies), fn($q) => $this->filterInArray($q, 'car_body', $car_bodies));
+
+        $query->when(!empty($color_ids), function ($q) use ($color_ids) {
+            return $q->whereHas('colors', function ($qc) use ($color_ids) {
+                $qc->orWhereIn('color_id', $color_ids);
+            });
+        });
+
+        $query->when(!empty($years), function ($q) use ($years) {
+            if (in_array('all', $years)) return $q;
+            if (in_array(1, $years)) {
+                return $q->where(function ($query) use ($years) {
+                    $query->where('year', '<', 2010)
+                          ->orWhereIn('year', $years);
+                });
+            }
+            return $q->orWhereIn('year', $years);
+        });
+
+        $query->when(!empty($model_ids), fn($q) => $this->filterInArray($q, 'model_id', $model_ids));
+
+        $query->when(!empty($brand_ids), fn($q) => $this->filterInArray($q, 'brand_id', $brand_ids));
+
+        $query->when(isset($minPrice), fn($q) => $q->orWhere('price', '>=', $minPrice));
+        $query->when(isset($maxPrice), fn($q) => $q->orWhere('price', '<=', $maxPrice));
+
+        $query->when(!empty($fuel_tank_capacities), function ($q) use ($fuel_tank_capacities) {
+            foreach ($fuel_tank_capacities as $choice) {
+                switch ($choice) {
+                    case 0:
+                        $q->orWhereBetween('fuel_tank_capacity', [800, 1200]);
+                        break;
+                    case 1:
+                        $q->orWhereBetween('fuel_tank_capacity', [1300, 1400]);
+                        break;
+                    case 2:
+                        $q->orWhereBetween('fuel_tank_capacity', [1500, 1600]);
+                        break;
+                    case 3:
+                        $q->orWhereBetween('fuel_tank_capacity', [1800, 2000]);
+                        break;
+                    case 4:
+                        $q->orWhereBetween('fuel_tank_capacity', [2200, 3000]);
+                        break;
+                    case 5:
+                        $q->orWhere('fuel_tank_capacity', '>', 3000);
+                        break;
+                    default:
+                        $q->whereBetween('fuel_tank_capacity', [0, 3000]);
+                }
+            }
+        });
+
+        $query->orderBy('created_at', $orderDirection);
+
+        $perPage = 9;
+        $cars = $query->paginate($perPage);
+
+        $data = CarResource::collection($cars);
+
+        return $this->successWithPagination(message: "Cars per page", data: $data);
+    } catch (\Exception $e) {
+        return $this->failure(message: $e->getMessage());
+    }
+
+       }
+    }
+    private function getArrayFromRequest($param): array
+    {
+        return is_array($param) ? $param : (isset($param) ? explode(',', $param) : []);
+    }
+    private function filterInArray($query, $column, $values)
+    {
+        if (in_array('all', $values)) return $query; // Skip filtering if 'all' is present
+        return $query->orWhereIn($column, $values);
+    }
 
     public function prices(){
         $minPrice = Car::min('price');

@@ -25,8 +25,8 @@ class StoreFavoriteRequest extends FormRequest
     public function rules()
     {
         return [
-            'car_ids' =>'required|array',
-            'car_ids.*'=>'required|exists:cars,id'
+            'car_ids' =>'array',
+            'car_ids.*'=>'exists:cars,id'
         ];
     }
 }

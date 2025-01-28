@@ -514,7 +514,7 @@ class CarController extends Controller
 
         $query->when(!empty($color_ids), function ($q) use ($color_ids) {
             return $q->whereHas('colors', function ($qc) use ($color_ids) {
-                $qc->orWhereIn('color_id', $color_ids);
+                $qc->WhereIn('color_id', $color_ids);
             });
         });
 
@@ -526,15 +526,15 @@ class CarController extends Controller
                           ->orWhereIn('year', $years);
                 });
             }
-            return $q->orWhereIn('year', $years);
+            return $q->WhereIn('year', $years);
         });
 
         $query->when(!empty($model_ids), fn($q) => $this->filterInArray($q, 'model_id', $model_ids));
 
         $query->when(!empty($brand_ids), fn($q) => $this->filterInArray($q, 'brand_id', $brand_ids));
 
-        $query->when(isset($minPrice), fn($q) => $q->orWhere('price', '>=', $minPrice));
-        $query->when(isset($maxPrice), fn($q) => $q->orWhere('price', '<=', $maxPrice));
+        $query->when(isset($minPrice), fn($q) => $q->Where('price', '>=', $minPrice));
+        $query->when(isset($maxPrice), fn($q) => $q->Where('price', '<=', $maxPrice));
 
         $query->when(!empty($fuel_tank_capacities), function ($q) use ($fuel_tank_capacities) {
             foreach ($fuel_tank_capacities as $choice) {
@@ -583,9 +583,9 @@ class CarController extends Controller
     }
     private function filterInArray($query, $column, $values)
     {
-        if(!is_array($values)) return $query->orWhere($column,$values);
+        if(!is_array($values)) return $query->Where($column,$values);
         elseif (in_array('all', $values)) return $query; // Skip filtering if 'all' is present
-        else return $query->orWhereIn($column, $values);
+        else return $query->WhereIn($column, $values);
     }
 
     public function prices(){

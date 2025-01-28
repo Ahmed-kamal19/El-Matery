@@ -314,17 +314,9 @@ $carOrder = CarOrder::create([
     'organization_activity' => $request->organization_activity,
     'organization_location' => $request->organization_location,
     'organization_seo' => $request->organization_seo,
-
-
     'bank_id' => $request->bank_id,
     'year' => $request->year,
-
-
-  
-    
-    'order_id' => $order->id, 
-
-    
+    'order_id' => $order->id,   
 ]);
 
 
@@ -334,7 +326,6 @@ return response()->json([
     'message'=>'success',
     'data'=>$order,
     // 'otp'=>$otp
-
 ]);
 
 }
@@ -351,9 +342,6 @@ public function companyCash(Request $request)
         'organization_activity'=>['required','string',new NotNumbersOnly()],
         'organization_location'=>['required','string',new NotNumbersOnly()],
         'organization_seo'=>['required','string',new NotNumbersOnly()],
-        
-        
-        
         'phone' => ['required', 'string', 'regex:/^(05|5)\d{8}$/'],
         'bank_id'=>['required','integer','exists:banks,id'],
  
@@ -387,14 +375,10 @@ $this->distribute($order->id);
         'payment_type' => 'cash',
         'organization_name'=>$request->organization_name,
         'organization_activity' => $request->organization_activity,
-
         'organization_location' => $request->organization_location,
         'organization_seo' => $request->organization_seo,
         'order_id'=>$order->id,
         'bank_id'=>$request->bank_id
-
-
-
     ]);
 
 
@@ -407,10 +391,5 @@ $this->distribute($order->id);
 
 
 }
-
-
-    
-
-
 
 }

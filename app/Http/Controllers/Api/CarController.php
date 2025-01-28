@@ -506,7 +506,7 @@ class CarController extends Controller
         $maxPrice = request('max_price');
         $orderDirection = request('sort', 'desc'); 
         $query = Car::query()->where('publish', 1);
-
+            
         $query->when(!empty($type), fn($q) => $this->filterInArray($q, 'is_new', $type));
         $query->when(!empty($gear_shifters), fn($q) => $this->filterInArray($q, 'gear_shifter', $gear_shifters));
         $query->when(!empty($fuel_types), fn($q) => $this->filterInArray($q, 'fuel_type', $fuel_types));
@@ -583,8 +583,9 @@ class CarController extends Controller
     }
     private function filterInArray($query, $column, $values)
     {
-        if (in_array('all', $values)) return $query; // Skip filtering if 'all' is present
-        return $query->orWhereIn($column, $values);
+        if(!is_array($values)) return $query->orWhere($column,$values);
+        elseif (in_array('all', $values)) return $query; // Skip filtering if 'all' is present
+        else return $query->orWhereIn($column, $values);
     }
 
     public function prices(){

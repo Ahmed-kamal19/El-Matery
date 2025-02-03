@@ -528,6 +528,7 @@ class CarController extends Controller
             });
         }
         if(!empty($years)){ 
+            
             $query->when(!empty($years), fn($q)=> $this->filterInArray($q,'year',$years));
         }
         // $query->when(!empty($years), function ($q) use ($years) {
@@ -541,16 +542,17 @@ class CarController extends Controller
         //     return $q->WhereIn('year', $years);
         // });
         if(!empty($model_ids)){ 
+            
             $query->when(!empty($model_ids), fn($q) => $this->filterInArray($q, 'model_id', $model_ids));
         }
         if(!empty($brand_ids)){ 
             $query->when(!empty($brand_ids), fn($q) => $this->filterInArray($q, 'brand_id', $brand_ids));
         }
         if(isset($minPrice)){ 
-            $query->when(isset($minPrice), fn($q) => $q->orWhere('price', '>=', $minPrice));
+            $query->when(isset($minPrice), fn($q) => $q->Where('price', '>=', $minPrice));
         }
         if(isset($maxPrice)){ 
-            $query->when(isset($maxPrice), fn($q) => $q->orWhere('price', '<=', $maxPrice));
+            $query->when(isset($maxPrice), fn($q) => $q->Where('price', '<=', $maxPrice));
         }
         if(!empty($fuel_tank_capacities)){ 
             $query->when(!empty($fuel_tank_capacities), function ($q) use ($fuel_tank_capacities) {
@@ -599,26 +601,14 @@ class CarController extends Controller
     {
         return is_array($param) ? $param : (isset($param) ? explode(',', $param) : []);
     }
-    // private function filterInArray($query, $column, $values)
-    // {
-       
-    //     if(!is_array($values)) return $query->Where($column,$values);
-    //     elseif (in_array('all', $values)) return $query; // Skip filtering if 'all' is present
-    //     else return $query->WhereIn($column, $values);
-    // }
     private function filterInArray($query, $column, $values)
-    {
-      
-        if (!is_array($values)) {
-            return $query->where($column, $values); // Handle single value properly
-        } elseif (!empty($values) && in_array('all', $values)) {
-            return $query; // Skip filtering if 'all' is present
-        } elseif (!empty($values)) {
-            return $query->whereIn($column, $values); // Correctly apply array filter
-        }
-
-        return $query; // If empty, return unchanged query
+    {   
+        
+        if(!is_array($values)) return $query->Where($column,$values);
+        elseif (in_array('all', $values)) return $query; // Skip filtering if 'all' is present
+        else return $query->WhereIn($column, $values);
     }
+ 
 
 
     public function prices(){

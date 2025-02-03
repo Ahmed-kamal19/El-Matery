@@ -13,11 +13,13 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\CompanyOrderResource;
+use App\Models\CarColorImage;
 use App\Rules\NotNumbersOnly;
 use App\Traits\NotificationTrait;
 use App\Models\Otp;
 use Exception;
-
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 
@@ -25,6 +27,37 @@ class OrderController extends Controller
 {
 
     use NotificationTrait;
+
+    public function getColorsByCarId($id)
+    {
+        try{
+              // Fetch car color images with their related color
+            $colors = CarColorImage::where('car_id', $id)
+            ->with('color:id,name_ar,name_en') // Ensure 'color' relationship exists
+            ->get()
+            ->map(function ($carColorImage) {
+                return [
+                    'color_id' => $carColorImage->color->id,
+                    'color_name' => $carColorImage->color->name,
+                ];
+            })
+            ->values();
+            if($colors->isEmpty())return $this->success(data:[],message:__("no data found"));
+            return $this->success(data:$colors );
+        }catch(ModelNotFoundException $e){return $this->success(data:[],message:__("no data found"));}
+    }
+    public function allCar()
+    {
+        $cars = Car::all()->map(function($car){
+            return [
+                'id'=>$car->id,
+                'name'=>$car->name,
+                'price'=>$car->price_after_vat
+            ];
+        });
+        if($cars->isEmpty()) return $this->success(data:[],message:__("no data found"));
+        return $this->success(data:$cars);
+    }
     private function sendOtp(Request $request , $phone , $order)
     {
         $request->validate([

@@ -17,5 +17,9 @@ class CarColorImage extends Pivot
     {
         return asset(getImagePathFromDirectory($this->image,'Cars'));
     }
+    public function color()
+    {
+        return $this->belongsTo(Color::class, 'color_id');
+    }
     
 }

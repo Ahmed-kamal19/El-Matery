@@ -155,9 +155,15 @@ class Car extends Model
     // }
     public function getPriceAfterVatAttribute()
     {
-       
-      return round($this->attributes['price']??0 * ( settings()->getSettings('tax') / 100 + 1));
-        
+ 
+        $price = ($this->discount_price !== null && $this->discount_price > 0) ? $this->discount_price : $this->price;
+
+        if (settings()->getSettings('maintenance_mode') == 1) {
+            return round($price * (settings()->getSettings('tax') / 100 + 1), 2);
+        } else {
+            return round($price, 2);
+        }
+            
     }
     public function favorites()
     {

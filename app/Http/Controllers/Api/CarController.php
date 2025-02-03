@@ -501,23 +501,35 @@ class CarController extends Controller
         $color_ids = $this->getArrayFromRequest(request('color_ids'));
         $fuel_tank_capacities = $this->getArrayFromRequest(request('fuel_tank_capacities'));
         $brand_ids = $this->getArrayFromRequest(request('brand_ids'));
-
+        
         $minPrice = request('min_price');
         $maxPrice = request('max_price');
         $orderDirection = request('sort', 'desc'); 
         $query = Car::query()->where('publish', 1);
-            
-        $query->when(!empty($type), fn($q) => $this->filterInArray($q, 'is_new', $type));
-        $query->when(!empty($gear_shifters), fn($q) => $this->filterInArray($q, 'gear_shifter', $gear_shifters));
-        $query->when(!empty($fuel_types), fn($q) => $this->filterInArray($q, 'fuel_type', $fuel_types));
-        $query->when(!empty($car_bodies), fn($q) => $this->filterInArray($q, 'car_body', $car_bodies));
+        if(!empty($type)){    
+            $query->when(!empty($type), fn($q) => $this->filterInArray($q, 'is_new', $type));
+        }
+        if(!empty($gear_shifters)){ 
+            $query->when(!empty($gear_shifters), fn($q) => $this->filterInArray($q, 'gear_shifter', $gear_shifters));
 
-        $query->when(!empty($color_ids), function ($q) use ($color_ids) {
-            return $q->whereHas('colors', function ($qc) use ($color_ids) {
-                $qc->WhereIn('color_id', $color_ids);
+        }
+        if(!empty($fuel_types)){ 
+            $query->when(!empty($fuel_types), fn($q) => $this->filterInArray($q, 'fuel_type', $fuel_types));
+        }
+
+        if(!empty($car_bodies)){ 
+            $query->when(!empty($car_bodies), fn($q) => $this->filterInArray($q, 'car_body', $car_bodies));
+        }
+        if(!empty($color_ids)){ 
+            $query->when(!empty($color_ids), function ($q) use ($color_ids) {
+                return $q->whereHas('colors', function ($qc) use ($color_ids) {
+                    $qc->WhereIn('color_id', $color_ids);
+                });
             });
-        });
-        $query->when(!empty($years), fn($q)=> $this->filterInArray($q,'year',$years));
+        }
+        if(!empty($years)){ 
+            $query->when(!empty($years), fn($q)=> $this->filterInArray($q,'year',$years));
+        }
         // $query->when(!empty($years), function ($q) use ($years) {
         //     if (in_array('all', $years)) return $q;
         //     if (in_array(1, $years)) {
@@ -528,40 +540,46 @@ class CarController extends Controller
         //     }
         //     return $q->WhereIn('year', $years);
         // });
-
-        $query->when(!empty($model_ids), fn($q) => $this->filterInArray($q, 'model_id', $model_ids));
-
-        $query->when(!empty($brand_ids), fn($q) => $this->filterInArray($q, 'brand_id', $brand_ids));
-
-        $query->when(isset($minPrice), fn($q) => $q->Where('price', '>=', $minPrice));
-        $query->when(isset($maxPrice), fn($q) => $q->Where('price', '<=', $maxPrice));
-
-        $query->when(!empty($fuel_tank_capacities), function ($q) use ($fuel_tank_capacities) {
-            foreach ($fuel_tank_capacities as $choice) {
-                switch ($choice) {
-                    case 0:
-                        $q->orWhereBetween('fuel_tank_capacity', [800, 1200]);
-                        break;
-                    case 1:
-                        $q->orWhereBetween('fuel_tank_capacity', [1300, 1400]);
-                        break;
-                    case 2:
-                        $q->orWhereBetween('fuel_tank_capacity', [1500, 1600]);
-                        break;
-                    case 3:
-                        $q->orWhereBetween('fuel_tank_capacity', [1800, 2000]);
-                        break;
-                    case 4:
-                        $q->orWhereBetween('fuel_tank_capacity', [2200, 3000]);
-                        break;
-                    case 5:
-                        $q->orWhere('fuel_tank_capacity', '>', 3000);
-                        break;
-                    default:
-                        $q->whereBetween('fuel_tank_capacity', [0, 3000]);
+        if(!empty($model_ids)){ 
+            $query->when(!empty($model_ids), fn($q) => $this->filterInArray($q, 'model_id', $model_ids));
+        }
+        if(!empty($brand_ids)){ 
+            $query->when(!empty($brand_ids), fn($q) => $this->filterInArray($q, 'brand_id', $brand_ids));
+        }
+        if(isset($minPrice)){ 
+            $query->when(isset($minPrice), fn($q) => $q->orWhere('price', '>=', $minPrice));
+        }
+        if(isset($maxPrice)){ 
+            $query->when(isset($maxPrice), fn($q) => $q->orWhere('price', '<=', $maxPrice));
+        }
+        if(!empty($fuel_tank_capacities)){ 
+            $query->when(!empty($fuel_tank_capacities), function ($q) use ($fuel_tank_capacities) {
+                foreach ($fuel_tank_capacities as $choice) {
+                    switch ($choice) {
+                        case 0:
+                            $q->orWhereBetween('fuel_tank_capacity', [800, 1200]);
+                            break;
+                        case 1:
+                            $q->orWhereBetween('fuel_tank_capacity', [1300, 1400]);
+                            break;
+                        case 2:
+                            $q->orWhereBetween('fuel_tank_capacity', [1500, 1600]);
+                            break;
+                        case 3:
+                            $q->orWhereBetween('fuel_tank_capacity', [1800, 2000]);
+                            break;
+                        case 4:
+                            $q->orWhereBetween('fuel_tank_capacity', [2200, 3000]);
+                            break;
+                        case 5:
+                            $q->orWhere('fuel_tank_capacity', '>', 3000);
+                            break;
+                        default:
+                            $q->whereBetween('fuel_tank_capacity', [0, 3000]);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         $query->orderBy('created_at', $orderDirection);
 
@@ -581,12 +599,27 @@ class CarController extends Controller
     {
         return is_array($param) ? $param : (isset($param) ? explode(',', $param) : []);
     }
+    // private function filterInArray($query, $column, $values)
+    // {
+       
+    //     if(!is_array($values)) return $query->Where($column,$values);
+    //     elseif (in_array('all', $values)) return $query; // Skip filtering if 'all' is present
+    //     else return $query->WhereIn($column, $values);
+    // }
     private function filterInArray($query, $column, $values)
     {
-        if(!is_array($values)) return $query->Where($column,$values);
-        elseif (in_array('all', $values)) return $query; // Skip filtering if 'all' is present
-        else return $query->WhereIn($column, $values);
+      
+        if (!is_array($values)) {
+            return $query->where($column, $values); // Handle single value properly
+        } elseif (!empty($values) && in_array('all', $values)) {
+            return $query; // Skip filtering if 'all' is present
+        } elseif (!empty($values)) {
+            return $query->whereIn($column, $values); // Correctly apply array filter
+        }
+
+        return $query; // If empty, return unchanged query
     }
+
 
     public function prices(){
         $minPrice = Car::min('price');

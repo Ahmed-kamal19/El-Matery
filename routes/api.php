@@ -191,7 +191,8 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::post('/individuals-cash',[OrderController::class,'individualsCash'])->name('individualsCash');
     Route::post('/company-finance',[OrderController::class,'companyFinance'])->name('companyFinance');
     Route::post('/company-cash',[OrderController::class,'companyCash'])->name('companyCash');
-
+    Route::get('/Cars',[OrderController::class,'allCar']);
+    Route::get('/cars/{id}/colorIds',[OrderController::class,"getColorsByCarId"]);
 
     // Route::get('/requests','Api\RequestController@index')->name('get-requests');
     Route::get('/requests-search','Api\RequestController@search');

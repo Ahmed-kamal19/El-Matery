@@ -31,6 +31,7 @@ class StoreSettingRequest extends FormRequest
             // 'logo'                                             => ['required_if:setting_type,general', 'nullable', 'mimes:webp', 'max:2048'],
             // 'favicon'                                          => ['required_if:setting_type,general', 'nullable', 'mimes:webp', 'max:2048'],
             'facebook_url' => [ 'url', 'nullable', 'string', 'max:255'],
+            "linkedIn"=>['url','nullable','string','max:255'],
             'whatsapp_url' => ['url', 'nullable', 'string', 'max:255'],
             'twitter_url' => [ 'url', 'nullable', 'string', 'max:255'],
             'instagram_url' => [ 'url', 'nullable', 'string', 'max:255'],

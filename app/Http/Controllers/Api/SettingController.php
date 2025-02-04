@@ -30,6 +30,7 @@ class SettingController extends Controller
                 'youtube' => settings()->getSettings('youtube_url'),
                 'snapchat' => settings()->getSettings('snapchat_url'),
                 'tiktok' => settings()->getSettings('tiktok'),
+                'linkedIn'=>settings()->getSettings('linkedIn'),
                 'whatsapp' => settings()->getSettings('whatsapp_url'),
                 'working_time' => settings()->getSettings('working_time'),
                 'email'=>settings()->getSettings('email'),
@@ -146,6 +147,7 @@ class SettingController extends Controller
                 'instagram' => settings()->getSettings('instagram_url'),
                 'youtube' => settings()->getSettings('youtube_url'),
                 'snapchat' => settings()->getSettings('snapchat_url'),
+                'linkedIn'=>settings()->getSettings('linkedIn')
             ];
             return $this->success(data: $data);
         } catch (\Exception $e)

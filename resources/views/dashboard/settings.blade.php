@@ -227,7 +227,7 @@
                 <!-- Begin :: Input group -->
                 <div class="fv-row row mb-15">
                     <!-- Begin :: Col -->
-                    <div class="col-md-6">
+                    <div class="col-md-4">
 
                         <label class="form-label">{{ __('Email') }}</label>
                         <input type="text" class="form-control" name="email"
@@ -239,13 +239,24 @@
                     <!-- End   :: Col -->
 
                     <!-- Begin :: Col -->
-                    <div class="col-md-6">
+                    <div class="col-md-4">
 
                         <label class="form-label">{{ __('Tiktok') }}</label>
                         <input type="text" class="form-control" name="tiktok"
                             value="{{ settings()->getSettings('tiktok') ?? '' }}" id="tiktok_inp"
                             placeholder="{{ __('Enter the tiktok page url') }}">
                         <p class="invalid-feedback" id="tiktok"></p>
+
+                    </div>
+                    <!-- End   :: Col -->
+                      <!-- Begin :: Col -->
+                      <div class="col-md-4">
+
+                        <label class="form-label">{{ __('LinkedIn') }}</label>
+                        <input type="text" class="form-control" name="linkedIn"
+                            value="{{ settings()->getSettings('linkedIn') ?? '' }}" id="linkedIn_inp"
+                            placeholder="{{ __('Enter the linkedIn page url') }}">
+                        <p class="invalid-feedback" id="linkedIn"></p>
 
                     </div>
                     <!-- End   :: Col -->

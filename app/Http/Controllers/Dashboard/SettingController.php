@@ -47,25 +47,14 @@ class SettingController extends Controller
         $data['whatsapp'] = convertArabicNumbers($request['whatsapp']);
         $data['about_us_video'] = $this->getYoutubeVideoId($request['about_us_video']);
 
-        // $this->validateFiles('who_code_car_photo', 'about-website', $request, $data);
-        // $this->validateFiles('purchase_section_photo', 'about-website', $request, $data);
-        // $this->validateFiles('contact_us_section_photo', 'about-website', $request, $data);
-        // $this->validateFiles('about_us_photo', 'about-website', $request, $data);
-        // $this->validateFiles('financing_advantage_photo', 'about-website', $request, $data);
-        // $this->validateFiles('why_code_car_icon_card_1', 'about-website', $request, $data);
-        // $this->validateFiles('why_code_car_icon_card_2', 'about-website', $request, $data);
-        // $this->validateFiles('why_code_car_icon_card_3', 'about-website', $request, $data);
-        // $this->validateFiles('about_us_card_left_icon', 'about-website', $request, $data);
-        // $this->validateFiles('about_us_card_right_icon', 'about-website', $request, $data);
-        // $this->validateFiles('financing_advantage_card_1_icon', 'about-website', $request, $data);
-        // $this->validateFiles('financing_advantage_card_2_icon', 'about-website', $request, $data);
+
 
         $this->validateFiles('image_about_us', 'website', $request, $data);
         $this->validateFiles('cover_about_us', 'website', $request, $data);
         $this->validateFiles('logo', 'general', $request, $data);
         $this->validateFiles('favicon', 'general', $request, $data);
         $this->validateFiles('purchase_section_photo', 'general', $request, $data);
-        //    dd($data);
+        
         $deletestatues = $request->deletedstatus[0];
         $deletedIdsArray = explode(',', $deletestatues);
         $deletedIdsArray = array_map('intval', $deletedIdsArray);

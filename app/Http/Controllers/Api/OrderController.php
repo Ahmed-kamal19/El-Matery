@@ -244,7 +244,7 @@ class OrderController extends Controller
     $request->validate([
         'car_id'=>['required','integer','exists:cars,id'],
         'color_id'    => ['required','exists:colors,id'],
-        'organization_seo'=>['required','string',new NotNumbersOnly()],
+        'name'=>['required','string',new NotNumbersOnly()],
         'phone' => ['required', 'string', 'regex:/^(05|5)\d{8}$/'],
 
         'city_id'=>['required','integer','exists:cities,id'],

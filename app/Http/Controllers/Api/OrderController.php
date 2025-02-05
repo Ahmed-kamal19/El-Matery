@@ -47,7 +47,7 @@ class OrderController extends Controller
         $cars = Car::all()->map(function($car){
             return [
                 'id'=>$car->id,
-                'name'=>$car->name,
+                'name'=>$car->name." - ".$car->brand->name." - ".$car->model->name." - ".$car->year,
                 'price'=>$car->price_after_vat
             ];
         });
@@ -162,7 +162,7 @@ class OrderController extends Controller
             'name'=>['required','string'],
             'car_id'=>['required','integer','exists:cars,id'],
             'salary'=>['required','integer'],
-            'year'=>['required','integer'],
+            // 'year'=>['required','integer'],
             'city_id'=>['required','integer','exists:cities,id'], 
             'first_payment_value'=>['required','numeric'],
             'last_payment_value'=>['required','numeric'],
@@ -182,10 +182,10 @@ class OrderController extends Controller
         ]);
   
     
-            $car = Car::select('id', 'price', 'name_' . getLocale())
+            $car = Car::select('id', 'price','year','name_' . getLocale())
                 ->where('id', $request->car_id)
                 ->first();
-    
+            
             if (!$car) {
                 throw ValidationException::withMessages([
                     'car_id' => __("You must select a car")
@@ -211,7 +211,7 @@ class OrderController extends Controller
                 'type' => 'individual',
                 'payment_type' => 'finance',
                 'salary' => $request->salary,
-                'year' => $request->year,
+                'year' => $car->year,
                 'first_payment_value' => $request->first_payment_value,
                 'last_payment_value' => $request->last_payment_value,
                 'commitments' => $request->commitments,

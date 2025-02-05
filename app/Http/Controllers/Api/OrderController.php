@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use TaqnyatSms;
 
 use App\Models\Car;
 use App\Models\Order;
@@ -9,16 +8,12 @@ use App\Models\CarOrder;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
-use App\Http\Resources\CompanyOrderResource;
 use App\Models\CarColorImage;
 use App\Rules\NotNumbersOnly;
 use App\Traits\NotificationTrait;
 use App\Models\Otp;
-use Exception;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
@@ -41,6 +36,7 @@ class OrderController extends Controller
                     'color_name' => $carColorImage->color->name,
                 ];
             })
+            ->unique('color_id')
             ->values();
             if($colors->isEmpty())return $this->success(data:[],message:__("no data found"));
             return $this->success(data:$colors );
@@ -165,9 +161,8 @@ class OrderController extends Controller
          $request->validate([
             'name'=>['required','string'],
             'car_id'=>['required','integer','exists:cars,id'],
-            
-             'salary'=>['required','integer'],
-             'year'=>['required','integer'],
+            'salary'=>['required','integer'],
+            'year'=>['required','integer'],
             'city_id'=>['required','integer','exists:cities,id'], 
             'first_payment_value'=>['required','numeric'],
             'last_payment_value'=>['required','numeric'],

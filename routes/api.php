@@ -68,7 +68,7 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::post('/add-favorite-withoutauth', 'Api\FavoriteController@store');
     
     // ------------------------- Home ---------------------------------------
-
+    Route::get('/bankSelection','Api\BankController@bankSelection');
     Route::get('/models', 'Api\HomeController@models');
     Route::get('/cars', 'Api\HomeController@cars');
     Route::get('/brands', 'Api\HomeController@brands');

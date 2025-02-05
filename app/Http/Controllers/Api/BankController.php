@@ -20,4 +20,16 @@ class BankController extends Controller
         }
         return $this->failure("No data Exist");
     }
+    public function bankSelection ()
+    {
+        $banks = Bank::all()->map(function($bank){
+            return [
+                'id'=>$bank->id,
+                'name'=>$bank->name,
+            ];
+        });
+        if(!$banks->isEmpty())
+            return $this->success(data:$banks);
+        return $this->success(data:[],message:__("no data found")) ;
+    }
 }

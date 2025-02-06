@@ -531,6 +531,7 @@ return [
         'calculator' => 'حاسبة',
         'calculators' => 'حاسبة',
         'car_id' => 'السيارة',
+        'year_installment'=>'سنوات القسط'
     ],
 
     'values' => [

@@ -58,7 +58,7 @@ let KTDatatable = (function () {
                 { data: "title_en" },
                 { data: "icon" },
                 { data: "type" },
-                { data: "created_at"},
+                { data: "created_at", name: "created_at" },
                 { data: null },
             ],
             columnDefs: [
@@ -138,6 +138,7 @@ let KTDatatable = (function () {
     // general search in datatable
     let handleSearchDatatable = () => {
         $("#general-search-inp").keyup(function () {
+            console.log($(this).val() )
             if($(this).val()===__('possibility'))
             {
                 datatable.search('1').draw();
@@ -204,12 +205,12 @@ let KTDatatable = (function () {
 
     // Filter Datatable
     let handleFilterDatatable = () => {
-        
         $(".filter-datatable-inp").each((index, element) => {
-          
+            
             $(element).change(function () {
                 let columnIndex = $(this).data("filter-index"); // index of the searching column
-                datatable.search($(this).val()).draw();
+                console.log($(this).val(), " : ",columnIndex);
+                datatable.column(columnIndex).search($(this).val()).draw();
             });
         });
     };

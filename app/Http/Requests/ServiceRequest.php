@@ -28,7 +28,7 @@ class ServiceRequest extends FormRequest
             'phone' => ['required', 'numeric', 'regex:/^(05|5)\d{8}$/'],
             'car_brand'=>'required',
             'car_model'=>'required',
-            'Meter_reading'=>'required',
+            'meter_reading'=>'required',
             'service_id'        => 'required|integer|exists:services,id',
             'city_id'           => 'required|integer|exists:cities,id',
         ];

@@ -163,6 +163,7 @@ class OrderController extends Controller
             'car_id'=>['required','integer','exists:cars,id'],
             'salary'=>['required','integer'],
             // 'year'=>['required','integer'],
+            'year_installment'=>['required','integer'],
             'city_id'=>['required','integer','exists:cities,id'], 
             'first_payment_value'=>['required','numeric'],
             'last_payment_value'=>['required','numeric'],
@@ -220,6 +221,8 @@ class OrderController extends Controller
                 'order_id' => $order->id, 
                 'having_loan' => $request->having_loan,//
                 'driving_license' => $request->driving_license,
+                'year_installment'=>$request->year_installment
+
 
             ]);
     
@@ -303,13 +306,14 @@ public function companyFinance(Request $request)
         'organization_activity'=>['required','string',new NotNumbersOnly()],
         'organization_location'=>['required','string',new NotNumbersOnly()],
         'organization_seo'=>['required','string',new NotNumbersOnly()],
-        'year'=>['required','integer'],
+        // 'year'=>['required','integer'],
+        'year_installment'=>['required','integer'],
 
         'phone' => ['required', 'string', 'regex:/^(05|5)\d{8}$/'],
         'bank_id'=>['required','integer','exists:banks,id'],
 
      ]);
-    $car = Car::select('id', 'price', 'name_' . getLocale())
+    $car = Car::select('id', 'price','year', 'name_' . getLocale())
     ->where('id', $request->car_id)
     ->first();
 
@@ -343,8 +347,9 @@ $carOrder = CarOrder::create([
     'organization_location' => $request->organization_location,
     'organization_seo' => $request->organization_seo,
     'bank_id' => $request->bank_id,
-    'year' => $request->year,
+    'year' => $car->year,
     'order_id' => $order->id,   
+    'year_installment'=>$request->year_installment
 ]);
 
 

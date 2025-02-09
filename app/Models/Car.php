@@ -159,9 +159,9 @@ class Car extends Model
         $price = ($this->discount_price !== null && $this->discount_price > 0) ? $this->discount_price : $this->price;
 
         if (settings()->getSettings('maintenance_mode') == 1) {
-            return round($price * (settings()->getSettings('tax') / 100 + 1), 2);
+            return round($price * (settings()->getSettings('tax') / 100 + 1));
         } else {
-            return round($price, 2);
+            return round($price);
         }
             
     }

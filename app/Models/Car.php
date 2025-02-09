@@ -17,7 +17,7 @@ class Car extends Model
     use HasFactory,SoftDeletes;
     protected $table = 'cars';
     protected $guarded            = [];
-    protected $appends            = ['name','selling_price', 'price_after_vat'];
+    protected $appends            = ['name', 'price_after_vat'];
     protected $casts              = 
         [
       

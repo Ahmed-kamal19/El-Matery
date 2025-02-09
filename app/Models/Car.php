@@ -135,7 +135,7 @@ class Car extends Model
         return $this->offers->count() > 0;
     }
 
-    public function getSellingPriceAttribute()
+    public function getDiscountPriceAttribute()
     {
         $haveDiscount = $this->attributes['have_discount'] ?? false;
         $discountPrice = $this->attributes['discount_price'] ?? 0;

@@ -173,6 +173,9 @@ class Car extends Model
     {
         return $this->attributes['price'] ?? 0;
     }
-
+    public function getOtherDescriptionAttribute()
+    {
+        return $this->attributes['other_description_'.getLocale()];
+    }
 
 }

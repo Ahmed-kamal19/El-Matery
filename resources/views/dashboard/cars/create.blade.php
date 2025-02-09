@@ -392,6 +392,80 @@
 
                                             </div>
                                             <!-- end   :: Row -->
+                                            <div class="separator separator-dashed my-4"></div>
+                                            <!-- Begin :: Row -->
+                                            <div class="row">
+
+                                             <!-- begin :: Column -->
+                                                <div class="col-md-12 fv-row">
+
+                                                    <x-dashboard.radio-btn title="price_field_status" name="price_field_status"
+                                                        :radio-btns="[
+                                                            [
+                                                                'label' => 'Show details',
+                                                                'value' => '1',
+                                                                'id' => 'showDetails',
+                                                                'checked' => false,
+                                                            ],
+                                                            [
+                                                                'label' => 'Competitive price',
+                                                                'value' => '2',
+                                                                'id' => 'competitivePrice',
+                                                                'checked' => false,
+                                                            ],
+                                                            [
+                                                                'label' => 'Available upon request',
+                                                                'value' => '3',
+                                                                'id' => 'availableUponRequest',
+                                                                'checked' => false,
+                                                            ], 
+                                                            [
+                                                                'label' => 'unavailable',
+                                                                'value' => '4',
+                                                                'id' => 'unavailable',
+                                                                'checked' => false,
+                                                            ],
+                                                            [
+                                                                'label' => 'others',
+                                                                'value' => '5',
+                                                                'id' => 'others',
+                                                                'checked' => false,
+                                                            ],
+                                                        ]" />
+
+                                                            
+                                                </div>
+
+                                                <!-- end   :: Column -->
+
+                                            </div>
+                                            <div id="otherInputs" style="display:none">
+                                                <div class="col-md-6 fv-row">
+                                                    <label class="fs-5 fw-bold mb-2">{{ __('Description in arabic') }}</label>
+                                                    <div class="form-floating">
+                                                        <textarea class="form-control" rows="4" name="other_description_ar" id="other_description_ar_inp"data-kt-autosize="true"></textarea>
+                                                        <label
+                                                            for="other_description_ar_inp">{{ __('Enter description in Arabic') }}</label>
+                                                    </div>
+                                                    <p class="text-danger invalid-feedback" id="other_description_ar"></p>
+                                                    <!-- end   :: Column -->
+    
+                                                </div>
+                                                <div class="col-md-6 fv-row">
+                                                    <label class="fs-5 fw-bold mb-2">{{ __('Description in english') }}</label>
+                                                    <div class="form-floating">
+                                                        <textarea class="form-control" rows="4" name="other_description_en" id="other_description_en_inp"data-kt-autosize="true"></textarea>
+                                                        <label
+                                                            for="other_description_en_inp">{{ __('Enter description in English') }}</label>
+                                                    </div>
+                                                    <p class="text-danger invalid-feedback" id="other_description_en"></p>
+                                                    <!-- end   :: Column -->
+    
+                                                </div>
+                                                </div>                                                       
+    
+                                                    <!-- end :: Row -->
+    
 
                                             <div class="separator separator-dashed my-4"></div>
 
@@ -733,7 +807,26 @@
         <!-- end   :: Card -->
     @endsection
     @push('scripts')
-    
+
+     <script>
+    // JavaScript Code
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all radio buttons and the "otherInputs" container
+        const radioButtons = document.querySelectorAll('input[name="price_field_status"]');
+        const otherInputs = document.getElementById("otherInputs");
+
+        // Add event listeners to all radio buttons
+        radioButtons.forEach(radio => {
+            radio.addEventListener("change", function () {
+                if (this.id === "others" && this.checked) {
+                    otherInputs.style.display = "flex"; // Show the input fields
+                } else {
+                    otherInputs.style.display = "none"; // Hide the input fields
+                }
+            });
+        });
+    });
+</script>
     <script>
        
         $(document).ready(function() {

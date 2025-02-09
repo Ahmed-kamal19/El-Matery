@@ -439,7 +439,81 @@
 
                                     </div>
                                     <!-- end   :: Row -->
+                                        <!-- begin :: Column -->
+                                        <div class="col-md-12 fv-row">
 
+                                            <x-dashboard.radio-btn title="price_field_status" name="price_field_status"
+                                                :radio-btns="[
+                                                    [
+                                                        'label' => 'Show details',
+                                                        'value' => '1',
+                                                        'id' => 'showDetails',
+                                                        'checked' => $car['price_field_status'] == 1 ,
+                                                    ],
+                                                    [
+                                                        'label' => 'Competitive price',
+                                                        'value' => '2',
+                                                        'id' => 'competitivePrice',
+                                                        'checked' =>  $car['price_field_status'] == 2,
+                                                    ],
+                                                    [
+                                                        'label' => 'Available upon request',
+                                                        'value' => '3',
+                                                        'id' => 'availableUponRequest',
+                                                        'checked' =>  $car['price_field_status'] == 3,
+                                                    ], 
+                                                    [
+                                                        'label' => 'unavailable',
+                                                        'value' => '4',
+                                                        'id' => 'unavailable',
+                                                        'checked' =>  $car['price_field_status'] == 4,
+                                                    ],
+                                                    [
+                                                        'label' => 'others',
+                                                        'value' => '5',
+                                                        'id' => 'others',
+                                                        'checked' =>  $car['price_field_status'] == 5,
+                                                    ],
+                                                ]" />
+
+
+                                        </div>
+                                        <!-- end   :: Column -->
+                                        <div id="otherInputs" style="display: none; margin-top: 15px;">
+                                            <div class="col-md-6 fv-row">
+                                                <label class="fs-5 fw-bold mb-2">{{ __('Description in arabic') }}</label>
+                                                <div class="form-floating">
+                                                    <textarea
+                                                        class="form-control"
+                                                        rows="4"
+                                                        name="other_description_ar"
+                                                        id="other_description_ar_inp"
+                                                        data-kt-autosize="true">{{ old('other_description_ar', $car['other_description_ar'] ?? '') }}</textarea>
+                                                    <label for="other_description_ar_inp">{{ __('Enter description in Arabic') }}</label>
+                                                </div>
+                                                <p class="text-danger invalid-feedback" id="other_description_ar"></p>
+                                            </div>
+                                            <div class="col-md-6 fv-row">
+                                                <label class="fs-5 fw-bold mb-2">{{ __('Description in english') }}</label>
+                                                <div class="form-floating">
+                                                    <textarea
+                                                        class="form-control"
+                                                        rows="4"
+                                                        name="other_description_en"
+                                                        id="other_description_en_inp"
+                                                        data-kt-autosize="true">{{ old('other_description_en', $car['other_description_en'] ?? '') }}</textarea>
+                                                    <label for="other_description_en_inp">{{ __('Enter description in English') }}</label>
+                                                </div>
+                                                <p class="text-danger invalid-feedback" id="other_description_en"></p>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <!-- end   :: Row -->
+
+
+                                    <div class="separator separator-dashed my-4"></div>
 
                                     <div class="separator separator-dashed my-4"></div>
                                     <!-- begin :: Row -->
@@ -819,6 +893,48 @@
     <!-- end   :: Card -->
 @endsection
 @push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const radioButtons = document.querySelectorAll('input[name="price_field_status"]');
+        const otherInputs = document.getElementById("otherInputs");
+
+        const currentValue = "{{ $car['price_field_status'] }}";
+        if (currentValue == 5) {
+            otherInputs.style.display = "flex";
+        }
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener("change", function () {
+                if (this.id === "others" && this.checked) {
+                    otherInputs.style.display = "flex";
+                } else {
+                    otherInputs.style.display = "none";
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const radioButtons = document.querySelectorAll('input[name="price_field_status"]');
+        const otherInputs = document.getElementById("otherInputs");
+
+        const currentValue = "{{ $car['price_field_status'] }}";
+        if (currentValue == 5) {
+            otherInputs.style.display = "flex";
+        }
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener("change", function () {
+                if (this.id === "others" && this.checked) {
+                    otherInputs.style.display = "flex";
+                } else {
+                    otherInputs.style.display = "none";
+                }
+            });
+        });
+    });
+</script>
     <script>
     
         $(document).ready(function() {

@@ -161,7 +161,8 @@ class Car extends Model
         if (settings()->getSettings('maintenance_mode') == 1) {
             return ceil($price * (settings()->getSettings('tax') / 100 + 1));
         } else {
-            return ceil($price);
+            $price=0;
+            return $price;
         }
             
     }

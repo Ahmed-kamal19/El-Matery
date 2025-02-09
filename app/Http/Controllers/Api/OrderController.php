@@ -162,7 +162,6 @@ class OrderController extends Controller
             'name'=>['required','string'],
             'car_id'=>['required','integer','exists:cars,id'],
             'salary'=>['required','integer'],
-            // 'year'=>['required','integer'],
             'year_installment'=>['required','integer'],
             'city_id'=>['required','integer','exists:cities,id'], 
             'first_payment_value'=>['required','numeric'],
@@ -170,11 +169,11 @@ class OrderController extends Controller
             'bank_id'=>['required','integer','exists:banks,id'],
             'work'=>['required','string',new NotNumbersOnly()],
             'color_id'    => ['required','exists:colors,id'],
-            'stumbles' => ['required', 'in:0,1'], // Only accepts 0 or 1
+            'stumbles' => ['required', 'in:0,1'], 
             
             'commitments'    => ['required', 'numeric'],
             
-            'having_loan'    =>['required', 'in:0,1'], //قرض عقاري
+            'having_loan'    =>['required', 'in:0,1'], 
             
             'driving_license' => ['required', Rule::in(['available', 'expired', 'doesnt_exist'])],
             
@@ -376,7 +375,7 @@ public function companyCash(Request $request)
         'organization_location'=>['required','string',new NotNumbersOnly()],
         'organization_seo'=>['required','string',new NotNumbersOnly()],
         'phone' => ['required', 'string', 'regex:/^(05|5)\d{8}$/'],
-        'bank_id'=>['required','integer','exists:banks,id'],
+        // 'bank_id'=>['required','integer','exists:banks,id'],
  
     ]);
     $car = Car::select('id', 'price', 'name_' . getLocale())

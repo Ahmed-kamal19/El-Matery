@@ -265,7 +265,7 @@ $order = Order::create([
      'car_name'=>$car->name,
      'phone' => '+966'. $request->phone,
     'price' => $car->price_after_vat,
-    'name' => $request->organization_seo,
+    'name'=>$request->name,
     'status_id' => 8,
      
 ]);
@@ -275,7 +275,6 @@ $this->distribute($order->id);
 $carOrder = CarOrder::create([
     'type' => 'individual',
     'payment_type' => 'cash',
-     'organization_seo' => $request->organization_seo,
     'order_id' => $order->id, 
     
 ]);
@@ -333,6 +332,7 @@ $order = Order::create([
     'status_id' => 8,
      
 ]);
+
 $this->distribute($order->id);
 // $otp = $this->sendOtp($request, $request->phone,$order->id);
 
@@ -390,6 +390,7 @@ public function companyCash(Request $request)
     }
   
     $order = Order::create([
+        'name'=>$request->organization_name,
         'car_id' => $request->car_id,
         'color_id' => $request->color_id,
         'car_name'=>$car->name,
@@ -420,7 +421,7 @@ $this->distribute($order->id);
     return response()->json([
         'message'=>'success',
         'data'=>$order,
-        'car_order'=>$carOrder->order_id
+ 
         // 'otp'=>$otp
     ]);
 

@@ -19,7 +19,7 @@ class RequestServiceController extends Controller
                 
                 'service' => ['id', 'name_' . getLocale(),'description_en','description_ar'] ,
                 'city' => ['id', 'name_' . getLocale() ],
-                'status'=>['id','name_'.getLocale()],
+                'status'=>['id','name_'. getLocale()],
             
             
             

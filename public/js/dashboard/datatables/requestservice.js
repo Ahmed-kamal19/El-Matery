@@ -15,7 +15,7 @@ let KTDatatable = function () {
             searchDelay: 500,
             processing: true,
             serverSide: true,
-            order: [[3, 'desc']], // display records number and ordering type
+            order: [[5, 'desc']], // display records number and ordering type
             stateSave: false,
             select: {
                 style: 'os',
@@ -35,7 +35,7 @@ let KTDatatable = function () {
                 {data: 'phone'},
                 {data: 'car_brand'},
                 {data: 'car_model'},
-                {data: 'Meter_reading'},
+                {data: 'meter_reading'},
                 {data:'service.name'  ,name:'service_id'},
                 {data:'city.name' ,name:'city_id'},
                 {data:'status.name', name:'status_id'}

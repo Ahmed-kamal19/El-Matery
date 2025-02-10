@@ -75,7 +75,7 @@
                         <th>{{ __('phone') }}</th>
                         <th>{{ __('Brand') }}</th>
                         <th>{{ __('models') }}</th>
-                        <th>{{ __('Meter_reading') }}</th>
+                        <th>{{ __('meter_reading') }}</th>
                         <th>{{ __('Services') }}</th> 
                         <th>{{ __('city') }}</th> 
                         <th>{{__('status')}}</th>

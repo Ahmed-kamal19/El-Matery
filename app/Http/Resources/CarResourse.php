@@ -33,7 +33,7 @@ class CarResourse extends JsonResource
             return [
                 'id' => $feature->id,
                 'title'=> $feature->title,
-                'description' => $feature->pivot->description,
+                'description' => $feature->description,
                 'icon' => getImagePathFromDirectory($feature->icon,'Icons'),
                 
 
@@ -46,7 +46,7 @@ class CarResourse extends JsonResource
             return [
                 'id' => $feature->id,
                 'title'=> $feature->title,
-                'description' => $feature->pivot->description,
+                'description' => $feature->description,
                 'icon' => getImagePathFromDirectory($feature->icon,'Icons'),
                 
 

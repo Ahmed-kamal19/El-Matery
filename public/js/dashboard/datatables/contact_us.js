@@ -34,7 +34,7 @@ let KTDatatable = function () {
                 {data: 'name'},
                 {data: 'email'},
                 {data: 'phone'},
-                {data: 'last_name'},
+                // {data: 'last_name'},
                 {data: 'message'},
                 // {data: 'reply'},
                 // {data: null},
@@ -44,16 +44,16 @@ let KTDatatable = function () {
                     targets: 1,
                     width:150,
                 },
-                {
-                    targets: 4,
-                    width:180,
-                    orderable: false,
-                    render:function (data, type, row) {
-                        return `<a     onclick="showMoreInDT(this)" > <span  class="cursor-pointer" title="${ __('show more')}" >${ data.substr(0, 20) }</span> </a>
-                                <span  title="${ __('show more')}"> ${ data.length > 20 ? '...' : ''} </span>
-                                <span  style="display:none"> ${ data.substr(20) } </span>` ;
-                    }
-                },
+                // {
+                //     targets: 4,
+                //     width:180,
+                //     orderable: false,
+                //     render:function (data, type, row) {
+                //         return `<a     onclick="showMoreInDT(this)" > <span  class="cursor-pointer" title="${ __('show more')}" >${ data.substr(0, 20) }</span> </a>
+                //                 <span  title="${ __('show more')}"> ${ data.length > 20 ? '...' : ''} </span>
+                //                 <span  style="display:none"> ${ data.substr(20) } </span>` ;
+                //     }
+                // },
                 // {
                 //     targets: 5,
                 //     width:180,

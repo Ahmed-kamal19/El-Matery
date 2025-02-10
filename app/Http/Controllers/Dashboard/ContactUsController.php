@@ -17,7 +17,7 @@ class ContactUsController extends Controller
         if ($request->ajax())
         {
              $messages = getModelData( model: new ContactUs() );
-
+          
             return response()->json($messages);
 
         }

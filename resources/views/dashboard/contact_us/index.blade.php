@@ -73,7 +73,7 @@
                         <th>{{ __('name') }}</th>
                         <th>{{ __('email') }}</th>
                         <th>{{ __('phone') }}</th>
-                        <th>{{ __('Last Name') }}</th>
+                        {{-- <th>{{ __('name') }}</th> --}}
                         <th>{{ __('message') }}</th>
                         <!-- <th>{{ __('reply') }}</th> -->
                         <!-- <th class="min-w-100px">{{ __('actions') }}</th> -->

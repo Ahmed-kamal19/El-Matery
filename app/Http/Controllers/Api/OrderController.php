@@ -365,6 +365,7 @@ return response()->json([
 
 public function companyCash(Request $request)
 {
+ 
    
     $request->validate([
         'car_id'=>['required','integer','exists:cars,id'],
@@ -415,9 +416,11 @@ $this->distribute($order->id);
 
 
 
+
     return response()->json([
         'message'=>'success',
         'data'=>$order,
+        'car_order'=>$carOrder->order_id
         // 'otp'=>$otp
     ]);
 

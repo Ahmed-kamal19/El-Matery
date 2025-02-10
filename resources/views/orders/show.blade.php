@@ -77,6 +77,7 @@
                         data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
                         <option value="" selected disabled>{{ __('Assign the employee') }}</option>
                         @foreach ($employees as $employeedat)
+                            @dd($employeedat)
                             <option value="{{ $employeedat->id }}" {{ $employee->id == $employeedat->id ? 'selected' : '' }}>
                                 {{ $employeedat->name }} </option>
                         @endforeach

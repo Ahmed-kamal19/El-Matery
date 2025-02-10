@@ -47,7 +47,7 @@ class Order extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class,'opened_by');
+        return $this->belongsTo(Employee::class,'employee_id');
     }
     public function opened()
     {

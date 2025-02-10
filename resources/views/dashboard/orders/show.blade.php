@@ -95,20 +95,22 @@
                 @endif
                 <!--end::Select2-->
             </div>
+           
             @can('show_orders')
             <div class="w-200px">
                 <select class="form-select" data-control="select2" data-hide-search="false" name="employee_id"
                     id="employee-sp"  
                     data-dir="{{ isArabic() ? 'rtl' : 'ltr' }}">
                     <option value="" disabled>{{ __('Assign the employee') }}</option>
+                    @if(!empty($employees))
                     @foreach ($employees as $employeedat)
-                        @if($employeedat)
-                            <option value="{{ $employeedat->id }}" 
-                                {{  $userAssign->name == $employeedat->name ? 'selected' : '' }}>
-                                {{ $employeedat->name }}
+                           <option value="{{ $employeedat->id }}" 
+                                {{  $userAssign->id == $employeedat->id ? 'selected' : '' }}>
+                                {{$employeedat->name }}
                             </option>
-                        @endif
+                       
                     @endforeach
+                    @endif
                 </select>
                 <p class="invalid-feedback" id="employee_id"></p>
             </div>

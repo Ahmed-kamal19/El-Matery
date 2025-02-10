@@ -34,12 +34,7 @@ class Service extends Model
     }
     public function getPriceAfterVatAttribute()
     {
-        // if (settings()->getSettings('maintenance_mode') == 1){
-        //     return round($this->price * ( settings()->getSettings('tax') / 100 + 1));
-        // }
-        // else{
-        //     return round($this->price);
-        // }
+       
         $price = ($this->discount_price !== null && $this->discount_price > 0) ? $this->discount_price : $this->price;
 
         if (settings()->getSettings('maintenance_mode') == 1) {

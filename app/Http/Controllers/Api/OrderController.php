@@ -44,13 +44,23 @@ class OrderController extends Controller
     }
     public function allCar()
     {
-        $cars = Car::all()->map(function($car){
-            return [
-                'id'=>$car->id,
-                'name'=>$car->name." - ".$car->brand->name." - ".$car->model->name." - ".$car->year,
-                'price'=>$car->price_after_vat
-            ];
-        });
+        // $cars = Car::where('price_field_status',1)->get()->map(function($car){
+        //     return [
+        //         'id'=>$car->id,
+        //         'name'=>$car->name." - ".$car->brand->name." - ".$car->model->name." - ".$car->year,
+        //         'price'=>$car->price_after_vat
+        //     ];
+        // });
+        $cars = Car::where('price_field_status', 1)
+        ->with(['brand', 'model'])  //  Eager load brand & model to prevent N+1 problem
+        ->get()
+        ->map(function ($car) {
+        return [
+            'id' => $car->id,
+            'name' => "{$car->name} - {$car->brand->name} - {$car->model->name} - {$car->year}",
+            'price' => $car->price_after_vat
+        ];
+    });
         if($cars->isEmpty()) return $this->success(data:[],message:__("no data found"));
         return $this->success(data:$cars);
     }

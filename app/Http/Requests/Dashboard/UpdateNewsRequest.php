@@ -27,12 +27,10 @@ class UpdateNewsRequest extends FormRequest
         return [
             'title_ar' => ['required', 'string', 'max:255',new NotNumbersOnly()],
             'title_en' => ['required', 'string', 'max:255',new NotNumbersOnly()],
-            // 'tags'          => ['required','string','max:255'],
             'description_ar' => ['required', 'string'],
             'description_en' => ['required', 'string'],
- 
             'main_image' => ['nullable', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
-            'highlighted_image' => ['nullable', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
+           
         ];
     }
 }

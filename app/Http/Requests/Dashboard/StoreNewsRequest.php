@@ -27,11 +27,10 @@ class StoreNewsRequest extends FormRequest
         return [
             'title_ar' => ['required', 'string', 'max:255',new NotNumbersOnly()],
             'title_en' => ['required', 'string', 'max:255',new NotNumbersOnly()],
-            // 'tags'          => ['required','string','max:255'],
             'description_ar' => ['required', 'string'],
             'description_en' => ['required', 'string'],
             'main_image' => ['required', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
-            // 'highlighted_image' => ['required_with:highlighted_news', 'mimes:webp', 'max:2048'],
+            
         ];
     }
 }

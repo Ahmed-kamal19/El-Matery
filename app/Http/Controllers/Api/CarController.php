@@ -733,9 +733,14 @@ class CarController extends Controller
         $models                 = CarModel::all();
         $colors                 = Color::all();
         $car                    = Car::query()->where('publish',1);
-        $max_price              = $car->max('price');
-        $min_price              = $car->min('price');
+        // $max_price              = $car->max('price');
+        $max_price =  $car->clone()->selectRaw('MAX(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as max_price')
+        ->value('max_price');
+        // $min_price              = $car->min('price');
+        $min_price = $car->clone()->selectRaw('MIN(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as min_price')
+        ->value('min_price');
         $years                  = $car->pluck('year')->unique()->sortDesc()->values()->toArray();
+       
         $fuelTankCapacities     = $car->pluck('fuel_tank_capacity')->unique()->sortDesc()->values()->toArray();                            
         $result = [
             'brand_ids'=>$brands->map(function($brand){

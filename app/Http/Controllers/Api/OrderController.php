@@ -51,14 +51,13 @@ class OrderController extends Controller
         //         'price'=>$car->price_after_vat
         //     ];
         // });
-        $cars = Car::where('price_field_status', 1)
-        ->with(['brand', 'model'])  // ✅ Eager load brand & model to prevent N+1 problem
+        $cars = Car::with(['brand', 'model'])  //  Eager load brand & model to prevent N+1 problem
         ->get()
         ->map(function ($car) {
         return [
             'id' => $car->id,
             'name'=>$car->name." - ".$car->brand->name." - ".$car->model->name." - ".$car->year,
-            'price' => $car->price_after_vat
+            'price' => $car->price_field_status==1?$car->price_after_vat:0
         ];
     });
         if($cars->isEmpty()) return $this->success(data:[],message:__("no data found"));

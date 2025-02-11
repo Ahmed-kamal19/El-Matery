@@ -575,7 +575,7 @@ class CarController extends Controller
             });
         }
         
-        $query->orderBy('created_at', $orderDirection)->orderBy('price_field_status','asc');
+        $query->orderBy('price_field_status','asc')->orderBy('created_at', $orderDirection);
 
         $perPage = 9;
         $cars = $query->paginate($perPage);

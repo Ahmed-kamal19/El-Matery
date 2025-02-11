@@ -52,12 +52,12 @@ class OrderController extends Controller
         //     ];
         // });
         $cars = Car::where('price_field_status', 1)
-        ->with(['brand', 'model'])  //  Eager load brand & model to prevent N+1 problem
+        ->with(['brand', 'model'])  // ✅ Eager load brand & model to prevent N+1 problem
         ->get()
         ->map(function ($car) {
         return [
             'id' => $car->id,
-            'name' => "{$car->name} - {$car->brand->name} - {$car->model->name} - {$car->year}",
+            'name'=>$car->name." - ".$car->brand->name." - ".$car->model->name." - ".$car->year,
             'price' => $car->price_after_vat
         ];
     });

@@ -463,6 +463,7 @@ class CarController extends Controller
 
     public function carFilter()
     {
+       
         if (request()->has('search')) {
             $searchKeyword = request()->input('search');
             $query = Car::query();
@@ -531,16 +532,7 @@ class CarController extends Controller
             
             $query->when(!empty($years), fn($q)=> $this->filterInArray($q,'year',$years));
         }
-        // $query->when(!empty($years), function ($q) use ($years) {
-        //     if (in_array('all', $years)) return $q;
-        //     if (in_array(1, $years)) {
-        //         return $q->where(function ($query) use ($years) {
-        //             $query->where('year', '<', 2010)
-        //                   ->orWhereIn('year', $years);
-        //         });
-        //     }
-        //     return $q->WhereIn('year', $years);
-        // });
+        
         if(!empty($model_ids)){ 
             
             $query->when(!empty($model_ids), fn($q) => $this->filterInArray($q, 'model_id', $model_ids));
@@ -582,12 +574,12 @@ class CarController extends Controller
                 }
             });
         }
-
-        $query->orderBy('created_at', $orderDirection);
+        
+        $query->orderBy('created_at', $orderDirection)->orderBy('price_field_status','asc');
 
         $perPage = 9;
         $cars = $query->paginate($perPage);
-
+  
         $data = CarResource::collection($cars);
 
         return $this->successWithPagination(message: "Cars per page", data: $data);

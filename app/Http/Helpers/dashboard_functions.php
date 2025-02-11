@@ -57,7 +57,14 @@ if(!function_exists('uploadImage')){
          return $imageName;
     }
 }
+if (!function_exists('updateModelImage')) {
 
+    function updateModelImage($model, $imageFile, $directory)
+    {
+        deleteImageFromDirectory($model->image, $directory);
+        return uploadImageToDirectory($imageFile, $directory);
+    }
+}
 
 if(!function_exists('deleteImage')){
 
@@ -76,8 +83,8 @@ if(!function_exists('getImagePathFromDirectory')){
 
     function getImagePathFromDirectory( $imageName , $directory = null , $defaultImage = 'default.svg'  ): string
     {
+      
         $imagePath = public_path('/storage/Images'.'/' . $directory . '/' . $imageName);
- 
         if ( $imageName && $directory && file_exists( $imagePath ) ) // check if the directory is null or the image doesn't exist
             return asset('/storage/Images') .'/' . $directory . '/' . $imageName;
         else

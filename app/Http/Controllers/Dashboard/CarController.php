@@ -113,7 +113,7 @@ class CarController extends Controller
     
         $existingCarImage= $car ? $car->images()->count():0;
         
-    
+        
     
         $colorImagesRequired = $existingColorImages === 0;
         $carImageRequired=$existingCarImage===0;
@@ -322,28 +322,25 @@ class CarController extends Controller
 {
     $this->authorize('update_cars');
 
-    $data = $request->except('car_Images', 'deleted_images', 'features', 'car_id', 'tags', 'colors');
+    $data = $request->except('car_Image', 'deleted_images', 'features', 'car_id', 'tags', 'colors');
     $data['have_discount'] = $request['have_discount'] === "on";
     $data['is_duplicate'] = $request->input('is_duplicate', 0);
    
-    // Process deleted images
-    $deletedImages = json_decode($request->input('deleted_images', "[]"));
-    if (!empty($deletedImages)) {
-        foreach ($deletedImages as $imageName) {
-            $carImage = CarImage::where('car_id', $car->id)->where('image', $imageName)->first();
-            if ($carImage) {
-                Storage::delete("Cars/{$imageName}");
-                $carImage->delete();
-            }
 
-            CarColorImage::where('car_id', $car->id)
-                ->where('image', $imageName)
-                ->delete();
+    if($request->has('car_Image'))
+    {
+        $carImage = CarImage::where('car_id', $car->id)->where('image', $car->main_image)->first();
+        if ($carImage) {
+            deleteImage($carImage->image,'Cars');
+            $carImage->delete();
         }
-    }
+        $mainImage =  $this->uploadCarImages($request->file("car_Image"));
+        CarImage::updateOrCreate(['car_id'=>$car->id,'image'=>$mainImage]);
 
+    }
+    
     // Handle color-specific images without syncing null values
-    if ($request->has('colors')) {
+    if  ($request->has('colors')) {
         foreach ($request->input('colors') as $index => $colorData) {
             $colorId = $colorData['id'];
 
@@ -470,7 +467,10 @@ private function prepareFeatures($features)
     {
         
             $imagesNames = [];
-
+            if(!is_array($images))
+            {
+                return uploadImage($images,"Cars");
+            }
             foreach ($images as $index => $image)
             {
                 
@@ -747,16 +747,15 @@ public function updateCarImages(Request $request, $carId)
     $deletedImages = json_decode($request->input('deleted_images', "[]"));
     $updatedColorsImages = json_decode($request->input('updated_colors_images', "[]"), true);
 
-    
+   
     // Process deleted images
     if (!empty($deletedImages)) {
         foreach ($deletedImages as $imageName) {
             // Delete from storage
-            
-            if (Storage::exists("Cars/{$imageName->image}")) {
-                Storage::delete("Cars/{$imageName->image}");
-            }
-
+             if(Storage::disk('public')->exists("Images/Cars/$imageName->image"))
+             {
+                 deleteImage($imageName->image,'Cars');
+             }
             // Delete from database
             CarColorImage::where('car_id', $carId)
                          ->where('image', $imageName->image)
@@ -780,27 +779,7 @@ public function updateCarImages(Request $request, $carId)
     return response()->json(['status' => 'success', 'message' => 'Images updated successfully']);
 }
 
-// public function updateCarImages(Request $request, $carId)
-// {
-//     // $updatedImages = json_decode($request->input('updated_images', '[]'), true);
-//     $deletedImages = json_decode($request->input('deleted_images', '[]'), true);
-//   //  dd($deletedImages);
-//     // Process deleted images
-//     foreach ($deletedImages as $image) {
-//         CarColorImage::where('car_id', $carId)
-//             ->where('color_id', $image['color_id'])
-//             ->where('image', $image['image'])
-//             ->delete();
 
-//         // Optionally delete the image from storage
-//         $imagePath = "Cars/{$image['image']}";
-//         if (Storage::exists($imagePath)) {
-//             Storage::delete($imagePath);
-//         }
-//     }
-   
-//     return response()->json(['status' => 'success', 'message' => 'Images updated successfully.']);
-// }
 
 public function updateImageOrder(Request $request)
 {   
@@ -821,12 +800,9 @@ public function updateImageOrder(Request $request)
             $cars[]=$carImage;
             
         }
-        // dd( $carImage);
+
     }
     
-    
-    // Step 1: Delete all images for the colors provided in the request
-    // Create a list of color IDs from the request
   
     return response()->json($cars);
 

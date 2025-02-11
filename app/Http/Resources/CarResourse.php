@@ -26,6 +26,7 @@ class CarResourse extends JsonResource
     public function toArray($request)
     {
         $price_field_status = PriceFieldStatus::values()[$this->price_field_status]??'available_upon_request';
+        $show_status = $price_field_status === PriceFieldStatus::show_details->name ? 0 : 1;
         $features= $this->features->filter(function($feature){
             return $feature->type === FeatureOrPossibility::feature->value; 
         })
@@ -96,6 +97,7 @@ class CarResourse extends JsonResource
             'gear_shifter'=>__($this->gear_shifter),
             'gear_shifterkey'=>$this->gear_shifter,
             'year'=>$this->year,
+            'show_status'=>$show_status,
             'price_field_status'=>__($price_field_status) === __('others') ? $this->other_description:__($price_field_status),
             //'price'=> $price_field_status === PriceFieldStatus::show_details->name ?$this->price:0,
             'supplier'=>__($this->supplier),

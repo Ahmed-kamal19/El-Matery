@@ -604,14 +604,18 @@ class CarController extends Controller
  
 
 
-    public function prices(){
-        $minPrice = Car::min('price');
-        $maxPrice = Car::max('price');
-
-        return response()->json([
+    public function getMaxMinPrices(){
+       $prices = Car::selectRaw('
+            MAX(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as max_price,
+            MIN(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as min_price
+        ')->first();
+        $maxPrice = $prices->max_price;
+        $minPrice = $prices->min_price;
+        
+        return [
             'minPrice'=>$minPrice,
             'maxPrice'=>$maxPrice,
-        ]);
+        ];
 
     }
 

@@ -175,7 +175,7 @@ Route::group(['middleware' => ['json.response']], function () {
     Route::get('/categories', [CategoryController::class, 'categories']);
     Route::get('/car-type', [CarController::class, 'cartype']);
  
-    Route::get('/prices', [CarController::class, 'prices']);
+    Route::get('/prices', [CarController::class, 'getMaxMinPrices']);
     Route::get('/search-car-prices', [CarController::class, 'searchCar']);
 
 

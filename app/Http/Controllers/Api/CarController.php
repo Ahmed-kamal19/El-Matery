@@ -701,16 +701,21 @@ class CarController extends Controller
     }
     public function getColorImages(Car $car,Color $color=null)
     {
-        $colorSelected = CarColorImage::where('car_id',$car->id)->orderBy('sort','asc')->get();
-        dd($colorSelected);
-        
+
+
+        // DB::enableQueryLog();
+        $colorSelected = CarColorImage::where('car_id',$car->id)->first()->color_id;
+        //  dd($colorSelected);
+        // $query = DB::getQueryLog();
+        // dd($query);
+
         $carColors=[];
         if(!$color){
-             $carColors = $car->colors()->where('color_id',$colorSelected[0])->get();    
+             $carColors = $car->colors()->where('color_id', $colorSelected )->orderBy('sort')->get();    
         }
         else
         {
-            $carColors = $car->colors()->where('color_id',$color->id)->get();
+            $carColors = $car->colors()->where('color_id',$color->id)->orderBy('sort')->get();
         }
       
         if($carColors->isEmpty())

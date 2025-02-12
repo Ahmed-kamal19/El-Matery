@@ -701,11 +701,14 @@ class CarController extends Controller
     }
     public function getColorImages(Car $car,Color $color=null)
     {
+
+
         // DB::enableQueryLog();
         $colorSelected = CarColorImage::where('car_id',$car->id)->first()->color_id;
         //  dd($colorSelected);
         // $query = DB::getQueryLog();
         // dd($query);
+
         $carColors=[];
         if(!$color){
              $carColors = $car->colors()->where('color_id', $colorSelected )->orderBy('sort')->get();    

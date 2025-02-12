@@ -153,7 +153,7 @@ let translations = {
     "stock": "المخزن",
     "new":"جديد",
     "used":"مستعمل",
-    "Status has been changed successfully.": "تم تغير حالة الطلب بنجاح",
+    "Status has been changed successfully": "تم تغير حالة الطلب بنجاح",
     "An error occurred while changing the order status.": "تم حدوث خطأ اثناء تغير حالة الطلب",
     "": "",
   },

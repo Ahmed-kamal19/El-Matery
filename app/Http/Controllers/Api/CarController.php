@@ -793,9 +793,10 @@ class CarController extends Controller
     }
     public function advancedSelect2($id){
         
-        $cars=Car::with('colors')->where('model_id',$id)->get();        
-        $lowest_price=$cars->min('price');
-        $highest_price=$cars->max('price');
+        $carsQyery=Car::query()->with('colors')->where('model_id',$id);        
+        $lowest_price=$carsQyery->clone()->selectRaw('MIN(case when discount_price IS NOT NULL then discount_price ELSE price end) as max_price')->value('max_price');
+        $highest_price=$carsQyery->clone()->selectRaw('MAX(case when discount_price IS NOT NULL then discount_price ELSE price end) as min_price')->value('min_price');
+        $cars=$carsQyery->get();
         // Collect all unique colors separately
         $available_colors = $cars->flatMap(function ($car) {
             return $car->colors; 

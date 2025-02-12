@@ -108,8 +108,8 @@
                 {data: 'id'},
                  {data: 'name_' + locale },
                 {data: 'price'},
-                {data: 'brand.name' , name:'brand_id'},
-                {data: null},
+                {data: 'brand.name' , name:'brand_id',orderable: false},
+                {data: null,orderable: false},
         ]);
 
         dataTableColumns.set('Order', [
@@ -117,12 +117,12 @@
                 {data: 'name'},
                 {data: 'phone'},
                 {data: 'price'},
-                {data: 'type'},
+                {data: 'type',orderable: false},
                 {data: 'status_id',name:'status_id'},
                 {data: 'created_at',name: 'created_at'},
-                {data: 'employee.name'},
+                {data: 'employee.name',orderable: false},
                 {data: 'opened_at'},
-                {data: null},
+                {data: null,orderable: false},
         ]);
 
         // end map containts data table columns names

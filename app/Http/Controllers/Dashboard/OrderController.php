@@ -199,6 +199,7 @@ class OrderController extends Controller
 
     public function changeStatus(Order $order, Request $request)
     {
+     
         $notify = [
             'oldstatue' => $order->status_id,
         ];
@@ -212,6 +213,7 @@ class OrderController extends Controller
         // Now $parts[0] contains the id and $parts[1] contains the name_en
         $id      = $parts[0];
         $name_en = $parts[1];
+       
         DB::beginTransaction();
         
        if($order->orderDetailsCar->payment_type=="finance" && $id==2){
@@ -238,9 +240,9 @@ class OrderController extends Controller
         $this->send_message($phone,$message);
        }
        
-try
+        try
         {
-
+            
             OrderHistory::create([
                 // 'status' => $request['status'],
                 'status' => $name_en,
@@ -252,7 +254,6 @@ try
 
             $order->update(['status_id' => $id]);
             $notify += [
-                'vendor_id' => null,
                 'order_id' => $order->id,
                 'is_read' => false,
                 'phone' => $order->phone,
@@ -266,6 +267,7 @@ try
 
         } catch (\Exception $exception)
         {
+           
             DB::rollBack();
         }
     }
@@ -304,9 +306,9 @@ try
         { 
         $apiUrl = "https://api.oursms.com/api-a/msgs";
         $token = "e4vHwxheBK6uujxk7G9I";
-        $src = 'CODE CAR';
+        $src = 'almutairi';
         $dests = "$phone";
-        $appName = settings()->getSettings("website_name_" . getLocale()) ?? "SariCars";
+        $appName = settings()->getSettings("website_name_" . getLocale()) ?? "Almutairi";
 
         $body = <<<msg
         مرحبا بك في $appName ...

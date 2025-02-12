@@ -872,7 +872,7 @@
     </style>
 @endpush
 @push('scripts')
-<script>
+{{-- <script>
     $('#order-status-sp').change(function () {
 
         const orderStatusId = {{ $order->status_id }};
@@ -881,174 +881,269 @@
         let id = newStatus.split('_')[0]; // Extract the order status ID
         let comment = '';
     
-        inputAlert().then((result) => {
-            comment = result.value[0] || '';
+        // inputAlert().then((result) => {
+        //     comment = result.value[0] || '';
     
-            if (result.isConfirmed) {
-                // Check if a chassis exists for this order
-                $.ajax({
-                    url: `/dashboard/chassis/{{ $order['car_id'] }}`,
-                    method: 'POST',
-                    headers: {
-                                                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                                                    },
+        //     if (result.isConfirmed) {
+        //         // Check if a chassis exists for this order
+        //         $.ajax({
+        //             url: `/dashboard/chassis/{{ $order['car_id'] }}`,
+        //             method: 'POST',
+        //             headers: {
+        //                                                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                                                             },
                      
-                            data: {
-                                order: {{ $order['id'] }}
-                            },
+        //                     data: {
+        //                         order: {{ $order['id'] }}
+        //                     },
 
-                    success: (chassisData) => {
-                        if (orderStatusId == '8'&&chassisData && chassisData.chassis.length === 0) {
+        //             success: (chassisData) => {
+        //                 if (orderStatusId == '8'&&chassisData && chassisData.chassis.length === 0) {
                             
-                                errorAlert('{{ __("There are no chassis available for this car") }}');
+        //                         errorAlert('{{ __("There are no chassis available for this car") }}');
 
  
-                            // If chassis exists, stop order status update and show an alert
-                            return; // Exit the process
+        //                     // If chassis exists, stop order status update and show an alert
+        //                     return; // Exit the process
+        //                 }
+    
+        //                 // If no chassis exists, proceed to change the order status
+        //                 $.ajax({
+        //                     url: "/dashboard/change-status/" + "{{ $order['id'] }}",
+        //                     headers: {
+        //                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                     },
+        //                     method: 'POST',
+        //                     data: {
+        //                         status: id,
+        //                         comment
+        //                     },
+        //                     success: (response) => {
+        //                         successAlert('{{ __('status has been changed successfully') }}')
+        //                             .then(() => {
+        //                                 // Check if the order status ID is 11 (cancellation)
+        //                                 if (id === '11') { // Ensure the comparison is with string '11'
+        //                                     $.ajax({
+        //                                         url: `/dashboard/change-status/${id}`,
+        //                                         headers: {
+        //                                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                                         },
+        //                                         method: 'POST',
+        //                                         data: {
+        //                                             order_status_id: id,
+        //                                             order: {{ $order['id'] }}
+        //                                         },
+        //                                         success: (statusResponse) => {
+        //                                             console.log("Chassis status updated successfully", statusResponse);
+        //                                             location.reload(); // Reload the page after successful update
+        //                                         },
+        //                                         error: (error) => {
+        //                                             console.log("Error updating chassis status:", error);
+        //                                         }
+        //                                     });
+        //                                 } else{
+        //                                     // Loop until a chassis is selected
+        //                                     function requestChassisSelection() {
+        //                                         $.ajax({
+        //                                             url: `/dashboard/chassis/{{ $order['car_id'] }}`,
+        //                                             method: 'POST',
+        //                                             headers: {
+        //                                                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                                                             },
+        //                                                             data: {
+        //                         order: {{ $order['id'] }}
+        //                     },
+        //                                             success: (chassisData) => {
+        //                                                 if (!chassisData || chassisData.length === 0) {
+        //                                                     errorAlert('{{ __("There are no chassis available for this car.") }}');
+        //                                                     return; // Exit the function if no chassis is available
+        //                                                 }
+    
+        //                                                 console.log('data', chassisData);
+
+        //                                                     if(id=== '10'){
+        //                                                 addchassis(chassisData).then((chassisResult) => {
+        //                         if (chassisResult.isConfirmed && chassisResult.value.length > 0) {
+        //                         const selectedChassis = chassisResult.value; // Array of selected chassis IDs
+
+        //                         // Send selected chassis IDs to change their status
+        //                         $.ajax({
+        //                             url: `/dashboard/change-status/${id}`,
+        //                             headers: {
+        //                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                             },
+        //                             method: 'POST',
+        //                             data: {
+        //                                 chassis_ids: selectedChassis, // Array of chassis IDs
+        //                                 order_status_id: id,
+        //                                 order: {{ $order['id'] }},
+        //                                 comment
+        //                             },
+        //                             success: (response) => {
+        //                                 console.log("Chassis statuses updated successfully:", response);
+        //                                 successAlert('{{ __("Status has been changed successfully.") }}')
+        //                                     .then(() => {
+        //                                         location.reload(); // Reload the page after successful update
+        //                                     });
+        //                             },
+        //                             error: (error) => {
+        //                                 console.log("Error updating chassis statuses:", error);
+        //                                 errorAlert('{{ __("An error occurred while updating chassis statuses.") }}');
+        //                             }
+        //                         });
+        //                     } else {
+        //                         errorAlert('{{ __("Please select at least one chassis to proceed.") }}');
+        //                     }
+        //                 });
+
+
+
+        //             }else{
+        //                 $.ajax({
+        //                             url: `/dashboard/change-status/${id}`,
+        //                             headers: {
+        //                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                             },
+        //                             method: 'POST',
+        //                             data: {
+        //                                  order_status_id: id,
+        //                                 order: {{ $order['id'] }},
+        //                              },
+        //                             success: (response) => {
+        //                                 console.log("Chassis statuses updated successfully:", response);
+        //                                 successAlert('{{ __("Status has been changed successfully.") }}')
+        //                                     .then(() => {
+        //                                         location.reload(); // Reload the page after successful update
+        //                                     });
+        //                             },
+        //                             error: (error) => {
+        //                                 console.log("Error updating chassis statuses:", error);
+        //                                 errorAlert('{{ __("An error occurred while updating chassis statuses.") }}');
+        //                             }
+        //                         });
+        //             }
+
+ 
+        //                                             },
+        //                                             error: (error) => {
+        //                                                 console.log("Error fetching chassis data:", error);
+        //                                             }
+        //                                         });
+        //                                     }
+    
+        //                                     // Start the chassis selection loop
+        //                                     requestChassisSelection();
+        //                                 }
+        //                             });
+        //                     },
+        //                     error: (error) => {
+        //                         console.log(error);
+        //                     },
+        //                 });
+        //             },
+        //             error: (error) => {
+        //                 console.log("Error checking chassis data:", error);
+        //             }
+        //         });
+        //     }
+        // });
+        inputAlert().then((result) => {
+    let comment = result.value[0] || ''; // Get the comment from inputAlert result
+    if (result.isConfirmed) {
+        // Format the combined status value as id_name_en
+        let statusValue = id + "_" + statusName; // `id` is the status ID, `statusName` should be the name of the status (e.g., 'approved', 'rejected', etc.)
+
+        $.ajax({
+            url: "/dashboard/change-status/" + "{{ $order['id'] }}", // Backend route to change status
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token for security
+            },
+            method: 'POST',
+            data: {
+                status: statusValue, // Send the combined value (id_name_en)
+                comment: comment // Send the comment
+            },
+            success: (response) => {
+                successAlert('{{ __('Status has been changed successfully') }}')
+                    .then(() => {
+                        // If the status ID is 11 (cancellation), handle any additional tasks
+                        if (id === '11') { // Ensure the comparison is with the string '11'
+                            $.ajax({
+                                url: `/dashboard/change-status/${id}`,
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                method: 'POST',
+                                data: {
+                                    order_status_id: id,
+                                    order: {{ $order['id'] }}
+                                },
+                                success: (statusResponse) => {
+                                    console.log("Order status updated successfully", statusResponse);
+                                    location.reload(); // Reload the page after successful update
+                                },
+                                error: (error) => {
+                                    console.log("Error updating order status:", error);
+                                }
+                            });
+                        } else {
+                            // Reload the page after status change is successful
+                            successAlert('{{ __("Status has been changed successfully.") }}')
+                                .then(() => {
+                                    location.reload(); // Reload the page after successful update
+                                });
                         }
-    
-                        // If no chassis exists, proceed to change the order status
-                        $.ajax({
-                            url: "/dashboard/change-status/" + "{{ $order['id'] }}",
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            method: 'POST',
-                            data: {
-                                status: id,
-                                comment
-                            },
-                            success: (response) => {
-                                successAlert('{{ __('status has been changed successfully') }}')
-                                    .then(() => {
-                                        // Check if the order status ID is 11 (cancellation)
-                                        if (id === '11') { // Ensure the comparison is with string '11'
-                                            $.ajax({
-                                                url: `/dashboard/change/chassis/status/${id}`,
-                                                headers: {
-                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                                },
-                                                method: 'POST',
-                                                data: {
-                                                    order_status_id: id,
-                                                    order: {{ $order['id'] }}
-                                                },
-                                                success: (statusResponse) => {
-                                                    console.log("Chassis status updated successfully", statusResponse);
-                                                    location.reload(); // Reload the page after successful update
-                                                },
-                                                error: (error) => {
-                                                    console.log("Error updating chassis status:", error);
-                                                }
-                                            });
-                                        } else{
-                                            // Loop until a chassis is selected
-                                            function requestChassisSelection() {
-                                                $.ajax({
-                                                    url: `/dashboard/chassis/{{ $order['car_id'] }}`,
-                                                    method: 'POST',
-                                                    headers: {
-                                                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                                                    },
-                                                                    data: {
-                                order: {{ $order['id'] }}
-                            },
-                                                    success: (chassisData) => {
-                                                        if (!chassisData || chassisData.length === 0) {
-                                                            errorAlert('{{ __("There are no chassis available for this car.") }}');
-                                                            return; // Exit the function if no chassis is available
-                                                        }
-    
-                                                        console.log('data', chassisData);
+                    });
+            },
+            error: (error) => {
+                console.log(error);
+                errorAlert('{{ __("An error occurred while changing the order status.") }}');
+            },
+        });
+    }
+    });
 
-                                                            if(id=== '10'){
-                                                        addchassis(chassisData).then((chassisResult) => {
-                                if (chassisResult.isConfirmed && chassisResult.value.length > 0) {
-                                const selectedChassis = chassisResult.value; // Array of selected chassis IDs
+    });
+</script> --}}
+<script>
+    $('#order-status-sp').change(function () {
+        // Get the selected new status value (id_name_en)
+        let newStatus = $(this).val();
+        let id = newStatus.split('_')[0]; // Extract the order status ID
+        let statusName = newStatus.split('_')[1]; // Extract the order status name (e.g., 'approved')
+        let comment = '';
 
-                                // Send selected chassis IDs to change their status
-                                $.ajax({
-                                    url: `/dashboard/change/chassis/status/${id}`,
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    },
-                                    method: 'POST',
-                                    data: {
-                                        chassis_ids: selectedChassis, // Array of chassis IDs
-                                        order_status_id: id,
-                                        order: {{ $order['id'] }},
-                                        comment
-                                    },
-                                    success: (response) => {
-                                        console.log("Chassis statuses updated successfully:", response);
-                                        successAlert('{{ __("Status has been changed successfully.") }}')
-                                            .then(() => {
-                                                location.reload(); // Reload the page after successful update
-                                            });
-                                    },
-                                    error: (error) => {
-                                        console.log("Error updating chassis statuses:", error);
-                                        errorAlert('{{ __("An error occurred while updating chassis statuses.") }}');
-                                    }
-                                });
-                            } else {
-                                errorAlert('{{ __("Please select at least one chassis to proceed.") }}');
-                            }
-                        });
+        // Ask for the comment from the user via inputAlert
+        inputAlert().then((result) => {
+            comment = result.value[0] || ''; // Get the comment from inputAlert result
 
-
-
-                    }else{
-                        $.ajax({
-                                    url: `/dashboard/change/chassis/status/${id}`,
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    },
-                                    method: 'POST',
-                                    data: {
-                                         order_status_id: id,
-                                        order: {{ $order['id'] }},
-                                     },
-                                    success: (response) => {
-                                        console.log("Chassis statuses updated successfully:", response);
-                                        successAlert('{{ __("Status has been changed successfully.") }}')
-                                            .then(() => {
-                                                location.reload(); // Reload the page after successful update
-                                            });
-                                    },
-                                    error: (error) => {
-                                        console.log("Error updating chassis statuses:", error);
-                                        errorAlert('{{ __("An error occurred while updating chassis statuses.") }}');
-                                    }
-                                });
-                    }
-
- 
-                                                    },
-                                                    error: (error) => {
-                                                        console.log("Error fetching chassis data:", error);
-                                                    }
-                                                });
-                                            }
-    
-                                            // Start the chassis selection loop
-                                            requestChassisSelection();
-                                        }
-                                    });
-                            },
-                            error: (error) => {
-                                console.log(error);
-                            },
-                        });
+            if (result.isConfirmed) {
+                // Send the AJAX request to change the order status
+                $.ajax({
+                    url: "/dashboard/change-status/" + "{{ $order['id'] }}", // Backend route to change status
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token for security
+                    },
+                    method: 'POST',
+                    data: {
+                        status: id + "_" + statusName, // Send the combined value (id_name_en)
+                        comment: comment // Send the comment
+                    },
+                    success: (response) => {
+                        // Alert the user and reload the page after status change
+                        successAlert(__("Status has been changed successfully"))
+                            
                     },
                     error: (error) => {
-                        console.log("Error checking chassis data:", error);
-                    }
+                        console.log(error);
+                        errorAlert( __("An error occurred while changing the order status."));
+                    },
                 });
             }
         });
     });
-    </script>
+</script>
+
         <script>
         $('#employee-sp').change(function() {
             let employee_id = $(this).val();

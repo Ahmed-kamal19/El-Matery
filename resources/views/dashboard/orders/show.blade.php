@@ -1131,7 +1131,7 @@
                     },
                     success: (response) => {
                         // Alert the user and reload the page after status change
-                        successAlert(__("Status has been changed successfully."))
+                        successAlert(__("Status has been changed successfully"))
                             
                     },
                     error: (error) => {

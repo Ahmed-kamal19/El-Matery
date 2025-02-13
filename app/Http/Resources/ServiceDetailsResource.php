@@ -36,9 +36,9 @@ class ServiceDetailsResource extends JsonResource
         return [  
         'id'=>$this->id,
         'name'=>$this->name,
-        'price_before_discount'=>$this->discount_price && $this->discount_price!=0 ? number_format($this->price):0,
-        'price'=>$this->discount_price && $this->discount_price !=0 ?number_format($this->discount_price):number_format($this->price),
-        'price_after_tax' => $this->getPriceAfterVatAttribute() == $this->price ? 0:number_format($this->getPriceAfterVatAttribute()),
+        'price_before_discount'=>$this->discount_price && $this->discount_price!=0 ? (int)($this->price):0,
+        'price'=>$this->discount_price && $this->discount_price !=0 ?(int)($this->discount_price):(int)($this->price),
+        'price_after_tax' => $this->getPriceAfterVatAttribute() == $this->price ? 0:(int)($this->getPriceAfterVatAttribute()),
         'image'=>getImagePathFromDirectory($this->image,'Services'),
         'description'=>$this->description,
         'features'=>$features,

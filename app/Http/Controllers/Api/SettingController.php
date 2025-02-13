@@ -24,7 +24,7 @@ class SettingController extends Controller
                 'logo' => getImagePathFromDirectory(settings()->getSettings('logo'), 'Settings'),
                 'description' => settings()->getSettings('footer_text_' . getLocale()),
                 'phone'=>settings()->getSettings('phone'),
-                'whatsapp_phone' => settings()->getSettings('whatsapp'),
+                'whatsapp_phone' => settings()->getSettings('whatsapp_url'),
                 'facebook' => settings()->getSettings('facebook_url'),
                 'twitter' => settings()->getSettings('twitter_url'),
                 'instagram' => settings()->getSettings('instagram_url'),

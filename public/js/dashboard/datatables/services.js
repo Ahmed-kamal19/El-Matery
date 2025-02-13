@@ -36,7 +36,7 @@ let KTDatatable = function () {
                 {data: 'price'},
                 {data: 'image'},
                 {data: 'created_at'},
-                {data: null},
+                {data: null,orderable: false},
             ],
             columnDefs: [
                 {

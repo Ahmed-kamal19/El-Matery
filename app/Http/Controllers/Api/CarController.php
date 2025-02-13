@@ -505,7 +505,7 @@ class CarController extends Controller
         
         $minPrice = request('min_price');
         $maxPrice = request('max_price');
-        ['maxPrice'=>$defaultMaxPrice,'minPrice'=>$defaultMinPrice] = $this->getMaxMinPrices();
+        // ['maxPrice'=>$defaultMaxPrice,'minPrice'=>$defaultMinPrice] = $this->getMaxMinPrices();
         $orderDirection = request('sort', 'desc'); 
         $query = Car::query()->where('publish', 1);
         if(!empty($type)){    
@@ -542,42 +542,16 @@ class CarController extends Controller
             $query->when(!empty($brand_ids), fn($q) => $this->filterInArray($q, 'brand_id', $brand_ids));
         }
         if(isset($minPrice)){ 
-            if($defaultMinPrice!=$minPrice)
+            // if($defaultMinPrice!=$minPrice)
                 $query->when(isset($minPrice), fn($q) => $q->Where('price', '>=', $minPrice)->where('price_field_status',1));
             
         }
         if(isset($maxPrice)){
-            if($defaultMaxPrice!=$maxPrice)
+            // if($defaultMaxPrice!=$maxPrice)
                 $query->when(isset($maxPrice), fn($q) => $q->Where('price', '<=', $maxPrice)->where('price_field_status',1));
         }
         if(!empty($fuel_tank_capacities)){ 
             $query->when(!empty($fuel_tank_capacities),fn($q)=>$this->filterInArray($q,'fuel_tank_capacity',$fuel_tank_capacities));
-            // $query->when(!empty($fuel_tank_capacities), function ($q) use ($fuel_tank_capacities) {
-            //     foreach ($fuel_tank_capacities as $choice) {
-            //         switch ($choice) {
-            //             case 0:
-            //                 $q->orWhereBetween('fuel_tank_capacity', [800, 1200]);
-            //                 break;
-            //             case 1:
-            //                 $q->orWhereBetween('fuel_tank_capacity', [1300, 1400]);
-            //                 break;
-            //             case 2:
-            //                 $q->orWhereBetween('fuel_tank_capacity', [1500, 1600]);
-            //                 break;
-            //             case 3:
-            //                 $q->orWhereBetween('fuel_tank_capacity', [1800, 2000]);
-            //                 break;
-            //             case 4:
-            //                 $q->orWhereBetween('fuel_tank_capacity', [2200, 3000]);
-            //                 break;
-            //             case 5:
-            //                 $q->orWhere('fuel_tank_capacity', '>', 3000);
-            //                 break;
-            //             default:
-            //                 $q->whereBetween('fuel_tank_capacity', [0, 3000]);
-            //         }
-            //     }
-            // });
         }
         
         $query->orderBy('price_field_status','asc')->orderBy('created_at', $orderDirection);

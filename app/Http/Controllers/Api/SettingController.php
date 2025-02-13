@@ -23,6 +23,7 @@ class SettingController extends Controller
             $data = [
                 'logo' => getImagePathFromDirectory(settings()->getSettings('logo'), 'Settings'),
                 'description' => settings()->getSettings('footer_text_' . getLocale()),
+                'phone'=>settings()->getSettings('phone'),
                 'whatsapp_phone' => settings()->getSettings('whatsapp'),
                 'facebook' => settings()->getSettings('facebook_url'),
                 'twitter' => settings()->getSettings('twitter_url'),

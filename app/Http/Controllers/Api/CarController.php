@@ -556,15 +556,16 @@ class CarController extends Controller
         
         $query->orderBy('price_field_status','asc')->orderBy('created_at', $orderDirection);
 
-        $perPage = 9;
-        $cars = $query->paginate($perPage);
-  
+        // $perPage = 9;
+        // $cars = $query->paginate($perPage);
+        $cars= $query->get();
         $data = CarResource::collection($cars);
 
-        return $this->successWithPagination(message: "Cars per page", data: $data);
+        // return $this->successWithPagination(message: "Cars per page", data: $data);
+        return $this->success(data:$data);
     } catch (\Exception $e) {
-        return $this->failure(message: $e->getMessage());
-    }
+            return $this->failure(message: $e->getMessage());
+        }
 
        }
     }

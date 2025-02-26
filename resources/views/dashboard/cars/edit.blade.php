@@ -782,7 +782,7 @@
                                                                     </div>    
                                                                     <div class="col-md-2">
                                                                         <div class="text-center">
-                                                                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3">
+                                                                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3"  id="features_0_delete_btn">
                                                                                 <i class="far fa-trash-alt"></i>{{__('Delete')}}
                                                                                 
                                                                             </a>
@@ -828,7 +828,7 @@
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <div class="text-center">
-                                                                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3">
+                                                                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3"  id="features_0_delete_btn">
                                                                                 <i class="far fa-trash-alt"></i>{{__('Delete')}}
                                                                                 
                                                                             </a>

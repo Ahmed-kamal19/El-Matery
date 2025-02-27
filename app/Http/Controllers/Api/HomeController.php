@@ -30,6 +30,10 @@ class HomeController extends Controller
    public function brandsSearch()
    {
         $brands = Brand::all();
+        if($brands->isEmpty())
+        {
+            
+        }
         return BrandSearchResource::collection($brands);
 
    }
@@ -47,13 +51,16 @@ class HomeController extends Controller
         {
             return $this->success(data:$models);
         }
-        return $this->success("No Models found",data:[]);    
+        return $this->success(__("no data found"),data:[]);    
    }
 
    public function cars(){
 
        $cars = Car::all();
-       
+       if($cars->isEmpty())
+       {
+            return $this->success(data:[]);
+       }
        return new CarResourse($cars);
        // return $this->success('successfully',$cars);
 
@@ -62,6 +69,10 @@ class HomeController extends Controller
 public function models(){ 
         
    $model = CarModel::all();
+   if($model->isEmpty())
+   {
+    return $this->success(data:[]);
+   }
    return   CarModelResource::collection($model);
 
 }

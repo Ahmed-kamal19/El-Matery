@@ -74,7 +74,7 @@ class BankController extends Controller
     public function validateRequestForEditing($bankId)
     {
         $ValidationArray = [
-            'image'      => 'mimes:jpeg,jpg,png,gif,svg,webp|max:2048',
+            'image'      => 'mimes:jpeg,jpg,png,gif,svg,webp|max:600',
             'name_ar' => ['required','string','unique:banks,name_ar,'. $bankId,new NotNumbersOnly()],
             'name_en' => ['required','string','unique:banks,name_en,'. $bankId,new NotNumbersOnly()],
             'type' => ['required']

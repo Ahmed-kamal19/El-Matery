@@ -35,8 +35,8 @@ class UpdateBrandRequest extends FormRequest
             'meta_keyword_en' => 'nullable|string|max:255' ,
             'meta_desc_en'    => 'nullable|string|max:255' ,
             'meta_desc_ar'    => 'nullable|string|max:255' ,
-            'image'           => 'nullable|mimes:jpeg,png,jpg,webp,svg|max:2048' ,
-            'cover'           => 'nullable|mimes:jpeg,png,jpg,webp,svg|max:2048' ,
+            'image'           => 'nullable|mimes:jpeg,png,jpg,webp,svg|max:600' ,
+            'cover'           => 'nullable|mimes:jpeg,png,jpg,webp,svg|max:600' ,
         ];
     }
 }

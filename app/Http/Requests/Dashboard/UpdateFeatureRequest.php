@@ -32,7 +32,7 @@ class UpdateFeatureRequest extends FormRequest
         return [
              'title_ar'    => ['required' , 'string' ,'unique:features,title_ar,' . $feature->id, 'max:255' ,new NotNumbersOnly(),new ExistButDeleted(new Feature())],
              'title_en'    => ['required' , 'string' ,'unique:features,title_en,' . $feature->id, 'max:255' ,new NotNumbersOnly(),new ExistButDeleted(new Feature())],
-             'icon'        => ['nullable' , 'file'   ,'image' ,'mimes:png,jpg,svg','unique:features,icon,'.$feature->id,'max:4050'],
+             'icon'        => ['nullable' , 'file'   ,'image' ,'mimes:png,jpg,svg','unique:features,icon,'.$feature->id,'max:600'],
              'type'        => ['required', Rule::in(array_keys(FeatureOrPossibility::values()))],
         ];
     }

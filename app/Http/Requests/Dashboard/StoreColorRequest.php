@@ -36,7 +36,7 @@ class StoreColorRequest extends FormRequest
 
         if($this->color_type == 'image')
         {
-            $rules['image'] = ['required', 'image','mimes:jpeg,jpg,png,gif,svg','max:4096'];
+            $rules['image'] = ['required', 'image','mimes:jpeg,jpg,png,gif,svg','max:600'];
         }else{
             $rules['hex_code'] = ['required', Rule::unique('colors', 'hex_code')->whereNull('deleted_at')];
         }

@@ -29,7 +29,7 @@ class StoreNewsRequest extends FormRequest
             'title_en' => ['required', 'string', 'max:255',new NotNumbersOnly()],
             'description_ar' => ['required', 'string'],
             'description_en' => ['required', 'string'],
-            'main_image' => ['required', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
+            'main_image' => ['required', 'mimes:jpeg,png,jpg,webp,svg', 'max:600'],
             
         ];
     }

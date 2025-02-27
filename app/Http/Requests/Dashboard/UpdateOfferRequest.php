@@ -34,7 +34,7 @@ class UpdateOfferRequest extends FormRequest
             'description_ar'    => ['required','string'],
             'description_en'    => ['required','string'],
             'cars'              => ['required','array','min:1'],
-            'image'             => ['nullable','mimes:jpeg,png,jpg,webp,svg','max:2048'],
+            'image'             => ['nullable','mimes:jpeg,png,jpg,webp,svg','max:600'],
         ];
     }
 }

@@ -47,12 +47,13 @@ class HomeController extends Controller
         {
             return $this->success(data:$models);
         }
-        return $this->failure("No Models found");    
+        return $this->success("No Models found",data:[]);    
    }
 
    public function cars(){
 
        $cars = Car::all();
+       
        return new CarResourse($cars);
        // return $this->success('successfully',$cars);
 
@@ -81,8 +82,8 @@ public function getAllData(){
 }
 public function questions(){ 
         
-    $questions = Question::all();
-    return   QuestionResource::collection($questions);
+    // $questions = Question::all();
+    // return   QuestionResource::collection($questions);
  
  }
  

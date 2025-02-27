@@ -31,7 +31,7 @@ class UpdateBankRequest extends FormRequest
         return [
             'name_ar'    => ['required' , 'string' , 'max:255' , 'unique:banks,name_ar,' . $bank->id,new NotNumbersOnly(),new NotNumbersOnly(),new ExistButDeleted(new Bank())],
             'name_en'    => ['required' , 'string' , 'max:255' , 'unique:banks,name_en,' . $bank->id,new NotNumbersOnly(),new NotNumbersOnly(),new ExistButDeleted(new Bank())],
-            'image'      => 'nullable|mimes:webp|max:2048'
+            'image'      => 'nullable|mimes:webp|max:600'
         ];
     }
 }

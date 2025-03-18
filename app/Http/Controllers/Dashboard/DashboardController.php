@@ -55,7 +55,7 @@ class DashboardController extends Controller
 
             return
                 [
-                    'label' => $orders[0]['car']['brand']['name'] ,
+                    'label' => $orders[0]['car']['brand']['name']?? '' ,
                     'data' => count($orders),
                     'color' => $this->getUniqueColor(),
                 ];

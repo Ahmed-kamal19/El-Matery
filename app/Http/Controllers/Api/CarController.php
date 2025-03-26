@@ -543,9 +543,10 @@ class CarController extends Controller
         }
         if(isset($minPrice) && isset($maxPrice)){ 
             // if($defaultMinPrice!=$minPrice)
-                $query->clone()->when(isset($minPrice), function($q) use($minPrice,$maxPrice){
+                $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice){
                   $q->WhereRaw('coalesce(discount_price,price) BETWEEN ? AND ?', [$minPrice,$maxPrice]);
                 } );  
+                // dd($query->toSql(),$query->getBindings());
             
         }
         if(!empty($fuel_tank_capacities)){ 

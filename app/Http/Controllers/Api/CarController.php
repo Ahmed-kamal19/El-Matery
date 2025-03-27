@@ -546,13 +546,17 @@ class CarController extends Controller
             if(isset($minPrice) && isset($maxPrice)){ 
                 // if($defaultMinPrice!=$minPrice)
                     $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice,$taxFactor){
-                    $q->WhereRaw('coalesce(discount_price,price) * ?  BETWEEN ? AND ?', [$taxFactor,$minPrice,$maxPrice]);
+                        $adjustedMinPrice = $minPrice - 0.01;
+                        $adjustedMaxPrice = $maxPrice + 0.01;
+                        $q->WhereRaw('coalesce(discount_price,price) * ?  BETWEEN ? AND ?', [$taxFactor,$adjustedMinPrice,$adjustedMaxPrice]);
                     } );  
-                    // dd($query->toSql(),$query->getBindings());
+                    // dd($minPrice,$maxPrice,$taxFactor);
+                    //  dd($query->toSql(),$query->getBindings());
                 
             }
         }else
         {
+            
             if(isset($minPrice) && isset($maxPrice)){ 
                 // if($defaultMinPrice!=$minPrice)
                     $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice){

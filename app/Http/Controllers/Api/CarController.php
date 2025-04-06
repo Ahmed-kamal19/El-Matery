@@ -734,21 +734,30 @@ class CarController extends Controller
         $car                    = Car::query()->where('publish',1);
         $taxFactor = (settings()->getSettings('tax') / 100 + 1);
         if(settings()->getSettings('maintenance_mode') == 1){
-            $max_price =  $car->clone()->selectRaw('MAX(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) * ? as max_price',[$taxFactor])
-            ->value('max_price');
-            // $min_price              = $car->min('price');
-            $min_price = $car->clone()->selectRaw('MIN(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) * ? as min_price',[$taxFactor])
-            ->value('min_price');
+
+            $max_price = Car::max('price') * (1 + settings()->getSettings('tax') / 100);
+            $min_price = Car::min('price') * (1 + settings()->getSettings('tax') / 100);
+
+            // $max_price =  $car->clone()->selectRaw('MAX(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) * ? as max_price',[$taxFactor])
+            // ->value('max_price');
+            // // $min_price              = $car->min('price');
+            // $min_price = $car->clone()->selectRaw('MIN(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) * ? as min_price',[$taxFactor])
+            // ->value('min_price');
         
         }else 
         {
 
             // $max_price              = $car->max('price');
-            $max_price =  $car->clone()->selectRaw('MAX(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as max_price')
-            ->value('max_price');
-            // $min_price              = $car->min('price');
-            $min_price = $car->clone()->selectRaw('MIN(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as min_price')
-            ->value('min_price');
+            // $max_price =  $car->clone()->selectRaw('MAX(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as max_price')
+            // ->value('max_price');
+            // // $min_price              = $car->min('price');
+            // $min_price = $car->clone()->selectRaw('MIN(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as min_price')
+            // ->value('min_price');
+
+
+            $max_price = Car::max('price') ;
+            $min_price = Car::min('price') ;
+
         }
  
         $years                  = $car->pluck('year')->unique()->sortDesc()->values()->toArray();

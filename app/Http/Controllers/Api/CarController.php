@@ -735,8 +735,8 @@ class CarController extends Controller
         $taxFactor = (settings()->getSettings('tax') / 100 + 1);
         if(settings()->getSettings('maintenance_mode') == 1){
 
-            $max_price = Car::max('price') * (1 + settings()->getSettings('tax') / 100);
-            $min_price = Car::min('price') * (1 + settings()->getSettings('tax') / 100);
+            $max_price = round(Car::max('price') * (1 + settings()->getSettings('tax') / 100), 2);
+            $min_price = round(Car::min('price') * (settings()->getSettings('tax') / 100));
 
             // $max_price =  $car->clone()->selectRaw('MAX(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) * ? as max_price',[$taxFactor])
             // ->value('max_price');
@@ -755,8 +755,8 @@ class CarController extends Controller
             // ->value('min_price');
 
 
-            $max_price = Car::max('price') ;
-            $min_price = Car::min('price') ;
+            $max_price = round(Car::max('price')) ;
+            $min_price = round(Car::min('price')) ;
 
         }
  

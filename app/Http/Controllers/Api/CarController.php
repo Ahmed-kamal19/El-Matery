@@ -545,11 +545,23 @@ class CarController extends Controller
 
             if(isset($minPrice) && isset($maxPrice)){ 
                 // if($defaultMinPrice!=$minPrice)
-                    $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice,$taxFactor){
-                        $adjustedMinPrice = $minPrice - 0.01;
-                        $adjustedMaxPrice = $maxPrice + 0.01;
-                        $q->WhereRaw('coalesce(discount_price,price) * ?  BETWEEN ? AND ?', [$taxFactor,$adjustedMinPrice,$adjustedMaxPrice]);
-                    } );  
+                $taxFactor = 1 + (settings()->getSettings('tax') / 100);
+
+                // Calculate the base price range (before tax)
+                $minBasePrice = $minPrice / $taxFactor;
+                $maxBasePrice = $maxPrice / $taxFactor;
+                
+
+                $query->whereBetween('price', [$minBasePrice, $maxBasePrice]);        
+                
+                
+                
+                
+                // $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice,$taxFactor){
+                    //     $adjustedMinPrice = $minPrice - 0.01;
+                    //     $adjustedMaxPrice = $maxPrice + 0.01;
+                    //     $q->WhereRaw('coalesce(discount_price,price) * ?  BETWEEN ? AND ?', [$taxFactor,$adjustedMinPrice,$adjustedMaxPrice]);
+                    // } );  
                     // dd($minPrice,$maxPrice,$taxFactor);
                     //  dd($query->toSql(),$query->getBindings());
                 
@@ -559,9 +571,11 @@ class CarController extends Controller
             
             if(isset($minPrice) && isset($maxPrice)){ 
                 // if($defaultMinPrice!=$minPrice)
-                    $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice){
-                    $q->WhereRaw('coalesce(discount_price,price) BETWEEN ? AND ?', [$minPrice,$maxPrice]);
-                    } );  
+                $query->whereBetween('price', [$minBasePrice, $maxBasePrice]);        
+
+                    // $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice){
+                    // $q->WhereRaw('coalesce(discount_price,price) BETWEEN ? AND ?', [$minPrice,$maxPrice]);
+                    // } );  
                     // dd($query->toSql(),$query->getBindings());
                 
             }
@@ -737,23 +751,12 @@ class CarController extends Controller
 
             $max_price = round(Car::max('price') * (1 + settings()->getSettings('tax') / 100), 2);
             $min_price = round(Car::min('price') * (1 + settings()->getSettings('tax') / 100));
-
-            // $max_price =  $car->clone()->selectRaw('MAX(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) * ? as max_price',[$taxFactor])
-            // ->value('max_price');
-            // // $min_price              = $car->min('price');
-            // $min_price = $car->clone()->selectRaw('MIN(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) * ? as min_price',[$taxFactor])
-            // ->value('min_price');
+ 
         
         }else 
         {
 
-            // $max_price              = $car->max('price');
-            // $max_price =  $car->clone()->selectRaw('MAX(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as max_price')
-            // ->value('max_price');
-            // // $min_price              = $car->min('price');
-            // $min_price = $car->clone()->selectRaw('MIN(CASE WHEN discount_price IS NOT NULL THEN discount_price ELSE price END) as min_price')
-            // ->value('min_price');
-
+          
 
             $max_price = round(Car::max('price')) ;
             $min_price = round(Car::min('price')) ;

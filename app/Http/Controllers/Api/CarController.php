@@ -550,10 +550,10 @@ class CarController extends Controller
                 // Calculate the base price range (before tax)
                 $minBasePrice = $minPrice / $taxFactor;
                 $maxBasePrice = $maxPrice / $taxFactor;
-                
-
-                $query->whereBetween('price', [$minBasePrice, $maxBasePrice]);        
-                
+        
+                // Filter cars by price, considering the price after tax dynamically
+                $query->whereRaw('(price * ?) BETWEEN ? AND ?', [$taxFactor, $minBasePrice, $maxBasePrice]);
+        
                 
                 
                 
@@ -571,7 +571,7 @@ class CarController extends Controller
             
             if(isset($minPrice) && isset($maxPrice)){ 
                 // if($defaultMinPrice!=$minPrice)
-                $query->whereBetween('price', [$minBasePrice, $maxBasePrice]);        
+                $query->whereRaw('(price * ?) BETWEEN ? AND ?', [1 + (settings()->getSettings('tax') / 100), $minPrice / (1 + (settings()->getSettings('tax') / 100)), $maxPrice / (1 + (settings()->getSettings('tax') / 100))]);
 
                     // $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice){
                     // $q->WhereRaw('coalesce(discount_price,price) BETWEEN ? AND ?', [$minPrice,$maxPrice]);

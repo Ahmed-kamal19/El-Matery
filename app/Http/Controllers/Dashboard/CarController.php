@@ -202,7 +202,11 @@ class CarController extends Controller
 
         $data                  = $request->except('car_Image', 'deleted_images', 'car_id', 'tags', 'colors', 'features');
         $data['have_discount'] = $request['have_discount'] === "on";
-        
+
+        if(settings()->getSettings('maintenance_mode') == 1){
+
+            $data["price_after_tax"] = $data['price'] * (1 + settings()->getSettings('tax') / 100);
+        }
         $car = Car::create($data);
         if ($request->hasFile('car_Image')) {
             $image = uploadImage($request->file('car_Image'),"Cars");
@@ -325,8 +329,7 @@ class CarController extends Controller
     $data = $request->except('car_Image', 'deleted_images', 'features', 'car_id', 'tags', 'colors');
     $data['have_discount'] = $request['have_discount'] === "on";
     $data['is_duplicate'] = $request->input('is_duplicate', 0);
-   
-
+  
     if($request->has('car_Image'))
     {
         $carImage = CarImage::where('car_id', $car->id)->where('image', $car->main_image)->first();
@@ -360,9 +363,15 @@ class CarController extends Controller
             }
         }
     }
-   
+    
+  
     // Update main car data and relationships
     $car->update($data);
+    if(settings()->getSettings('maintenance_mode') == 1){
+
+        $car->price_after_tax = $car->price * (1 + settings()->getSettings('tax') / 100);
+        $car->save();
+    }
     $car->tags()->sync($request['tags'] ?? []);
     $car->features()->sync($this->prepareFeatures($request->features ?? []));
 

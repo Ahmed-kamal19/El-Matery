@@ -547,13 +547,11 @@ class CarController extends Controller
                 // if($defaultMinPrice!=$minPrice)
                 $taxFactor = 1 + (settings()->getSettings('tax') / 100);
 
-                // Calculate the base price range (before tax)
-                $minBasePrice = $minPrice / $taxFactor;
-                $maxBasePrice = $maxPrice / $taxFactor;
-        
+                // Calculate the base price range (before tax)price_after_tax
+         
+                $query->wherebetween('price_after_tax',[$minPrice,$maxPrice])
                 // Filter cars by price, considering the price after tax dynamically
-                $query->whereRaw('(price * ?) BETWEEN ? AND ?', [$taxFactor, $minBasePrice, $maxBasePrice]);
-        
+         
                 
                 
                 
@@ -571,8 +569,11 @@ class CarController extends Controller
             
             if(isset($minPrice) && isset($maxPrice)){ 
                 // if($defaultMinPrice!=$minPrice)
-                $query->whereRaw('(price * ?) BETWEEN ? AND ?', [1 + (settings()->getSettings('tax') / 100), $minPrice / (1 + (settings()->getSettings('tax') / 100)), $maxPrice / (1 + (settings()->getSettings('tax') / 100))]);
 
+
+                $query->wherebetween('price',[$minPrice,$maxPrice])
+
+ 
                     // $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice){
                     // $q->WhereRaw('coalesce(discount_price,price) BETWEEN ? AND ?', [$minPrice,$maxPrice]);
                     // } );  
@@ -749,8 +750,9 @@ class CarController extends Controller
         $taxFactor = (settings()->getSettings('tax') / 100 + 1);
         if(settings()->getSettings('maintenance_mode') == 1){
 
-            $max_price = round(Car::max('price') * (1 + settings()->getSettings('tax') / 100), 2);
-            $min_price = round(Car::min('price') * (1 + settings()->getSettings('tax') / 100));
+            $max_price =Car::max('price_after_tax');
+
+            $min_price = Car::min('price_after_tax') ;    
  
         
         }else 

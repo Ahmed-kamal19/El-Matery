@@ -809,7 +809,7 @@ class CarController extends Controller
         $lowest_price='';
         $highest_price='';
         
-        if(settings()->getSettings('maintenance_mode')==1 ){
+        if(settings()->getSettings('maintenance_mode') == 1 ){
             $lowest_price=$carsQyery->min('price_after_tax');
             $highest_price=$carsQyery->max('price_after_tax');
             
@@ -818,8 +818,7 @@ class CarController extends Controller
             $lowest_price= round($carsQyery->min('price'));
 
         }
-        $lowest_price=$carsQyery->clone()->selectRaw('MIN(case when discount_price IS NOT NULL then discount_price ELSE price end) as max_price')->value('max_price');
-        $highest_price=$carsQyery->clone()->selectRaw('MAX(case when discount_price IS NOT NULL then discount_price ELSE price end) as min_price')->value('min_price');
+
         $cars=$carsQyery->get();
         // Collect all unique colors separately
         $available_colors = $cars->flatMap(function ($car) {

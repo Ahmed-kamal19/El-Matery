@@ -57,7 +57,7 @@ class OrderController extends Controller
         return [
             'id' => $car->id,
             'name'=>$car->name." - ".$car->brand->name." - ".$car->model->name." - ".$car->year,
-            'price' => $car->price_field_status==1?$car->price_after_vat:0
+            'price' => $car->price_field_status==1?$car->price * (1 + settings()->getSettings('tax') / 100):0
         ];
     });
         if($cars->isEmpty()) return $this->success(data:[],message:__("no data found"));

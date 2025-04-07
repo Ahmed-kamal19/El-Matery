@@ -27,7 +27,7 @@ class CarResource extends JsonResource
         'price_field_status'=>__($price_field_status) === __('others') ? $this->other_description:__($price_field_status),
         'price'=>$price_field_status === PriceFieldStatus::show_details->name ?(int)($this->discount_price):0,
         'price_before_discount'=>$price_field_status === PriceFieldStatus::show_details->name && $this->have_discount?(int)($this->price) :0,
-        'price_after_vat' =>$price_field_status === PriceFieldStatus::show_details->name ? ($this->price_after_vat ==$this->price ? 0 :(int)($this->price_after_vat) ):0,
+        'price_after_vat' =>$price_field_status === PriceFieldStatus::show_details->name ? ($this->price * (1 + settings()->getSettings('tax') / 100 ) ==$this->price ? 0 :(int)($this->price * (1 + settings()->getSettings('tax') / 100 )) ):0,
        
         // "price_after_vat"=>$this->price_after_vat ==$this->price ? 0 :$this->price_after_vat ,
         "fuel_type"=>__($this->fuel_type),

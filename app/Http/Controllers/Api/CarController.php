@@ -544,43 +544,19 @@ class CarController extends Controller
         if(settings()->getSettings('maintenance_mode') == 1){
 
             if(isset($minPrice) && isset($maxPrice)){ 
-                // if($defaultMinPrice!=$minPrice)
-                $taxFactor = 1 + (settings()->getSettings('tax') / 100);
-
-                // Calculate the base price range (before tax)price_after_tax
-         
-                $query->wherebetween('price_after_tax',[$minPrice,$maxPrice])
-                // Filter cars by price, considering the price after tax dynamically
-         
-                
-                
-                
-                // $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice,$taxFactor){
-                    //     $adjustedMinPrice = $minPrice - 0.01;
-                    //     $adjustedMaxPrice = $maxPrice + 0.01;
-                    //     $q->WhereRaw('coalesce(discount_price,price) * ?  BETWEEN ? AND ?', [$taxFactor,$adjustedMinPrice,$adjustedMaxPrice]);
-                    // } );  
-                    // dd($minPrice,$maxPrice,$taxFactor);
-                    //  dd($query->toSql(),$query->getBindings());
-                
+                // Maintenance mode: Filter by price_after_tax
+                $query->whereBetween('price_after_tax', [$minPrice, $maxPrice]);
             }
-        }else
-        {
-            
+        
+        }else{
+        
             if(isset($minPrice) && isset($maxPrice)){ 
-                // if($defaultMinPrice!=$minPrice)
-
-
-                $query->wherebetween('price',[$minPrice,$maxPrice])
-
- 
-                    // $query->when(isset($minPrice), function($q) use($minPrice,$maxPrice){
-                    // $q->WhereRaw('coalesce(discount_price,price) BETWEEN ? AND ?', [$minPrice,$maxPrice]);
-                    // } );  
-                    // dd($query->toSql(),$query->getBindings());
-                
+                // Non-maintenance mode: Filter by price
+                $query->whereBetween('price', [$minPrice, $maxPrice]);
             }
+        
         }
+        
         if(!empty($fuel_tank_capacities)){ 
             $query->when(!empty($fuel_tank_capacities),fn($q)=>$this->filterInArray($q,'fuel_tank_capacity',$fuel_tank_capacities));
         }

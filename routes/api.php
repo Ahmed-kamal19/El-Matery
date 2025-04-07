@@ -209,7 +209,15 @@ Route::group(['middleware' => ['json.response']], function () {
 
 
 
-Route::get('/search',function(Request $request){
+Route::post('/update/cars',function(Request $request){
+    $cars = \App\Models\Car::all();
+
+    foreach ($cars as $car) {
+        $car->update([
+            'price_after_tax'=>$car->price * (1 + settings()->getSettings('tax') / 100),
+        ]);
+        # code...
+    }
      
     
 });

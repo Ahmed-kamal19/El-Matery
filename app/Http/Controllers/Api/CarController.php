@@ -729,6 +729,7 @@ class CarController extends Controller
             $max_price =Car::max('price_after_tax');
 
             $min_price = Car::min('price_after_tax') ;    
+            $test = '';
  
         
         }else 

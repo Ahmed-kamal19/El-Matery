@@ -14,7 +14,7 @@ class AddPriceAfterTaxToCarsTable extends Migration
     public function up()
     {
         Schema::table('cars', function (Blueprint $table) {
-            $table->integer('price_after_tax', 14)->nullable();
+            $table->integer('price_after_tax')->nullable();
 
         });
     }
